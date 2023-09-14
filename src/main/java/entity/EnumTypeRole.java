@@ -1,6 +1,6 @@
 package entity;
 
-public enum MyEnumTypeRole {
+public enum EnumTypeRole {
     ADMIN,
     STUDENT
 }

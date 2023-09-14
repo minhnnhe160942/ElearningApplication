@@ -1,6 +1,6 @@
 package entity;
 
-public enum MyTyoeEnumProcess {
+public enum TypeEnumProcess {
     NOT_READY,
     IN_PROCESS,
     FINISH

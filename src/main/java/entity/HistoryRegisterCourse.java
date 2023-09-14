@@ -26,7 +26,7 @@ public class HistoryRegisterCourse {
     private int sttLessonCurrent;
     @Enumerated(EnumType.STRING)
     @Column(name="process")
-    private MyTyoeEnumProcess process;
+    private TypeEnumProcess process;
     @Column(name="created_at")
     private Timestamp createdAt;
 }

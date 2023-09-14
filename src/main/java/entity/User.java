@@ -28,7 +28,7 @@ public class User {
     private String phone;
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private MyEnumTypeRole role;
+    private EnumTypeRole role;
     @Column(name="created_at")
     private Timestamp createdAt;
 }
