@@ -1,4 +1,4 @@
-package entity;
+package typesEnum;
 
 public enum EnumTypeProcess {
     NOT_READY,

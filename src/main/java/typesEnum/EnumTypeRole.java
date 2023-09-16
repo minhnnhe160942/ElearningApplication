@@ -1,4 +1,4 @@
-package entity;
+package typesEnum;
 
 public enum EnumTypeRole {
     ADMIN,
