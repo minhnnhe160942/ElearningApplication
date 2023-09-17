@@ -24,6 +24,7 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'mysql:mysql-connector-java:8.0.33'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
 
 // Document API - OpenApi
     implementation 'org.openapitools:openapi-generator-gradle-plugin:6.6.0'

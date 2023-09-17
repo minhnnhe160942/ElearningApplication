@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "lesson")
@@ -20,12 +21,36 @@ public class Lesson {
     @Column(name = "stt")
     private int ordNumber;
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course courseID;
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    private Course course;
     @Column(name = "link_content")
     private String linkContent;
     @Column(name = "description")
     private String description;
     @Column(name = "created_at")
-    private Timestamp createdAt;
+    private ZonedDateTime createdAt;
+
+    public Lesson() {
+    }
+
+    public Lesson(int id, int ordNumber, Course course, String linkContent, String description, ZonedDateTime createdAt) {
+        this.id = id;
+        this.ordNumber = ordNumber;
+        this.course = course;
+        this.linkContent = linkContent;
+        this.description = description;
+        this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Lesson{" +
+                "id=" + id +
+                ", ordNumber=" + ordNumber +
+                ", course=" + course +
+                ", linkContent='" + linkContent + '\'' +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
