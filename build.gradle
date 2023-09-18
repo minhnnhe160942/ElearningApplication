@@ -25,6 +25,9 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.33'
     annotationProcessor 'org.projectlombok:lombok'
     implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '3.1.3'
+
 
 // Document API - OpenApi
     implementation 'org.openapitools:openapi-generator-gradle-plugin:6.6.0'

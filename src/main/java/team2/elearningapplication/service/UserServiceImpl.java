@@ -1,11 +1,15 @@
 package team2.elearningapplication.service;
 
+import team2.elearningapplication.dto.UsersDTO;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.repository.UserRepository;
+import team2.elearningapplication.typesEnum.EnumTypeGender;
+import team2.elearningapplication.typesEnum.EnumTypeRole;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -15,12 +19,18 @@ public class UserServiceImpl implements IUserService {
     private UserRepository userRepository;
 
     @Override
-    public User addUser(User user) {
-        // if user differnce null -> add user to database
-        if (user != null) {
-            return userRepository.save(user);
-        }
-        return null;
+    public User addUser(UsersDTO requestDTO) {
+        User user = new User();
+        user.setUsername(requestDTO.getUsername());
+        user.setPassword(requestDTO.getPassword());
+        user.setEmail(requestDTO.getEmail());
+        user.setPhone(requestDTO.getPhone());
+        user.setRole(EnumTypeRole.valueOf(requestDTO.getRole()));
+        user.setCreatedAt(ZonedDateTime.now());
+        user.setFullName(requestDTO.getFullName());
+        user.setGender(EnumTypeGender.valueOf(requestDTO.getGender()));
+        user.setDate_of_birth(requestDTO.getDateOfBirth());
+        return userRepository.save(user);
     }
 
     @Override

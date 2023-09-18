@@ -9,6 +9,7 @@ import team2.elearningapplication.typesEnum.EnumTypeRole;
 
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -39,12 +40,13 @@ public class User {
     @Column(name = "gender")
     private EnumTypeGender gender;
     @Column(name = "date_of_birth")
-    private Date date_of_birth;
+    private LocalDate date_of_birth;
+
 
     public User() {
     }
 
-    public User(int id, String username, String password, String email, String phone, EnumTypeRole role, ZonedDateTime createdAt, String fullName, EnumTypeGender gender, Date date_of_birth) {
+    public User(int id, String username, String password, String email, String phone, EnumTypeRole role, ZonedDateTime createdAt, String fullName, EnumTypeGender gender, LocalDate date_of_birth) {
 
         this.id = id;
         this.username = username;
