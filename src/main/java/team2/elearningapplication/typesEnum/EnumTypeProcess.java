@@ -1,4 +1,4 @@
-package typesEnum;
+package team2.elearningapplication.typesEnum;
 
 public enum EnumTypeProcess {
     NOT_READY,

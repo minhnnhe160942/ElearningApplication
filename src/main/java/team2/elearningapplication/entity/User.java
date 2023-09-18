@@ -1,12 +1,11 @@
-package entity;
+package team2.elearningapplication.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import typesEnum.EnumTypeGender;
-import typesEnum.EnumTypeRole;
+import team2.elearningapplication.typesEnum.EnumTypeGender;
+import team2.elearningapplication.typesEnum.EnumTypeRole;
 
 
 import java.sql.Date;

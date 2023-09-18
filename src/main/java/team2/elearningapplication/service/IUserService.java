@@ -1,6 +1,6 @@
-package service;
+package team2.elearningapplication.service;
 
-import entity.User;
+import team2.elearningapplication.entity.User;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;

@@ -1,10 +1,10 @@
-package service;
+package team2.elearningapplication.service;
 
-import entity.User;
-import exceptions.UserNotFoundException;
+import team2.elearningapplication.entity.User;
+import team2.elearningapplication.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
+import team2.elearningapplication.repository.UserRepository;
 
 import java.util.List;
 

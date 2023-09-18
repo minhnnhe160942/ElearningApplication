@@ -1,13 +1,12 @@
 
 
-package entity;
+package team2.elearningapplication.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -25,7 +24,7 @@ public class Quiz {
     private Lesson lession;
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany
     private List<Question> questionList;
 
     public Quiz() {

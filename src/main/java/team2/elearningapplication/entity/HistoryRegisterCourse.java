@@ -1,14 +1,13 @@
 
 
-package entity;
+package team2.elearningapplication.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import typesEnum.EnumTypeProcess;
+import team2.elearningapplication.typesEnum.EnumTypeProcess;
 
-import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 
 @Entity

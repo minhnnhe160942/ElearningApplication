@@ -1,4 +1,4 @@
-package entity;
+package team2.elearningapplication.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
