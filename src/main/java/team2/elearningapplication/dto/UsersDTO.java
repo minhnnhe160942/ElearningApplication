@@ -1,5 +1,8 @@
 package team2.elearningapplication.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -14,6 +17,8 @@ public class UsersDTO {
     private LocalDateTime createdAt;
     private String fullName;
     private String gender;
+    @NotNull
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private LocalDate dateOfBirth;
 
     public Integer getId() {
