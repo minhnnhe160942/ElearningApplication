@@ -1,89 +1,84 @@
 package team2.elearningapplication.service;
 
-import team2.elearningapplication.dto.UsersDTO;
-import team2.elearningapplication.entity.User;
-import team2.elearningapplication.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team2.elearningapplication.repository.UserRepository;
-import team2.elearningapplication.typesEnum.EnumTypeGender;
+import team2.elearningapplication.dto.request.CreateUserRequestDTO;
+import team2.elearningapplication.dto.response.CreateUserResponseDTO;
+import team2.elearningapplication.entity.User;
+import team2.elearningapplication.repository.IUserRepository;
+import team2.elearningapplication.service.IUserService;
 import team2.elearningapplication.typesEnum.EnumTypeRole;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements IUserService {
+    private final IUserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public UserServiceImpl(IUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
-    public User addUser(UsersDTO requestDTO) {
+    public CreateUserResponseDTO createUser(CreateUserRequestDTO requestDTO) {
         User user = new User();
         user.setUsername(requestDTO.getUsername());
         user.setPassword(requestDTO.getPassword());
         user.setEmail(requestDTO.getEmail());
         user.setPhone(requestDTO.getPhone());
-        user.setRole(EnumTypeRole.valueOf(requestDTO.getRole()));
-        user.setCreatedAt(ZonedDateTime.now());
+        user.setRole(requestDTO.getRole());
         user.setFullName(requestDTO.getFullName());
-        user.setGender(EnumTypeGender.valueOf(requestDTO.getGender()));
+        user.setGender(requestDTO.getGender());
         user.setDate_of_birth(requestDTO.getDateOfBirth());
-        return userRepository.save(user);
+
+        User createdUser = userRepository.save(user);
+
+        CreateUserResponseDTO responseDTO = new CreateUserResponseDTO();
+        responseDTO.setId(createdUser.getId());
+        responseDTO.setUsername(createdUser.getUsername());
+        responseDTO.setEmail(createdUser.getEmail());
+        responseDTO.setCreatedAt(createdUser.getCreatedAt());
+
+        return responseDTO;
     }
 
     @Override
-    public User updateUser(int id, User user) throws UserNotFoundException {
-        // if user not null -> get user to update
-        if (user != null) {
-            User userUpdate = userRepository.findById(id).orElse(null);
-            // if userUpdate not null -> update user
-            if (userUpdate != null) {
-                userUpdate.setUsername(user.getUsername());
-                userUpdate.setPassword(user.getPassword());
-                userUpdate.setEmail(user.getEmail());
-                userUpdate.setPhone(user.getPhone());
-                userUpdate.setRole(user.getRole());
-                userUpdate.setCreatedAt(user.getCreatedAt());
-                userUpdate.setFullName(user.getFullName());
-                userUpdate.setGender(user.getGender());
-                userUpdate.setDate_of_birth(user.getDate_of_birth());
+    public User updateUser(User user) {
+        Optional<User> existingUser = userRepository.findById(user.getId());
+        if (existingUser.isPresent()) {
+            User updatedUser = existingUser.get();
+            updatedUser.setUsername(user.getUsername());
+            updatedUser.setPassword(user.getPassword());
+            updatedUser.setEmail(user.getEmail());
+            updatedUser.setPhone(user.getPhone());
+            updatedUser.setRole(user.getRole());
+            updatedUser.setCreatedAt(user.getCreatedAt());
+            updatedUser.setFullName(user.getFullName());
+            updatedUser.setGender(user.getGender());
+            updatedUser.setDate_of_birth(user.getDate_of_birth());
 
-                userRepository.save(userUpdate);
-                return userUpdate;
-            } else {
-                // Throw an exception if user not found
-                throw new UserNotFoundException("User with ID: " + id + " not found");
-            }
-        } else {
-            // Throw an exception if user is null
-            throw new UserNotFoundException("User is null");
+            return userRepository.save(updatedUser);
         }
-    }
-
-
-    @Override
-    public boolean deleteUser(int id) {
-        // if id >= 1 -> find User by id to delete
-        if (id >= 1) {
-            User userDelete = userRepository.findById(id).orElse(null);
-            // if user not null -> delete user
-            if (userDelete != null) {
-                userRepository.delete(userDelete);
-                return true;
-            }
-        }
-        return false;
+        return null;
     }
 
     @Override
-    public List<User> getAllUser() {
+    public User getUserById(int id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.orElse(null);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public User getUserByID(int id) {
-        return userRepository.findById(id).orElse(null);
+    public void deleteUser(int id) {
+        userRepository.deleteById(id);
     }
 }

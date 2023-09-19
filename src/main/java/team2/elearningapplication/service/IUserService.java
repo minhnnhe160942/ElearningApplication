@@ -1,25 +1,20 @@
 package team2.elearningapplication.service;
 
-import team2.elearningapplication.dto.UsersDTO;
+import team2.elearningapplication.dto.request.CreateUserRequestDTO;
+import team2.elearningapplication.dto.response.CreateUserResponseDTO;
 import team2.elearningapplication.entity.User;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 public interface IUserService {
+    CreateUserResponseDTO createUser(CreateUserRequestDTO requestDTO);
 
-    // add user
-    public User addUser(UsersDTO requestDTO);
+    User updateUser(User user);
 
-    // edit user
-    public User updateUser(int id, User user) throws UserPrincipalNotFoundException;
+    User getUserById(int id);
 
-    // delete user
-    public boolean deleteUser(int id);
+    List<User> getAllUsers();
 
-    // get list user
-    public List<User> getAllUser();
-
-    // get a user by id
-    public User getUserByID(int id);
+    void deleteUser(int id);
 }

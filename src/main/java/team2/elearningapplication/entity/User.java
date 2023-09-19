@@ -33,7 +33,7 @@ public class User {
     @Column(name = "role")
     private EnumTypeRole role;
     @Column(name = "created_at")
-    private ZonedDateTime createdAt;
+    private LocalDate createdAt;
     @Column(name = "full_name")
     private String fullName;
     @Enumerated(EnumType.STRING)
@@ -46,7 +46,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String username, String password, String email, String phone, EnumTypeRole role, ZonedDateTime createdAt, String fullName, EnumTypeGender gender, LocalDate date_of_birth) {
+    public User(int id, String username, String password, String email, String phone, EnumTypeRole role, LocalDate createdAt, String fullName, EnumTypeGender gender, LocalDate date_of_birth) {
 
         this.id = id;
         this.username = username;
