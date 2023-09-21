@@ -1,4 +1,4 @@
-package team2.elearningapplication.typesEnum;
+package team2.elearningapplication.Enum;
 
 public enum EnumTypeGender {
     MALE,

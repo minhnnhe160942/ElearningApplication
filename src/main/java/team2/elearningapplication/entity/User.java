@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import team2.elearningapplication.typesEnum.EnumTypeGender;
-import team2.elearningapplication.typesEnum.EnumTypeRole;
+import team2.elearningapplication.Enum.EnumTypeGender;
+import team2.elearningapplication.Enum.EnumTypeRole;
+import team2.elearningapplication.Enum.EnumUserStatus;
 
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -41,7 +41,13 @@ public class User {
     private EnumTypeGender gender;
     @Column(name = "date_of_birth")
     private LocalDate date_of_birth;
-
+    @Column(name = "expired_otp")
+    private LocalDateTime expiredOTP;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private EnumUserStatus status;
+    @Column(name = "otp")
+    private String otp;
 
     public User() {
     }

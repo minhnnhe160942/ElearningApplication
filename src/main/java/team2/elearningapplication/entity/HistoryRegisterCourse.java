@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import team2.elearningapplication.typesEnum.EnumTypeProcess;
+import team2.elearningapplication.Enum.EnumTypeProcess;
 
 import java.time.ZonedDateTime;
 
