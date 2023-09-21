@@ -1,6 +1,7 @@
 package team2.elearningapplication.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -20,7 +21,7 @@ public class Lesson {
     @Column(name = "stt")
     private int ordNumber;
     @ManyToOne
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @JoinColumn
     private Course course;
     @Column(name = "link_content")
     private String linkContent;

@@ -1,13 +1,13 @@
 package team2.elearningapplication.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import team2.elearningapplication.Enum.EnumTypeGender;
 import team2.elearningapplication.Enum.EnumTypeRole;
 import team2.elearningapplication.Enum.EnumUserStatus;
-
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

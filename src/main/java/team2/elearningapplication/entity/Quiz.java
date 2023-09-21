@@ -2,7 +2,8 @@
 
 package team2.elearningapplication.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -20,8 +21,8 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
-    @JoinColumn(name = "lesson_id", referencedColumnName = "id")
-    private Lesson lession;
+    @JoinColumn
+    private Lesson lesson;
     @Column(name = "name")
     private String name;
     @OneToMany
@@ -30,9 +31,9 @@ public class Quiz {
     public Quiz() {
     }
 
-    public Quiz(int id, Lesson lession, String name, List<Question> questionList) {
+    public Quiz(int id, Lesson lesson, String name, List<Question> questionList) {
         this.id = id;
-        this.lession = lession;
+        this.lesson = lesson;
         this.name = name;
         this.questionList = questionList;
     }
@@ -41,7 +42,7 @@ public class Quiz {
     public String toString() {
         return "Quiz{" +
                 "id=" + id +
-                ", lession=" + lession +
+                ", lesson=" + lesson +
                 ", name='" + name + '\'' +
                 ", questionList=" + questionList +
                 '}';

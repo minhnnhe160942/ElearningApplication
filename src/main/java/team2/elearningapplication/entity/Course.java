@@ -1,6 +1,7 @@
 package team2.elearningapplication.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -22,7 +23,7 @@ public class Course {
     @Column(name = "description")
     private String description;
     @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @JoinColumn
     private Category category;
     @Column(name = "created_at")
     private ZonedDateTime createdAt;

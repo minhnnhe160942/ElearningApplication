@@ -1,15 +1,14 @@
 package team2.elearningapplication.service.implement;
 
-import jakarta.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMessage;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 import team2.elearningapplication.entity.Mail;
 
 import java.nio.charset.StandardCharsets;
@@ -19,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 public class EmailService {
 
     private final JavaMailSender emailSender;
-    private final SpringTemplateEngine templateEngine;
+    private final TemplateEngine templateEngine;
 
     @SneakyThrows
     public void sendEmail(Mail mail) {

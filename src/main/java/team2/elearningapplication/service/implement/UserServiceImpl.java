@@ -1,5 +1,6 @@
 package team2.elearningapplication.service.implement;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.EnumUserStatus;
@@ -21,13 +22,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
-
-    @Autowired
-    public UserServiceImpl(IUserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final EmailService emailService;
 
     @Override
     public ResponseCommon<CreateUserResponseDTO> createUser(CreateUserRequest requestDTO) {
@@ -43,6 +41,7 @@ public class UserServiceImpl implements IUserService {
             user.setDate_of_birth(requestDTO.getDateOfBirth());
 
             User createdUser = userRepository.save(user);
+//            emailService.sendEmail();
 
             CreateUserResponseDTO responseDTO = new CreateUserResponseDTO();
             responseDTO.setId(createdUser.getId());
@@ -106,6 +105,7 @@ public class UserServiceImpl implements IUserService {
             // step1: gen otp
             String otp = CommonUtils.getOTP();
             //step2: send email
+            
             // step3: check expired time otp
             user.setUsername(request.getUsername());
             user.setPassword(request.getPassword());

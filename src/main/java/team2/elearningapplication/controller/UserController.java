@@ -1,20 +1,35 @@
 package team2.elearningapplication.controller;
 
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+import javax.validation.Valid;
+
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.CreateUserRequest;
 import team2.elearningapplication.dto.request.GetOTPRequest;
+import team2.elearningapplication.dto.request.VerifyOtpRequest;
 import team2.elearningapplication.dto.response.CreateUserResponseDTO;
 import team2.elearningapplication.dto.response.GetOTPResponse;
+import team2.elearningapplication.entity.User;
 import team2.elearningapplication.service.IUserService;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@AllArgsConstructor
 public class UserController {
+
     private IUserService userService;
 
+    //    @Operation(
+//            security = @SecurityRequirement(name = "bearerAuth")
+//    )
     @PostMapping("/addusers")
     public ResponseEntity<ResponseCommon<CreateUserResponseDTO>> createUser(@Valid @RequestBody CreateUserRequest requestDTO) {
         ResponseCommon<CreateUserResponseDTO> responseDTO = userService.createUser(requestDTO);
@@ -23,6 +38,18 @@ public class UserController {
         } else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody @Valid VerifyOtpRequest request) {
+        User user = userService.getUserById(request.getUserId());
+        LocalDateTime localDateTime = LocalDateTime.now();
+        if (request.getOtp().equals(user.getOtp()) && localDateTime.isBefore(user.getExpiredOTP())) {
+            user.setStatus(EnumUserStatus.ACTIVE);
+            userService.updateUser(user);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/getOTP")

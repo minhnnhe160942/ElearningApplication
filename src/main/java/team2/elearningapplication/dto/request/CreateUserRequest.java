@@ -1,7 +1,8 @@
 package team2.elearningapplication.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import team2.elearningapplication.Enum.EnumTypeGender;
