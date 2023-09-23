@@ -1,7 +1,8 @@
 package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
@@ -10,6 +11,7 @@ import team2.elearningapplication.dto.request.CreateUserRequest;
 import team2.elearningapplication.dto.request.GetOTPRequest;
 import team2.elearningapplication.dto.response.CreateUserResponseDTO;
 import team2.elearningapplication.dto.response.GetOTPResponse;
+import team2.elearningapplication.entity.Mail;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.exceptions.BussinessException;
 import team2.elearningapplication.repository.IUserRepository;
@@ -17,15 +19,19 @@ import team2.elearningapplication.service.IUserService;
 import team2.elearningapplication.utils.CommonUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
     private final EmailService emailService;
+
+    @Value("minhnnde258@gmail.com")
+    private String mailFrom;
+    @Value("${otp.valid.minutes}")
+    private int otpValid;
 
     @Override
     public ResponseCommon<CreateUserResponseDTO> createUser(CreateUserRequest requestDTO) {
@@ -41,8 +47,9 @@ public class UserServiceImpl implements IUserService {
             user.setDate_of_birth(requestDTO.getDateOfBirth());
 
             User createdUser = userRepository.save(user);
-//            emailService.sendEmail();
-
+            log.info("START... Sending email");
+            emailService.sendEmail(setUpMail(user.getEmail()));
+            log.info("END... Email sent success");
             CreateUserResponseDTO responseDTO = new CreateUserResponseDTO();
             responseDTO.setId(createdUser.getId());
             responseDTO.setUsername(createdUser.getUsername());
@@ -54,8 +61,18 @@ public class UserServiceImpl implements IUserService {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
+    }
 
-
+    private Mail setUpMail(String mailTo) {
+        Mail mail = new Mail();
+        mail.setFrom(mailFrom);
+        mail.setTo(mailTo);
+        mail.setSubject("Email with Spring boot and thymeleaf template!");
+        Map<String, Object> model = new HashMap<>();
+        model.put("otp_value", CommonUtils.getOTP());
+        mail.setPros(model);
+        mail.setTemplate("index");
+        return mail;
     }
 
     @Override
@@ -105,8 +122,9 @@ public class UserServiceImpl implements IUserService {
             // step1: gen otp
             String otp = CommonUtils.getOTP();
             //step2: send email
-            
-            // step3: check expired time otp
+            log.info("START... Sending email");
+            emailService.sendEmail(setUpMail(user.getEmail()));
+            log.info("END... Email sent success");
             user.setUsername(request.getUsername());
             user.setPassword(request.getPassword());
             user.setEmail(request.getEmail());
