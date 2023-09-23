@@ -9,8 +9,10 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.CreateUserRequest;
 import team2.elearningapplication.dto.request.GetOTPRequest;
+import team2.elearningapplication.dto.request.LoginRequest;
 import team2.elearningapplication.dto.response.CreateUserResponseDTO;
 import team2.elearningapplication.dto.response.GetOTPResponse;
+import team2.elearningapplication.dto.response.LoginResponse;
 import team2.elearningapplication.entity.Mail;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.exceptions.BussinessException;
@@ -48,7 +50,12 @@ public class UserServiceImpl implements IUserService {
 
             User createdUser = userRepository.save(user);
             log.info("START... Sending email");
-            emailService.sendEmail(setUpMail(user.getEmail()));
+            try {
+                emailService.sendEmail(setUpMail(user.getEmail()));
+            } catch(Exception e) {
+                e.printStackTrace();
+                log.error("Send mail error");
+            }
             log.info("END... Email sent success");
             CreateUserResponseDTO responseDTO = new CreateUserResponseDTO();
             responseDTO.setId(createdUser.getId());
@@ -143,5 +150,16 @@ public class UserServiceImpl implements IUserService {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
+    }
+
+    @Override
+    public ResponseCommon<LoginResponse> login(LoginRequest loginRequest) {
+        try {
+            User user = userRepository.findByUsernameAndStatus(loginRequest.getUsername(), EnumUserStatus.ACTIVE).orElse(null);
+            return null;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

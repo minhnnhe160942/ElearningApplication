@@ -12,9 +12,11 @@ import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.CreateUserRequest;
 import team2.elearningapplication.dto.request.GetOTPRequest;
+import team2.elearningapplication.dto.request.LoginRequest;
 import team2.elearningapplication.dto.request.VerifyOtpRequest;
 import team2.elearningapplication.dto.response.CreateUserResponseDTO;
 import team2.elearningapplication.dto.response.GetOTPResponse;
+import team2.elearningapplication.dto.response.LoginResponse;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.service.IUserService;
 
@@ -30,7 +32,7 @@ public class UserController {
     //    @Operation(
 //            security = @SecurityRequirement(name = "bearerAuth")
 //    )
-    @PostMapping("/addusers")
+    @PostMapping("/register")
     public ResponseEntity<ResponseCommon<CreateUserResponseDTO>> createUser(@Valid @RequestBody CreateUserRequest requestDTO) {
         ResponseCommon<CreateUserResponseDTO> responseDTO = userService.createUser(requestDTO);
         if (responseDTO != null) {
@@ -39,6 +41,16 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+//    @PostMapping("/login")
+//    public ResponseEntity<ResponseCommon<LoginResponse>> createUser(@Valid @RequestBody LoginRequest loginRequest) {
+//        ResponseCommon<LoginResponse> responseDTO = userService.login(loginRequest);
+//        if (responseDTO != null) {
+//            userService.login(loginRequest);
+//        } else {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
 
     @PostMapping("/verify-otp")
     public ResponseEntity<?> verifyOtp(@RequestBody @Valid VerifyOtpRequest request) {
