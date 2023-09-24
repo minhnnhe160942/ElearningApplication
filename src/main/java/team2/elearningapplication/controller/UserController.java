@@ -30,7 +30,7 @@ public class UserController {
     //    @Operation(
 //            security = @SecurityRequirement(name = "bearerAuth")
 //    )
-    @PostMapping("/addusers")
+    @PostMapping("/register")
     public ResponseEntity<ResponseCommon<CreateUserResponseDTO>> createUser(@Valid @RequestBody CreateUserRequest requestDTO) {
         ResponseCommon<CreateUserResponseDTO> responseDTO = userService.createUser(requestDTO);
         if (responseDTO != null) {
