@@ -5,15 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
+import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserResponseDTO {
-    private int id;
-    private String username;
-    private String email;
-    private LocalDate createdAt;
+public class VerifyOtpResponse {
+    @NotBlank
+    private boolean isVerifyDone;
 }

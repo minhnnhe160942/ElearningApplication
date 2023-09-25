@@ -28,7 +28,11 @@ public class UserDetailsImpl implements UserDetails {
         this.password = password;
         this.authorities = authorities;
     }
-
+    public UserDetailsImpl(long id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().name()));
 

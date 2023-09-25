@@ -3,23 +3,34 @@ package team2.elearningapplication.service.implement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.CreateUserRequest;
 import team2.elearningapplication.dto.request.GetOTPRequest;
+import team2.elearningapplication.dto.request.LoginRequest;
+import team2.elearningapplication.dto.request.VerifyOtpRequest;
 import team2.elearningapplication.dto.response.CreateUserResponseDTO;
 import team2.elearningapplication.dto.response.GetOTPResponse;
+import team2.elearningapplication.dto.response.VerifyOtpResponse;
 import team2.elearningapplication.entity.Mail;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.exceptions.BussinessException;
 import team2.elearningapplication.repository.IUserRepository;
+import team2.elearningapplication.security.Role;
+import team2.elearningapplication.security.UserDetailsImpl;
+import team2.elearningapplication.security.jwt.JWTResponse;
+import team2.elearningapplication.security.jwt.JWTUtils;
 import team2.elearningapplication.service.IUserService;
 import team2.elearningapplication.utils.CommonUtils;
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthoritiesContainer;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -144,4 +155,71 @@ public class UserServiceImpl implements IUserService {
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
+
+    @Override
+    public ResponseCommon<JWTResponse> login(LoginRequest loginRequest) {
+        try {
+            Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
+            // if username request not found in database -> tell user
+            if(user.isEmpty()){
+                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
+            } // else -> check password
+            else {
+                // if password not equals password in database -> return fail
+                if(!user.orElse(null).getPassword().equals(loginRequest.getPassword())){
+                    return new ResponseCommon<>(ResponseCode.PASSWORD_INCORRECT, null);
+                } // else -> verify otp
+                else {
+                    String otp = user.orElse(null).getOtp();
+                    VerifyOtpRequest request = new VerifyOtpRequest(otp,user.orElse(null).getId());
+                    ResponseCommon<VerifyOtpResponse> response = new ResponseCommon<>(new VerifyOtpResponse());
+
+                    // if code is false -> return error
+                    if(response.getCode() != 0){
+
+                    }
+                    // esle -> return access token and refresh token
+                    else {
+                        JWTUtils utils = new JWTUtils();
+                        List<String> roles = userRepository.findRolesByUsername(loginRequest.getUsername());
+                        List<GrantedAuthority> authorities = new ArrayList<>();
+                        for (String role : roles) {
+                            authorities.add(new SimpleGrantedAuthority(role));
+                        }
+                        UserDetailsImpl userDetails = new UserDetailsImpl(user.get().getId(),user.get().getUsername(),user.get().getPassword(),authorities);
+                        String accessToken = utils.generateAccessToken(userDetails);
+                        String refreshToken = utils.generateRefreshToken(userDetails);
+                        return new ResponseCommon<>(new JWTResponse(accessToken,refreshToken,ResponseCode.SUCCESS.getMessage()));
+                    }
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+        return null;
+    }
+
+    @Override
+    public ResponseCommon<VerifyOtpResponse> verifyOtp(VerifyOtpRequest verifyOtpRequest) {
+        try {
+            Optional<User> user = userRepository.findById(verifyOtpRequest.getUserId());
+
+            LocalDateTime localDateTime = LocalDateTime.now();
+            // if otp request equals otp generate and localDate before expired otp -> return success
+            if(verifyOtpRequest.getOtp().equals(user.orElse(null).getOtp())
+                    && localDateTime.isBefore(user.get().getExpiredOTP())){
+                return new ResponseCommon<>(ResponseCode.SUCCESS,null);
+            }
+            // else -> return fail
+            else {
+                return new ResponseCommon<>(ResponseCode.FAIL,null);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+
 }

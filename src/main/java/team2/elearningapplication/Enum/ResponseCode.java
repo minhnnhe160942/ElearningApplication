@@ -7,7 +7,8 @@ public enum ResponseCode {
     SUCCESS(0, "success"),
     FAIL(1, "fail"),
     USER_NOT_FOUND(1000, "User not found"),
-    ;
+    PASSWORD_INCORRECT(1100,"Password incorrect"),
+    OTP_INCORRECT(1200,"OTP incorrect");
     private int code;
 
     private String message;

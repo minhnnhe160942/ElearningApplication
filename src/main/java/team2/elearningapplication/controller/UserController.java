@@ -12,10 +12,13 @@ import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.CreateUserRequest;
 import team2.elearningapplication.dto.request.GetOTPRequest;
+import team2.elearningapplication.dto.request.LoginRequest;
 import team2.elearningapplication.dto.request.VerifyOtpRequest;
 import team2.elearningapplication.dto.response.CreateUserResponseDTO;
 import team2.elearningapplication.dto.response.GetOTPResponse;
+import team2.elearningapplication.dto.response.VerifyOtpResponse;
 import team2.elearningapplication.entity.User;
+import team2.elearningapplication.security.jwt.JWTResponse;
 import team2.elearningapplication.service.IUserService;
 
 import java.time.LocalDateTime;
@@ -40,16 +43,19 @@ public class UserController {
         }
     }
 
+
     @PostMapping("/verify-otp")
     public ResponseEntity<?> verifyOtp(@RequestBody @Valid VerifyOtpRequest request) {
         User user = userService.getUserById(request.getUserId());
-        LocalDateTime localDateTime = LocalDateTime.now();
-        if (request.getOtp().equals(user.getOtp()) && localDateTime.isBefore(user.getExpiredOTP())) {
+        ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
+        // if response code == 0 -> return success
+        if(response.getCode()==0){
             user.setStatus(EnumUserStatus.ACTIVE);
             userService.updateUser(user);
             return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/getOTP")
@@ -59,6 +65,21 @@ public class UserController {
         if (responseDTO != null) return ResponseEntity.ok(responseDTO);
             // else -> return badrequest
         else return ResponseEntity.badRequest().build();
+    }
+    @PostMapping("/login")
+    public ResponseEntity<ResponseCommon<JWTResponse>> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            ResponseCommon<JWTResponse> response = userService.login(loginRequest);
+
+            if (response.getCode() == 0) {
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }
