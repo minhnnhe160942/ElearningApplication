@@ -11,6 +11,11 @@ import java.util.stream.Collectors;
 
 @Component
 public class JWTUtils {
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> main
     public String generateAccessToken(UserDetailsImpl userDetails) {
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
         return JWT.create()

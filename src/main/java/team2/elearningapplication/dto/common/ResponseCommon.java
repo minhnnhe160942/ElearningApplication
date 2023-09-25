@@ -33,4 +33,9 @@ public class ResponseCommon<T> {
         this.message = responseCode.getMessage();
         this.data = data;
     }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> main
 }
