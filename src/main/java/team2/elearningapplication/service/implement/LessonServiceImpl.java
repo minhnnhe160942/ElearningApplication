@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.AddLessonRequest;
+import team2.elearningapplication.dto.request.GetLessonFromCourseRequest;
 import team2.elearningapplication.dto.request.UpdateLessonRequest;
 import team2.elearningapplication.dto.response.AddLessonResponse;
+import team2.elearningapplication.dto.response.GetLessonFromCourseResponse;
 import team2.elearningapplication.dto.response.UpdateLessonResponse;
 import team2.elearningapplication.entity.Course;
 import team2.elearningapplication.entity.Lesson;
@@ -73,8 +75,19 @@ public class LessonServiceImpl implements ILessonService {
     }
 
     @Override
-    public List<Lesson> getAllLessonFromCourse(Course course) {
-        return lessonRepository.findAll(course);
+    public ResponseCommon<GetLessonFromCourseResponse> getLessonFromCourse(GetLessonFromCourseRequest requestDTO) {
+        try {
+            Course course = requestDTO.getCourse();
+            List<Lesson> listLesson = lessonRepository.findAll(course);
+
+            GetLessonFromCourseResponse responseDTO = new GetLessonFromCourseResponse();
+            responseDTO.setListLesson(listLesson);
+
+            return new ResponseCommon<>(ResponseCode.SUCCESS, responseDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
     }
 
     @Override
