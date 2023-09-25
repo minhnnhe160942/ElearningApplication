@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.AddLessonRequest;
+import team2.elearningapplication.dto.request.UpdateLessonRequest;
 import team2.elearningapplication.dto.response.AddLessonResponse;
+import team2.elearningapplication.dto.response.UpdateLessonResponse;
 import team2.elearningapplication.entity.Course;
 import team2.elearningapplication.entity.Lesson;
 import team2.elearningapplication.repository.ILessonRepository;
@@ -45,18 +47,29 @@ public class LessonServiceImpl implements ILessonService {
     }
 
     @Override
-    public Lesson updateLesson(Lesson lesson) {
-        Optional<Lesson> existingLesson = lessonRepository.findById(lesson.getId());
+    public ResponseCommon<UpdateLessonResponse> updateLesson(UpdateLessonRequest requestDTO) {
+        Optional<Lesson> existingLesson = lessonRepository.findById(requestDTO.getId());
         if ( existingLesson.isPresent() ) {
-            Lesson updateLesson = existingLesson.get();
-            updateLesson.setCourse(lesson.getCourse());
-            updateLesson.setLinkContent(lesson.getLinkContent());
-            updateLesson.setDescription(lesson.getDescription());
-            updateLesson.setCreatedAt(lesson.getCreatedAt());
+            try {
+                Lesson updateLesson = existingLesson.get();
+                updateLesson.setCourse(requestDTO.getCourse());
+                updateLesson.setLinkContent(requestDTO.getLinkContent());
+                updateLesson.setDescription(requestDTO.getDescription());
+                updateLesson.setCreatedAt(requestDTO.getCreatedAt());
 
-            return lessonRepository.save(updateLesson);
+                UpdateLessonResponse responseDTO = new UpdateLessonResponse();
+                responseDTO.setCourse(responseDTO.getCourse());
+                responseDTO.setLinkContent(responseDTO.getLinkContent());
+                responseDTO.setDescription(responseDTO.getDescription());
+                responseDTO.setCreatedAt(responseDTO.getCreatedAt());
+
+                return new ResponseCommon<>(ResponseCode.SUCCESS, responseDTO);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseCommon<>(ResponseCode.FAIL, null);
+            }
         }
-        return  null;
+        return new ResponseCommon<>(ResponseCode.FAIL, null);
     }
 
     @Override

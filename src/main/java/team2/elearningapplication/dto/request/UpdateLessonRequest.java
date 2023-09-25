@@ -15,6 +15,8 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 public class UpdateLessonRequest {
     @NotBlank
+    private int id;
+    @NotBlank
     private int ordNumber;
     @NotBlank
     private Course course;
