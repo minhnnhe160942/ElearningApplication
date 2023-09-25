@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,5 +16,5 @@ public class CreateUserResponseDTO {
     private int id;
     private String username;
     private String email;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }

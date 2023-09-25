@@ -6,11 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-@Getter
+
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VerifyOtpResponse {
-
-    private boolean isVerifyDone;
+public class ForgotPasswordResponse {
+    @NotBlank
+    private String message;
 }

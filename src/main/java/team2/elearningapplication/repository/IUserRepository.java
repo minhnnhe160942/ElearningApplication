@@ -4,6 +4,7 @@ import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import team2.elearningapplication.security.Role;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,5 +15,7 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByUsernameAndStatus(String username, EnumUserStatus status);
 
-    List<String> findRolesByUsername(String username);
+    Role findRolesByUsername(String username);
+
+    Optional<User> findUserByEmail(String email);
 }

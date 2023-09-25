@@ -9,16 +9,12 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.CreateUserRequest;
-import team2.elearningapplication.dto.request.GetOTPRequest;
-import team2.elearningapplication.dto.request.LoginRequest;
-import team2.elearningapplication.dto.request.VerifyOtpRequest;
-import team2.elearningapplication.dto.response.CreateUserResponseDTO;
-import team2.elearningapplication.dto.response.GetOTPResponse;
-import team2.elearningapplication.dto.response.VerifyOtpResponse;
+import team2.elearningapplication.dto.request.*;
+import team2.elearningapplication.dto.response.*;
 import team2.elearningapplication.entity.Mail;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.exceptions.BussinessException;
+import team2.elearningapplication.exceptions.UserNotFoundException;
 import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.security.Role;
 import team2.elearningapplication.security.UserDetailsImpl;
@@ -47,7 +43,15 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<CreateUserResponseDTO> createUser(CreateUserRequest requestDTO) {
         try {
-            User user = new User();
+            User user = userRepository.findByUsername(requestDTO.getUsername()).orElse(null);
+            // if username exist and status equals inprocess -> get new otp
+            if(Objects.nonNull(user) && user.getStatus() != EnumUserStatus.IN_PROCESS){
+                return new ResponseCommon<>(ResponseCode.USER_EXIST,null);
+            }
+            // if user is null -> new user
+            if(Objects.isNull(user)){
+                user = new User();
+            }
             user.setUsername(requestDTO.getUsername());
             user.setPassword(requestDTO.getPassword());
             user.setEmail(requestDTO.getEmail());
@@ -56,10 +60,16 @@ public class UserServiceImpl implements IUserService {
             user.setFullName(requestDTO.getFullName());
             user.setGender(requestDTO.getGender());
             user.setDate_of_birth(requestDTO.getDateOfBirth());
-
+            LocalDateTime localDateTime = LocalDateTime.now();
+            LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
+            user.setStatus(EnumUserStatus.IN_PROCESS);
+            log.debug("Value of expired{}",expired);
+            user.setExpiredOTP(expired);
+            user.setCreatedAt(LocalDateTime.now());
+            user.setOtp(CommonUtils.getOTP());
             User createdUser = userRepository.save(user);
             log.info("START... Sending email");
-            emailService.sendEmail(setUpMail(user.getEmail()));
+            emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
             log.info("END... Email sent success");
             CreateUserResponseDTO responseDTO = new CreateUserResponseDTO();
             responseDTO.setId(createdUser.getId());
@@ -74,13 +84,13 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
-    private Mail setUpMail(String mailTo) {
+    private Mail setUpMail(String mailTo, String otp) {
         Mail mail = new Mail();
         mail.setFrom(mailFrom);
         mail.setTo(mailTo);
         mail.setSubject("Email with Spring boot and thymeleaf template!");
         Map<String, Object> model = new HashMap<>();
-        model.put("otp_value", CommonUtils.getOTP());
+        model.put("otp_value", otp);
         mail.setPros(model);
         mail.setTemplate("index");
         return mail;
@@ -88,20 +98,23 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User updateUser(User user) {
-        Optional<User> existingUser = userRepository.findById(user.getId());
-        if (existingUser.isPresent()) {
-            User updatedUser = existingUser.get();
-            updatedUser.setUsername(user.getUsername());
-            updatedUser.setPassword(user.getPassword());
-            updatedUser.setEmail(user.getEmail());
-            updatedUser.setPhone(user.getPhone());
-            updatedUser.setRole(user.getRole());
-            updatedUser.setCreatedAt(user.getCreatedAt());
-            updatedUser.setFullName(user.getFullName());
-            updatedUser.setGender(user.getGender());
-            updatedUser.setDate_of_birth(user.getDate_of_birth());
-
-            return userRepository.save(updatedUser);
+        try {
+            Optional<User> existingUser = userRepository.findById(user.getId());
+            if (existingUser.isPresent()) {
+                User updatedUser = existingUser.get();
+                updatedUser.setUsername(user.getUsername());
+                updatedUser.setPassword(user.getPassword());
+                updatedUser.setEmail(user.getEmail());
+                updatedUser.setPhone(user.getPhone());
+                updatedUser.setRole(user.getRole());
+                updatedUser.setCreatedAt(user.getCreatedAt());
+                updatedUser.setFullName(user.getFullName());
+                updatedUser.setGender(user.getGender());
+                updatedUser.setDate_of_birth(user.getDate_of_birth());
+                return userRepository.save(updatedUser);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
         return null;
     }
@@ -134,7 +147,7 @@ public class UserServiceImpl implements IUserService {
             String otp = CommonUtils.getOTP();
             //step2: send email
             log.info("START... Sending email");
-            emailService.sendEmail(setUpMail(user.getEmail()));
+            emailService.sendEmail(setUpMail(user.getEmail(),otp));
             log.info("END... Email sent success");
             user.setUsername(request.getUsername());
             user.setPassword(request.getPassword());
@@ -145,8 +158,12 @@ public class UserServiceImpl implements IUserService {
             user.setGender(request.getGender());
             user.setDate_of_birth(request.getDateOfBirth());
             user.setStatus(EnumUserStatus.IN_PROCESS);
-            user.setExpiredOTP(LocalDateTime.now());
+            LocalDateTime localDateTime = LocalDateTime.now();
+            LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
+            log.debug("Value of expired{}",expired);
+            user.setExpiredOTP(expired);
             user.setOtp(otp);
+
             User createdUser = userRepository.save(user);
             GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
             return new ResponseCommon<>(ResponseCode.SUCCESS, response);
@@ -162,7 +179,7 @@ public class UserServiceImpl implements IUserService {
             Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
             // if username request not found in database -> tell user
             if(user.isEmpty()){
-                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
+                throw new UserNotFoundException("User not found");
             } // else -> check password
             else {
                 // if password not equals password in database -> return fail
@@ -176,17 +193,15 @@ public class UserServiceImpl implements IUserService {
 
                     // if code is false -> return error
                     if(response.getCode() != 0){
-
+                        return new ResponseCommon<>(new JWTResponse(null,null,ResponseCode.FAIL.getMessage()));
                     }
                     // esle -> return access token and refresh token
                     else {
                         JWTUtils utils = new JWTUtils();
-                        List<String> roles = userRepository.findRolesByUsername(loginRequest.getUsername());
-                        List<GrantedAuthority> authorities = new ArrayList<>();
-                        for (String role : roles) {
-                            authorities.add(new SimpleGrantedAuthority(role));
-                        }
-                        UserDetailsImpl userDetails = new UserDetailsImpl(user.get().getId(),user.get().getUsername(),user.get().getPassword(),authorities);
+//                        Role role = userRepository.findRolesByUsername(loginRequest.getUsername());
+//                        List<GrantedAuthority> authorities = new ArrayList<>();
+//                        authorities.add(role);
+                        UserDetailsImpl userDetails = UserDetailsImpl.build(user.get());
                         String accessToken = utils.generateAccessToken(userDetails);
                         String refreshToken = utils.generateRefreshToken(userDetails);
                         return new ResponseCommon<>(new JWTResponse(accessToken,refreshToken,ResponseCode.SUCCESS.getMessage()));
@@ -197,7 +212,6 @@ public class UserServiceImpl implements IUserService {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
-        return null;
     }
 
     @Override
@@ -213,7 +227,8 @@ public class UserServiceImpl implements IUserService {
             }
             // else -> return fail
             else {
-                return new ResponseCommon<>(ResponseCode.FAIL,null);
+                log.debug("verify otp fail");
+                return new ResponseCommon<>(ResponseCode.Expired_OTP,null);
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -221,5 +236,62 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
+    @Override
+    public ResponseCommon<ForgotPasswordResponse> forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        try {
+            Optional<User> user = userRepository.findUserByEmail(forgotPasswordRequest.getEmail());
+            // if email of request not exist -> tell user
+            if(!user.isPresent()){
+                return new ResponseCommon<>(new ForgotPasswordResponse("Email not exist"));
+            } // else -> get otp
+            else {
+                GetOTPRequest requestOTP = new GetOTPRequest(user.get().getUsername(),user.get().getPassword(),user.get().getEmail(),
+                        user.get().getPhone(),user.get().getRole(),
+                        user.get().getFullName(),user.get().getGender(),
+                        user.get().getDate_of_birth());
+                getOtp(requestOTP);
+                VerifyOtpRequest verifyOtpRequest = new VerifyOtpRequest(user.get().getOtp(),user.get().getId());
+                // if verify fail  -> get new otp
+                if(verifyOtp(verifyOtpRequest).getCode()!=0){
+                    return new ResponseCommon<>(new ForgotPasswordResponse("OTP incorrect"));
+                } // else -> update new password
+                else {
+                    // if password and repassword request equals -> update new password
+                    if(forgotPasswordRequest.getPassword().equals(forgotPasswordRequest.getRePassword())){
+                        user.get().setPassword(forgotPasswordRequest.getPassword());
+                        return new ResponseCommon<>(new ForgotPasswordResponse("Success"));
+                    } // else -> tell user
+                    else {
+                        return new ResponseCommon<>(new ForgotPasswordResponse("Password and re_pass is difference"));
+                    }
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
+    @Override
+    public ResponseCommon<ChangePasswordResponse> changePassword(ChangePasswordRequest changePasswordRequest) {
+        try {
+            Optional<User> user = userRepository.findByUsername(changePasswordRequest.getUsername());
+            // if password and repass  difference -> tell user
+            if(!changePasswordRequest.getPassword().equals(changePasswordRequest.getRePassword())){
+                return new ResponseCommon<>(new ChangePasswordResponse("Password and re_pass is difference"));
+            } else {
+                // if old pass and new pass not difference -> tell user
+                if(user.get().getPassword().equals(changePasswordRequest.getPassword())){
+                    return new ResponseCommon<>(new ChangePasswordResponse(" Old Password and new Password not difference"));
+                } else {
+                    // update new password
+                    user.get().setPassword(changePasswordRequest.getPassword());
+                    return new ResponseCommon<>(new ChangePasswordResponse("Change Password Success"));
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
