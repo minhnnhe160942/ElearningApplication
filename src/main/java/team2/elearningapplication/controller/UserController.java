@@ -27,9 +27,6 @@ public class UserController {
 
     private IUserService userService;
 
-    //    @Operation(
-//            security = @SecurityRequirement(name = "bearerAuth")
-//    )
     @PostMapping("/addusers")
     public ResponseEntity<ResponseCommon<CreateUserResponseDTO>> createUser(@Valid @RequestBody CreateUserRequest requestDTO) {
         ResponseCommon<CreateUserResponseDTO> responseDTO = userService.createUser(requestDTO);
