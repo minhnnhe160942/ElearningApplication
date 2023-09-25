@@ -86,11 +86,27 @@ public class UserController {
 
     @PostMapping("/forgotPassword")
     public ResponseEntity<ResponseCommon<ForgotPasswordResponse>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest){
+        log.debug("forgot password with username{}",forgotPasswordRequest.getUsername());
         ResponseCommon<ForgotPasswordResponse> response = userService.forgotPassword(forgotPasswordRequest);
         // if response equals success -> return response
         if(response.getMessage().equals("Success")){
             return ResponseEntity.ok(response);
         } else return ResponseEntity.badRequest().build();
+    }
+    @PostMapping("/verify-otp-forgotPass")
+    public ResponseEntity<ResponseCommon<VerifyOtpResponse>> verifyOtpForgotPassword(@Valid @RequestBody  VerifyOtpRequest request) {
+        log.debug("Handle verify otp forgotpassword with id{}", request.getUserId());
+        User user = userService.getUserById(request.getUserId());
+
+        ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
+        // if response code == 0 -> return success
+        if(response.getCode()==0){
+            user.setStatus(EnumUserStatus.ACTIVE);
+            userService.updateUser(user);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/changePassword")

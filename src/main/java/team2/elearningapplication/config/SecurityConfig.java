@@ -26,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/user/register",
                 "/api/v1/user/login",
                 "/api/v1/user/verify-otp",
+                "/api/v1/user/forgotPassword",
                 "/api-docs",
                 "/swagger-ui",
                 "/swagger-ui/**").permitAll();

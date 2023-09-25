@@ -45,10 +45,12 @@ public class UserServiceImpl implements IUserService {
         try {
             User user = userRepository.findByUsername(requestDTO.getUsername()).orElse(null);
             // if username exist and status equals inprocess -> get new otp
+//            log.debug("check user get by username and status{}",requestDTO.getUsername(),user.getStatus());
             if(Objects.nonNull(user) && user.getStatus() != EnumUserStatus.IN_PROCESS){
                 return new ResponseCommon<>(ResponseCode.USER_EXIST,null);
             }
             // if user is null -> new user
+            log.debug("check user is null{}",user);
             if(Objects.isNull(user)){
                 user = new User();
             }
@@ -88,7 +90,7 @@ public class UserServiceImpl implements IUserService {
         Mail mail = new Mail();
         mail.setFrom(mailFrom);
         mail.setTo(mailTo);
-        mail.setSubject("Email with Spring boot and thymeleaf template!");
+        mail.setSubject("OTP ELEARNING APPLICATION!");
         Map<String, Object> model = new HashMap<>();
         model.put("otp_value", otp);
         mail.setPros(model);
@@ -239,18 +241,18 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<ForgotPasswordResponse> forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         try {
-            Optional<User> user = userRepository.findUserByEmail(forgotPasswordRequest.getEmail());
+            User user = userRepository.findByUsername(forgotPasswordRequest.getUsername()).orElse(null);
             // if email of request not exist -> tell user
-            if(!user.isPresent()){
+            if(Objects.isNull(user)){
                 return new ResponseCommon<>(new ForgotPasswordResponse("Email not exist"));
             } // else -> get otp
             else {
-                GetOTPRequest requestOTP = new GetOTPRequest(user.get().getUsername(),user.get().getPassword(),user.get().getEmail(),
-                        user.get().getPhone(),user.get().getRole(),
-                        user.get().getFullName(),user.get().getGender(),
-                        user.get().getDate_of_birth());
+                GetOTPRequest requestOTP = new GetOTPRequest(user.getUsername(),user.getPassword(),user.getEmail(),
+                        user.getPhone(),user.getRole(),
+                        user.getFullName(),user.getGender(),
+                        user.getDate_of_birth());
                 getOtp(requestOTP);
-                VerifyOtpRequest verifyOtpRequest = new VerifyOtpRequest(user.get().getOtp(),user.get().getId());
+                VerifyOtpRequest verifyOtpRequest = new VerifyOtpRequest(user.getOtp(),user.getId());
                 // if verify fail  -> get new otp
                 if(verifyOtp(verifyOtpRequest).getCode()!=0){
                     return new ResponseCommon<>(new ForgotPasswordResponse("OTP incorrect"));
@@ -258,7 +260,7 @@ public class UserServiceImpl implements IUserService {
                 else {
                     // if password and repassword request equals -> update new password
                     if(forgotPasswordRequest.getPassword().equals(forgotPasswordRequest.getRePassword())){
-                        user.get().setPassword(forgotPasswordRequest.getPassword());
+                        user.setPassword(forgotPasswordRequest.getPassword());
                         return new ResponseCommon<>(new ForgotPasswordResponse("Success"));
                     } // else -> tell user
                     else {
@@ -275,23 +277,29 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<ChangePasswordResponse> changePassword(ChangePasswordRequest changePasswordRequest) {
         try {
-            Optional<User> user = userRepository.findByUsername(changePasswordRequest.getUsername());
-            // if password and repass  difference -> tell user
-            if(!changePasswordRequest.getPassword().equals(changePasswordRequest.getRePassword())){
-                return new ResponseCommon<>(new ChangePasswordResponse("Password and re_pass is difference"));
+            User user = userRepository.findByUsername(changePasswordRequest.getUsername()).orElse(null);
+            // if old password not true -> return error
+            if(!changePasswordRequest.getPassword().equals(user.getPassword())){
+                return new ResponseCommon<>(new ChangePasswordResponse("Old password is not true"));
             } else {
-                // if old pass and new pass not difference -> tell user
-                if(user.get().getPassword().equals(changePasswordRequest.getPassword())){
-                    return new ResponseCommon<>(new ChangePasswordResponse(" Old Password and new Password not difference"));
+                // if password and repass  difference -> tell user
+                if(!changePasswordRequest.getPassword().equals(changePasswordRequest.getRePassword())){
+                    return new ResponseCommon<>(new ChangePasswordResponse("Password and re_pass is difference"));
                 } else {
-                    // update new password
-                    user.get().setPassword(changePasswordRequest.getPassword());
-                    return new ResponseCommon<>(new ChangePasswordResponse("Change Password Success"));
+                    // if old pass and new pass not difference -> tell user
+                    if(user.getPassword().equals(changePasswordRequest.getPassword())){
+                        return new ResponseCommon<>(new ChangePasswordResponse(" Old Password and new Password not difference"));
+                    } else {
+                        // update new password
+                        user.setPassword(changePasswordRequest.getPassword());
+                        return new ResponseCommon<>(new ChangePasswordResponse("Change Password Success"));
+                    }
                 }
             }
+
         } catch (Exception e){
             e.printStackTrace();
+            return new ResponseCommon<>(new ChangePasswordResponse("Error"));
         }
-        return null;
     }
 }
