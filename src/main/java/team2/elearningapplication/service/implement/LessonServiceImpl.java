@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.AddLessonRequest;
+import team2.elearningapplication.dto.request.DeleteLessonRequest;
 import team2.elearningapplication.dto.request.GetLessonFromCourseRequest;
 import team2.elearningapplication.dto.request.UpdateLessonRequest;
 import team2.elearningapplication.dto.response.AddLessonResponse;
+import team2.elearningapplication.dto.response.DeleteLessonResponse;
 import team2.elearningapplication.dto.response.GetLessonFromCourseResponse;
 import team2.elearningapplication.dto.response.UpdateLessonResponse;
 import team2.elearningapplication.entity.Course;
@@ -35,6 +37,8 @@ public class LessonServiceImpl implements ILessonService {
             lesson.setDescription(requestDTO.getDescription());
             lesson.setCreatedAt(requestDTO.getCreatedAt());
 
+            lessonRepository.save(lesson);
+
             AddLessonResponse responseDTO = new AddLessonResponse();
             responseDTO.setCourse(lesson.getCourse());
             responseDTO.setLinkContent(lesson.getLinkContent());
@@ -50,14 +54,16 @@ public class LessonServiceImpl implements ILessonService {
 
     @Override
     public ResponseCommon<UpdateLessonResponse> updateLesson(UpdateLessonRequest requestDTO) {
-        Optional<Lesson> existingLesson = lessonRepository.findById(requestDTO.getId());
-        if ( existingLesson.isPresent() ) {
-            try {
+        try {
+            Optional<Lesson> existingLesson = lessonRepository.findById(requestDTO.getId());
+            if ( existingLesson.isPresent() ) {
                 Lesson updateLesson = existingLesson.get();
                 updateLesson.setCourse(requestDTO.getCourse());
                 updateLesson.setLinkContent(requestDTO.getLinkContent());
                 updateLesson.setDescription(requestDTO.getDescription());
                 updateLesson.setCreatedAt(requestDTO.getCreatedAt());
+
+                lessonRepository.save(updateLesson);
 
                 UpdateLessonResponse responseDTO = new UpdateLessonResponse();
                 responseDTO.setCourse(responseDTO.getCourse());
@@ -66,12 +72,14 @@ public class LessonServiceImpl implements ILessonService {
                 responseDTO.setCreatedAt(responseDTO.getCreatedAt());
 
                 return new ResponseCommon<>(ResponseCode.SUCCESS, responseDTO);
-            } catch (Exception e) {
-                e.printStackTrace();
+            }
+            else {
                 return new ResponseCommon<>(ResponseCode.FAIL, null);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
-        return new ResponseCommon<>(ResponseCode.FAIL, null);
     }
 
     @Override
@@ -91,7 +99,24 @@ public class LessonServiceImpl implements ILessonService {
     }
 
     @Override
-    public void deleteLesson(int id) {
-        lessonRepository.deleteById(id);
+    public ResponseCommon<DeleteLessonResponse> deleteLesson(DeleteLessonRequest requestDTO) {
+        try {
+            Optional<Lesson> existingLesson = lessonRepository.findById(requestDTO.getId());
+            if (existingLesson.isPresent()) {
+                lessonRepository.deleteById(requestDTO.getId());
+
+                Course course = requestDTO.getCourse();
+                List<Lesson> listLesson = lessonRepository.findAll(course);
+
+                DeleteLessonResponse responseDTO = new DeleteLessonResponse();
+                responseDTO.setListLesson(listLesson);
+
+                return new ResponseCommon<>(ResponseCode.SUCCESS, responseDTO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+
     }
 }
