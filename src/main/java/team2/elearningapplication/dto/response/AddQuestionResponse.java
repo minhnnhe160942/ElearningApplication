@@ -13,6 +13,5 @@ import java.time.ZonedDateTime;
 public class AddQuestionResponse {
     private int id;
     private String question;
-    private int quiz_id;
-    private ZonedDateTime createdAt;
+    private boolean success;
 }
