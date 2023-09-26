@@ -24,12 +24,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.authorizeRequests().antMatchers(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "/api/v1/user/addusers",
 =======
+=======
+>>>>>>> main
                 "/api/v1/user/register",
                 "/api/v1/user/login",
                 "/api/v1/user/verify-otp",
                 "/api/v1/user/forgotPassword",
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
                 "/api-docs",
                 "/swagger-ui",

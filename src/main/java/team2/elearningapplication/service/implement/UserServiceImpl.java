@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+>>>>>>> main
 =======
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +17,7 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
+<<<<<<< HEAD
 <<<<<<< HEAD
 import team2.elearningapplication.dto.request.CreateUserRequest;
 import team2.elearningapplication.dto.request.GetOTPRequest;
@@ -27,6 +33,8 @@ import team2.elearningapplication.utils.CommonUtils;
 import java.time.LocalDateTime;
 import java.util.*;
 =======
+=======
+>>>>>>> main
 import team2.elearningapplication.dto.request.*;
 import team2.elearningapplication.dto.response.*;
 import team2.elearningapplication.entity.Mail;
@@ -45,6 +53,9 @@ import org.springframework.security.core.authority.GrantedAuthoritiesContainer;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
 
 @Service
@@ -63,8 +74,11 @@ public class UserServiceImpl implements IUserService {
     public ResponseCommon<CreateUserResponseDTO> createUser(CreateUserRequest requestDTO) {
         try {
 <<<<<<< HEAD
+<<<<<<< HEAD
             User user = new User();
 =======
+=======
+>>>>>>> main
             User user = userRepository.findByUsername(requestDTO.getUsername()).orElse(null);
             // if username exist and status equals inprocess -> get new otp
 //            log.debug("check user get by username and status{}",requestDTO.getUsername(),user.getStatus());
@@ -76,6 +90,9 @@ public class UserServiceImpl implements IUserService {
             if(Objects.isNull(user)){
                 user = new User();
             }
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
             user.setUsername(requestDTO.getUsername());
             user.setPassword(requestDTO.getPassword());
@@ -86,11 +103,14 @@ public class UserServiceImpl implements IUserService {
             user.setGender(requestDTO.getGender());
             user.setDate_of_birth(requestDTO.getDateOfBirth());
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             User createdUser = userRepository.save(user);
             log.info("START... Sending email");
             emailService.sendEmail(setUpMail(user.getEmail()));
 =======
+=======
+>>>>>>> main
             LocalDateTime localDateTime = LocalDateTime.now();
             LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
             user.setStatus(EnumUserStatus.IN_PROCESS);
@@ -101,6 +121,9 @@ public class UserServiceImpl implements IUserService {
             User createdUser = userRepository.save(user);
             log.info("START... Sending email");
             emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
             log.info("END... Email sent success");
             CreateUserResponseDTO responseDTO = new CreateUserResponseDTO();
@@ -117,6 +140,7 @@ public class UserServiceImpl implements IUserService {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     private Mail setUpMail(String mailTo) {
         Mail mail = new Mail();
         mail.setFrom(mailFrom);
@@ -125,6 +149,8 @@ public class UserServiceImpl implements IUserService {
         Map<String, Object> model = new HashMap<>();
         model.put("otp_value", CommonUtils.getOTP());
 =======
+=======
+>>>>>>> main
     private Mail setUpMail(String mailTo, String otp) {
         Mail mail = new Mail();
         mail.setFrom(mailFrom);
@@ -132,6 +158,9 @@ public class UserServiceImpl implements IUserService {
         mail.setSubject("OTP ELEARNING APPLICATION!");
         Map<String, Object> model = new HashMap<>();
         model.put("otp_value", otp);
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
         mail.setPros(model);
         mail.setTemplate("index");
@@ -140,6 +169,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User updateUser(User user) {
+<<<<<<< HEAD
 <<<<<<< HEAD
         Optional<User> existingUser = userRepository.findById(user.getId());
         if (existingUser.isPresent()) {
@@ -156,6 +186,8 @@ public class UserServiceImpl implements IUserService {
 
             return userRepository.save(updatedUser);
 =======
+=======
+>>>>>>> main
         try {
             Optional<User> existingUser = userRepository.findById(user.getId());
             if (existingUser.isPresent()) {
@@ -173,6 +205,9 @@ public class UserServiceImpl implements IUserService {
             }
         } catch (Exception e){
             e.printStackTrace();
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
         }
         return null;
@@ -207,7 +242,11 @@ public class UserServiceImpl implements IUserService {
             //step2: send email
             log.info("START... Sending email");
 <<<<<<< HEAD
+<<<<<<< HEAD
             emailService.sendEmail(setUpMail(user.getEmail()));
+=======
+            emailService.sendEmail(setUpMail(user.getEmail(),otp));
+>>>>>>> main
 =======
             emailService.sendEmail(setUpMail(user.getEmail(),otp));
 >>>>>>> main
@@ -222,15 +261,21 @@ public class UserServiceImpl implements IUserService {
             user.setDate_of_birth(request.getDateOfBirth());
             user.setStatus(EnumUserStatus.IN_PROCESS);
 <<<<<<< HEAD
+<<<<<<< HEAD
             user.setExpiredOTP(LocalDateTime.now());
             user.setOtp(otp);
 =======
+=======
+>>>>>>> main
             LocalDateTime localDateTime = LocalDateTime.now();
             LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
             log.debug("Value of expired{}",expired);
             user.setExpiredOTP(expired);
             user.setOtp(otp);
 
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
             User createdUser = userRepository.save(user);
             GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
@@ -241,7 +286,10 @@ public class UserServiceImpl implements IUserService {
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> main
 
     @Override
     public ResponseCommon<JWTResponse> login(LoginRequest loginRequest) {
@@ -370,5 +418,8 @@ public class UserServiceImpl implements IUserService {
             return new ResponseCommon<>(new ChangePasswordResponse("Error"));
         }
     }
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
 }

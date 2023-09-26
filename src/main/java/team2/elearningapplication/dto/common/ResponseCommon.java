@@ -34,6 +34,11 @@ public class ResponseCommon<T> {
         this.data = data;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> main
 =======
 
 

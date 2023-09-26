@@ -8,6 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import org.springframework.format.annotation.DateTimeFormat;
+>>>>>>> main
 =======
 import org.springframework.format.annotation.DateTimeFormat;
 >>>>>>> main
@@ -30,8 +34,13 @@ public class CreateUserRequest {
     @NotBlank
     private String phone;
 <<<<<<< HEAD
+<<<<<<< HEAD
     @NotNull
     private EnumTypeRole role;
+=======
+//    @NotNull
+    private EnumTypeRole role = EnumTypeRole.STUDENT;
+>>>>>>> main
 =======
 //    @NotNull
     private EnumTypeRole role = EnumTypeRole.STUDENT;
@@ -42,6 +51,10 @@ public class CreateUserRequest {
     private EnumTypeGender gender;
     @NotNull
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+>>>>>>> main
 =======
     @DateTimeFormat(pattern = "dd/MM/yyyy")
 >>>>>>> main

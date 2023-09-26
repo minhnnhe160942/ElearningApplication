@@ -1,6 +1,7 @@
 package team2.elearningapplication.dto.response;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 =======
+=======
+>>>>>>> main
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,11 +24,15 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
 public class CreateUserResponseDTO {
     private int id;
     private String username;
     private String email;
+<<<<<<< HEAD
 <<<<<<< HEAD
     private LocalDate createdAt;
 
@@ -39,6 +46,9 @@ public class CreateUserResponseDTO {
     public CreateUserResponseDTO() {
         
     }
+=======
+    private LocalDateTime createdAt;
+>>>>>>> main
 =======
     private LocalDateTime createdAt;
 >>>>>>> main

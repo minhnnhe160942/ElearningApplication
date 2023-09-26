@@ -29,7 +29,10 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 =======
 >>>>>>> main
     public static UserDetailsImpl build(User user) {

@@ -1,6 +1,7 @@
 package team2.elearningapplication.security.jwt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +51,8 @@ public class JWTResponse {
         this.roles = roles;
     }
 =======
+=======
+>>>>>>> main
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -65,5 +68,8 @@ public class JWTResponse {
     private String accessToken;
     private String refreshToken;
     private String message;
+<<<<<<< HEAD
+>>>>>>> main
+=======
 >>>>>>> main
 }
