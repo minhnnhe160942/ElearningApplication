@@ -7,20 +7,10 @@ public enum ResponseCode {
     SUCCESS(0, "success"),
     FAIL(1, "fail"),
     USER_NOT_FOUND(1000, "User not found"),
-<<<<<<< HEAD
-<<<<<<< HEAD
-    ;
-=======
-=======
->>>>>>> main
     PASSWORD_INCORRECT(1100,"Password incorrect"),
     OTP_INCORRECT(1200,"OTP incorrect"),
     Expired_OTP(1300,"Expired OTP"),
     USER_EXIST(1400,"User exist");
-<<<<<<< HEAD
->>>>>>> main
-=======
->>>>>>> main
     private int code;
 
     private String message;

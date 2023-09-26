@@ -1,24 +1,10 @@
 package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.ResponseCommon;
-<<<<<<< HEAD
-<<<<<<< HEAD
-import team2.elearningapplication.dto.request.CreateUserRequest;
-import team2.elearningapplication.dto.request.GetOTPRequest;
-import team2.elearningapplication.dto.response.CreateUserResponseDTO;
-import team2.elearningapplication.dto.response.GetOTPResponse;
-import team2.elearningapplication.entity.User;
-=======
-=======
->>>>>>> main
 import team2.elearningapplication.dto.request.*;
 import team2.elearningapplication.dto.response.*;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.security.jwt.JWTResponse;
-<<<<<<< HEAD
->>>>>>> main
-=======
->>>>>>> main
 
 import java.util.List;
 
@@ -34,11 +20,6 @@ public interface IUserService {
     void deleteUser(int id);
 
     ResponseCommon<GetOTPResponse> getOtp(GetOTPRequest request);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> main
 
     ResponseCommon<JWTResponse> login(LoginRequest loginRequest);
 
@@ -47,8 +28,4 @@ public interface IUserService {
     ResponseCommon<ForgotPasswordResponse> forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
 
     ResponseCommon<ChangePasswordResponse> changePassword(ChangePasswordRequest changePasswordRequest);
-<<<<<<< HEAD
->>>>>>> main
-=======
->>>>>>> main
 }

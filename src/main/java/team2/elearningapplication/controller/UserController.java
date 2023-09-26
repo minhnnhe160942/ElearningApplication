@@ -6,41 +6,17 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import javax.validation.Valid;
 
 import lombok.AllArgsConstructor;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
->>>>>>> main
-=======
-import lombok.extern.log4j.Log4j;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
->>>>>>> main
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.dto.common.ResponseCommon;
-<<<<<<< HEAD
-<<<<<<< HEAD
-import team2.elearningapplication.dto.request.CreateUserRequest;
-import team2.elearningapplication.dto.request.GetOTPRequest;
-import team2.elearningapplication.dto.request.VerifyOtpRequest;
-import team2.elearningapplication.dto.response.CreateUserResponseDTO;
-import team2.elearningapplication.dto.response.GetOTPResponse;
-import team2.elearningapplication.entity.User;
-=======
-=======
->>>>>>> main
 import team2.elearningapplication.dto.request.*;
 import team2.elearningapplication.dto.response.*;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.security.jwt.JWTResponse;
-<<<<<<< HEAD
->>>>>>> main
-=======
->>>>>>> main
 import team2.elearningapplication.service.IUserService;
 
 import java.time.LocalDateTime;
@@ -48,14 +24,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/api/v1/user")
 @AllArgsConstructor
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 @Log4j2
->>>>>>> main
-=======
-@Log4j2
->>>>>>> main
 public class UserController {
 
     private IUserService userService;
@@ -63,20 +32,9 @@ public class UserController {
     //    @Operation(
 //            security = @SecurityRequirement(name = "bearerAuth")
 //    )
-<<<<<<< HEAD
-<<<<<<< HEAD
-    @PostMapping("/addusers")
-    public ResponseEntity<ResponseCommon<CreateUserResponseDTO>> createUser(@Valid @RequestBody CreateUserRequest requestDTO) {
-=======
     @PostMapping("/register")
     public ResponseEntity<ResponseCommon<CreateUserResponseDTO>> createUser(@Valid @RequestBody CreateUserRequest requestDTO) {
         log.debug("Handle request create user with username{}",requestDTO.getUsername());
->>>>>>> main
-=======
-    @PostMapping("/register")
-    public ResponseEntity<ResponseCommon<CreateUserResponseDTO>> createUser(@Valid @RequestBody CreateUserRequest requestDTO) {
-        log.debug("Handle request create user with username{}",requestDTO.getUsername());
->>>>>>> main
         ResponseCommon<CreateUserResponseDTO> responseDTO = userService.createUser(requestDTO);
         if (responseDTO != null) {
             return ResponseEntity.ok(responseDTO);
@@ -85,21 +43,6 @@ public class UserController {
         }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    @PostMapping("/verify-otp")
-    public ResponseEntity<?> verifyOtp(@RequestBody @Valid VerifyOtpRequest request) {
-        User user = userService.getUserById(request.getUserId());
-        LocalDateTime localDateTime = LocalDateTime.now();
-        if (request.getOtp().equals(user.getOtp()) && localDateTime.isBefore(user.getExpiredOTP())) {
-            user.setStatus(EnumUserStatus.ACTIVE);
-            userService.updateUser(user);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.ok().build();
-=======
-=======
->>>>>>> main
 
     @PostMapping("/verify-otp")
     public ResponseEntity<ResponseCommon<VerifyOtpResponse>> verifyOtp(@Valid @RequestBody  VerifyOtpRequest request) {
@@ -115,10 +58,6 @@ public class UserController {
         } else {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-<<<<<<< HEAD
->>>>>>> main
-=======
->>>>>>> main
     }
 
     @PostMapping("/getOTP")
@@ -129,12 +68,6 @@ public class UserController {
             // else -> return badrequest
         else return ResponseEntity.badRequest().build();
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
-=======
->>>>>>> main
     @PostMapping("/login")
     public ResponseEntity<ResponseCommon<JWTResponse>> login(@RequestBody LoginRequest loginRequest) {
         try {
@@ -184,8 +117,4 @@ public class UserController {
             return ResponseEntity.ok(response);
         } else return ResponseEntity.badRequest().build();
     }
-<<<<<<< HEAD
->>>>>>> main
-=======
->>>>>>> main
 }
