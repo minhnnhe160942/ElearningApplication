@@ -3,8 +3,6 @@ package team2.elearningapplication.service.implement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
@@ -16,17 +14,14 @@ import team2.elearningapplication.entity.User;
 import team2.elearningapplication.exceptions.BussinessException;
 import team2.elearningapplication.exceptions.UserNotFoundException;
 import team2.elearningapplication.repository.IUserRepository;
-import team2.elearningapplication.security.Role;
 import team2.elearningapplication.security.UserDetailsImpl;
 import team2.elearningapplication.security.jwt.JWTResponse;
 import team2.elearningapplication.security.jwt.JWTUtils;
 import team2.elearningapplication.service.IUserService;
 import team2.elearningapplication.utils.CommonUtils;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthoritiesContainer;
+
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
