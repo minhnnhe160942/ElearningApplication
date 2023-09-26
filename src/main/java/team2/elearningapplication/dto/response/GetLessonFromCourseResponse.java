@@ -4,17 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import team2.elearningapplication.entity.Lesson;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserResponseDTO {
-    private int id;
-    private String username;
-    private String email;
-    private LocalDateTime createdAt;
+public class GetLessonFromCourseResponse {
+    private List<Lesson> listLesson;
 }
