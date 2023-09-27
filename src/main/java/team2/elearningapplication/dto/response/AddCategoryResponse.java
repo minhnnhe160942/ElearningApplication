@@ -5,16 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import javax.persistence.Column;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserResponseDTO {
+public class AddCategoryResponse {
     private int id;
-    private String username;
-    private String email;
-    private LocalDateTime createdAt;
+    private String name;
 }
