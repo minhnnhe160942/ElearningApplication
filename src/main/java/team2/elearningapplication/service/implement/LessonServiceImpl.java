@@ -113,6 +113,9 @@ public class LessonServiceImpl implements ILessonService {
 
                 return new ResponseCommon<>(ResponseCode.SUCCESS, responseDTO);
             }
+            else {
+                return new ResponseCommon<>(ResponseCode.FAIL, null);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);

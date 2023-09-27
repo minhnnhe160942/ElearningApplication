@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import team2.elearningapplication.Enum.EnumTypeGender;
 import team2.elearningapplication.Enum.EnumTypeRole;
 
@@ -26,9 +26,14 @@ public class CreateUserRequest {
     private String email;
     @NotBlank
     private String phone;
-
+    //    @NotNull
     private EnumTypeRole role = EnumTypeRole.STUDENT;
-    
+    @NotBlank
+    private String fullName;
+    @NotNull
+    private EnumTypeGender gender;
+    @NotNull
     @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private LocalDate dateOfBirth;
 
 }
