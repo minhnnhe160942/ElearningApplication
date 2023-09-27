@@ -2,16 +2,16 @@ package team2.elearningapplication.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
-import javax.validation.Valid;
-
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import team2.elearningapplication.Enum.EnumUserStatus;
+import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.*;
 import team2.elearningapplication.dto.response.*;
@@ -19,7 +19,8 @@ import team2.elearningapplication.entity.User;
 import team2.elearningapplication.security.jwt.JWTResponse;
 import team2.elearningapplication.service.IUserService;
 
-import java.time.LocalDateTime;
+import javax.validation.Valid;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -34,7 +35,7 @@ public class UserController {
 //    )
     @PostMapping("/register")
     public ResponseEntity<ResponseCommon<CreateUserResponseDTO>> createUser(@Valid @RequestBody CreateUserRequest requestDTO) {
-        log.debug("Handle request create user with username{}",requestDTO.getUsername());
+        log.debug("Handle request create user with email{}",requestDTO.getEmail());
         ResponseCommon<CreateUserResponseDTO> responseDTO = userService.createUser(requestDTO);
         if (responseDTO != null) {
             return ResponseEntity.ok(responseDTO);
@@ -84,24 +85,42 @@ public class UserController {
         }
     }
 
-    @PostMapping("/forgotPassword")
-    public ResponseEntity<ResponseCommon<ForgotPasswordResponse>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest){
-        log.debug("forgot password with username{}",forgotPasswordRequest.getUsername());
-        ResponseCommon<ForgotPasswordResponse> response = userService.forgotPassword(forgotPasswordRequest);
-        // if response equals success -> return response
-        if(response.getMessage().equals("Success")){
-            return ResponseEntity.ok(response);
-        } else return ResponseEntity.badRequest().build();
-    }
-    @PostMapping("/verify-otp-forgotPass")
-    public ResponseEntity<ResponseCommon<VerifyOtpResponse>> verifyOtpForgotPassword(@Valid @RequestBody  VerifyOtpRequest request) {
-        log.debug("Handle verify otp forgotpassword with id{}", request.getUserId());
-        User user = userService.getUserById(request.getUserId());
+//    @PostMapping("/forgotPassword")
+//    public ResponseEntity<ResponseCommon<ForgotPasswordResponse>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest){
+//        log.debug("forgot password with username{}",forgotPasswordRequest.getUsername());
+//        ResponseCommon<ForgotPasswordResponse> response = userService.forgotPassword(forgotPasswordRequest);
+//        // if response equals success -> return response
+//        if(response.getMessage().equals("Success")){
+//            return ResponseEntity.ok(response);
+//        } else return ResponseEntity.badRequest().build();
+//    }
 
+    @PostMapping("/send-otp-forgot-password")
+    public ResponseEntity<ResponseCommon<ForgotPasswordResponse>> sendOTPForgotPass(@Valid @RequestBody SendOTPForgotPasswordRequest sendOTPForgotPasswordRequest) {
+        User user = userService.getUserByUsername(userService.genUserFromEmail(sendOTPForgotPasswordRequest.getEmail()));
+        // if user is null -> tell error
+        if (Objects.isNull(user))
+            return new ResponseEntity<>(new ResponseCommon<>(ResponseCode.USER_NOT_FOUND, null), HttpStatus.BAD_REQUEST);
+        else {
+            GetOTPRequest request = new GetOTPRequest(sendOTPForgotPasswordRequest.getEmail(), false);
+            userService.getOtp(request);
+            return new ResponseEntity<>(new ResponseCommon<>(ResponseCode.SUCCESS, null), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/verify-otp-forgotPass")
+    public ResponseEntity<ResponseCommon<VerifyOtpResponse>> verifyOtpForgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+
+        User user = userService.getUserByUsername(userService.genUserFromEmail(forgotPasswordRequest.getEmail()));
+        // if user is null -> tell error
+        if(Objects.isNull(user)){
+            return new ResponseEntity<>(new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null),HttpStatus.BAD_REQUEST);
+        }
+        VerifyOtpRequest request = new VerifyOtpRequest(forgotPasswordRequest.getOtp(), user.getId());
         ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
         // if response code == 0 -> return success
         if(response.getCode()==0){
-            user.setStatus(EnumUserStatus.ACTIVE);
+            user.setPassword(forgotPasswordRequest.getPassword());
             userService.updateUser(user);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
@@ -109,11 +128,14 @@ public class UserController {
         }
     }
 
+    @Operation(
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
     @PostMapping("/changePassword")
     public ResponseEntity<ResponseCommon<ChangePasswordResponse>> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest){
         ResponseCommon<ChangePasswordResponse> response = userService.changePassword(changePasswordRequest);
         // if response equals success -> return response
-        if(response.getMessage().equals("Success")){
+        if(response.getCode() == 0){
             return ResponseEntity.ok(response);
         } else return ResponseEntity.badRequest().build();
     }

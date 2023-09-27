@@ -25,7 +25,9 @@ public interface IUserService {
 
     ResponseCommon<VerifyOtpResponse> verifyOtp(VerifyOtpRequest verifyOtpRequest);
 
-    ResponseCommon<ForgotPasswordResponse> forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
-
     ResponseCommon<ChangePasswordResponse> changePassword(ChangePasswordRequest changePasswordRequest);
+
+    String genUserFromEmail(String email);
+
+    User getUserByUsername(String username);
 }

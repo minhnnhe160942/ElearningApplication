@@ -18,8 +18,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateUserRequest {
-    @NotBlank
-    private String username;
+
     @NotBlank
     private String password;
     @NotBlank
