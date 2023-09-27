@@ -15,7 +15,3 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByUsernameAndStatus(String username, EnumUserStatus status);
 
-    Role findRolesByUsername(String username);
-
-    Optional<User> findUserByEmail(String email);
-}

@@ -13,10 +13,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class ChangePasswordRequest {
     @NotBlank
-    private String username;
+    private String oldPassword;
     @NotBlank
-    private String password;
+    private String newPassword;
     @NotBlank
-    private String rePassword;
+    private String reNewPassword;
 
 }
