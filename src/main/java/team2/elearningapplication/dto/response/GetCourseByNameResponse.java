@@ -6,11 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import team2.elearningapplication.entity.Course;
 
-import java.time.ZonedDateTime;
+import java.util.List;
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class AddCourseResponse {
-    private Course course;
+@AllArgsConstructor
+public class GetCourseByNameResponse {
+    private List<Course> listCourse;
 }
