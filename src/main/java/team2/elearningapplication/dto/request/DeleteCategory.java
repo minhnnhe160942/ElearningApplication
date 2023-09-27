@@ -10,5 +10,6 @@ import javax.validation.constraints.NotBlank;
 public class DeleteCategory {
     @NotBlank
     private String name;
-    
+    @NotBlank
+    private int id;
 }
