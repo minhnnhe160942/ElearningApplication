@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import team2.elearningapplication.entity.Question;
 
 import java.time.ZonedDateTime;
 @Getter
@@ -11,7 +12,6 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddQuestionResponse {
-    private int id;
-    private String question;
+    private Question question;
     private boolean success;
 }
