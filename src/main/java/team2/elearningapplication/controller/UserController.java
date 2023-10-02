@@ -47,8 +47,8 @@ public class UserController {
 
     @PostMapping("/verify-otp")
     public ResponseEntity<ResponseCommon<VerifyOtpResponse>> verifyOtp(@Valid @RequestBody  VerifyOtpRequest request) {
-        log.debug("Handle verify otp with id{}", request.getUserId());
-        User user = userService.getUserById(request.getUserId());
+        log.debug("Handle verify otp with id{}", request.getEmail());
+        User user = userService.getUserByUsername(userService.genUserFromEmail(request.getEmail()));
 
         ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
         // if response code == 0 -> return success
@@ -116,7 +116,7 @@ public class UserController {
         if(Objects.isNull(user)){
             return new ResponseEntity<>(new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null),HttpStatus.BAD_REQUEST);
         }
-        VerifyOtpRequest request = new VerifyOtpRequest(forgotPasswordRequest.getOtp(), user.getId());
+        VerifyOtpRequest request = new VerifyOtpRequest(forgotPasswordRequest.getOtp(), user.getEmail());
         ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
         // if response code == 0 -> return success
         if(response.getCode()==0){

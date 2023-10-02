@@ -28,8 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/user/verify-otp",
                 "/api/v1/user/forgotPassword",
                 "/api/v1/user/changePassword",
-                "/api/v1/user//send-otp-forgot-password",
-                "/api/v1/user//verify-otp-forgotPass",
+                "/api/v1/user/send-otp-forgot-password",
+                "/api/v1/user/verify-otp-forgotPass",
                 "/api-docs",
                 "/swagger-ui",
                 "/swagger-ui/**").permitAll();

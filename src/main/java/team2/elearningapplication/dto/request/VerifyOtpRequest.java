@@ -15,6 +15,4 @@ import lombok.Setter;
 public class VerifyOtpRequest {
     @NotBlank
     private String otp;
-    @NotNull
-    private int userId;
-}
+
