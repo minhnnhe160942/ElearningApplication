@@ -180,33 +180,33 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<JWTResponse> login(LoginRequest loginRequest) {
         try {
-            Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
+            Optional<User> user = userRepository.findByUsername(genUserFromEmail(loginRequest.getUsername()));
             // if username request not found in database -> tell user
             if(user.isEmpty()){
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
             } // else -> check password
             else {
                 // if password not equals password in database -> return fail
-                if(!user.orElse(null).getPassword().equals(loginRequest.getPassword())){
+                if (!user.orElse(null).getPassword().equals(loginRequest.getPassword())) {
                     return new ResponseCommon<>(ResponseCode.PASSWORD_INCORRECT, null);
                 } // else -> verify otp
                 else {
-                    String otp = user.orElse(null).getOtp();
-                    VerifyOtpRequest request = new VerifyOtpRequest(otp,user.orElse(null).getId());
-                    ResponseCommon<VerifyOtpResponse> response = new ResponseCommon<>(new VerifyOtpResponse());
-
-                    // if code is false -> return error
-                    if(response.getCode() != ResponseCode.SUCCESS.getCode()){
-                        return new ResponseCommon<>(new JWTResponse(null,null,ResponseCode.FAIL.getMessage()));
-                    }
+//                    String otp = user.orElse(null).getOtp();
+//                    VerifyOtpRequest request = new VerifyOtpRequest(otp,user.orElse(null).getEmail());
+//                    ResponseCommon<VerifyOtpResponse> response = new ResponseCommon<>(new VerifyOtpResponse());
+//
+//                    // if code is false -> return error
+//                    if(response.getCode() != ResponseCode.SUCCESS.getCode()){
+//                        return new ResponseCommon<>(new JWTResponse(null,null,ResponseCode.FAIL.getMessage()));
+//                    }
                     // esle -> return access token and refresh token
-                    else {
-                        JWTUtils utils = new JWTUtils();
-                        UserDetailsImpl userDetails = UserDetailsImpl.build(user.get());
-                        String accessToken = utils.generateAccessToken(userDetails);
-                        String refreshToken = utils.generateRefreshToken(userDetails);
-                        return new ResponseCommon<>(new JWTResponse(accessToken,refreshToken,ResponseCode.SUCCESS.getMessage()));
-                    }
+//                    else {
+                    JWTUtils utils = new JWTUtils();
+                    UserDetailsImpl userDetails = UserDetailsImpl.build(user.get());
+                    String accessToken = utils.generateAccessToken(userDetails);
+                    String refreshToken = utils.generateRefreshToken(userDetails);
+                    return new ResponseCommon<>(new JWTResponse(accessToken, refreshToken, ResponseCode.SUCCESS.getMessage()));
+//
                 }
             }
         } catch (Exception e){
@@ -218,7 +218,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<VerifyOtpResponse> verifyOtp(VerifyOtpRequest verifyOtpRequest) {
         try {
-            User user = userRepository.findById(verifyOtpRequest.getUserId()).orElse(null);
+            User user = userRepository.findByUsername(genUserFromEmail(verifyOtpRequest.getEmail())).orElse(null);
             if(Objects.isNull(user)) return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
             LocalDateTime localDateTime = LocalDateTime.now();
             // if otp request equals otp generate and localDate before expired otp -> return success
@@ -237,38 +237,6 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
-//    @Override
-//    public ResponseCommon<ForgotPasswordResponse> forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-//        try {
-//            User user = userRepository.findByUsername(genUserFromEmail(forgotPasswordRequest.getEmail())).orElse(null);
-//            // if email of request not exist -> tell user
-//            if(Objects.isNull(user)){
-//                return new ResponseCommon<>(new ForgotPasswordResponse("Email not exist"));
-//            } // else -> get otp
-//            else {
-//                GetOTPRequest requestOTP = new GetOTPRequest(user.getUsername(),user.getEmail());
-//                getOtp(requestOTP);
-//                VerifyOtpRequest verifyOtpRequest = new VerifyOtpRequest(user.getOtp(),user.getId());
-//                // if verify fail  -> get new otp
-//                if(verifyOtp(verifyOtpRequest).getCode()!=0){
-//                    return new ResponseCommon<>(new ForgotPasswordResponse("OTP incorrect"));
-//                } // else -> update new password
-//                else {
-//                    // if password and repassword request equals -> update new password
-//                    if(forgotPasswordRequest.getPassword().equals(forgotPasswordRequest.getRePassword())){
-//                        user.setPassword(forgotPasswordRequest.getPassword());
-//                        return new ResponseCommon<>(new ForgotPasswordResponse("Success"));
-//                    } // else -> tell user
-//                    else {
-//                        return new ResponseCommon<>(new ForgotPasswordResponse("Password and re_pass is difference"));
-//                    }
-//                }
-//            }
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
 
     @Override
     public ResponseCommon<ChangePasswordResponse> changePassword(ChangePasswordRequest changePasswordRequest) {
