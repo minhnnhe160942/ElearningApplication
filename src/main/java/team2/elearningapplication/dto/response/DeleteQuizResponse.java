@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.request;
+package team2.elearningapplication.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,11 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddQuizRequest {
-    @NotNull
-    private Lesson lesson;
-    @NotBlank
-    private String name;
+public class DeleteQuizResponse {
+
     @NotEmpty
     private List<Question> questionList;
 }

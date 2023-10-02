@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddQuizRequest {
+public class UpdateQuizRequest {
     @NotNull
     private Lesson lesson;
     @NotBlank
