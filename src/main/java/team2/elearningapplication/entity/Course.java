@@ -2,10 +2,13 @@ package team2.elearningapplication.entity;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -13,6 +16,8 @@ import java.time.ZonedDateTime;
 @Accessors(chain = true)
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Course {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,29 +31,11 @@ public class Course {
     @JoinColumn
     private Category category;
     @Column(name = "created_at")
-    private ZonedDateTime createdAt;
+    private LocalDateTime createdAt;
     @Column(name = "link_thumnail")
     private String linkThumnail;
-
-    public Course() {
-    }
-
-    public Course(int id, String name, String description, Category category, ZonedDateTime createdAt) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.category = category;
-        this.createdAt = createdAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Course{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", category=" + category +
-                ", createdAt=" + createdAt +
-                '}';
-    }
+    @Column(name="price")
+    private double price;
+    @Column(name="deleted")
+    private boolean isDeleted;
 }

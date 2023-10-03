@@ -11,7 +11,12 @@ public enum ResponseCode {
     OTP_INCORRECT(1200,"OTP incorrect"),
     Expired_OTP(1300,"Expired OTP"),
     USER_EXIST(1400,"User exist"),
-    OLD_PASSWORD_INCORRECT(1500,"Old password incorrect");
+    OLD_PASSWORD_INCORRECT(1500,"Old password incorrect"),
+    COURSE_EXIST(1500, "Course exist"),
+    COURSE_NOT_EXIST(1600, "Course not exist")
+    ;
+
+
     private int code;
 
     private String message;
