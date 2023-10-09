@@ -8,10 +8,10 @@ import team2.elearningapplication.dto.response.admin.category.AddCategoryRespons
 import team2.elearningapplication.dto.response.admin.category.DeleteCategoryResponse;
 import team2.elearningapplication.dto.response.admin.category.UpdateCategoryResponse;
 
-public interface ICatregoryService {
+public interface ICategoryService {
     ResponseCommon<AddCategoryResponse> addCategory(AddCategoryRequest addCategoryRequest);
 
     ResponseCommon<UpdateCategoryResponse> updateCategory(UpdateCategoryRequest addCategoryRequest);
 
-    ResponseCommon<DeleteCategoryResponse> addCategory(DeleteCategoryRequest deleteCategoryRequest);
+    ResponseCommon<DeleteCategoryResponse> deleteCategory(DeleteCategoryRequest deleteCategoryRequest);
 }

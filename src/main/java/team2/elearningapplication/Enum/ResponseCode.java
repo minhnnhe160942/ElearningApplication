@@ -13,7 +13,10 @@ public enum ResponseCode {
     USER_EXIST(1400,"User exist"),
     OLD_PASSWORD_INCORRECT(1500,"Old password incorrect"),
     COURSE_EXIST(1500, "Course exist"),
-    COURSE_NOT_EXIST(1600, "Course not exist")
+    COURSE_NOT_EXIST(1600, "Course not exist"),
+    CATEGORY_EXIST(1700,"Category exist"),
+    CATEGORY_NOT_EXIST(1800,"Category not exist"),
+    SYSTEM_ERROR(100,"System Eroor"),
     ;
 
 

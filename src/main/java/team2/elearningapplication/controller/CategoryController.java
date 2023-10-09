@@ -1,0 +1,71 @@
+package team2.elearningapplication.controller;
+
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import team2.elearningapplication.Enum.ResponseCode;
+import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.admin.category.AddCategoryRequest;
+import team2.elearningapplication.dto.request.admin.category.DeleteCategoryRequest;
+import team2.elearningapplication.dto.request.admin.category.UpdateCategoryRequest;
+import team2.elearningapplication.dto.response.admin.category.AddCategoryResponse;
+import team2.elearningapplication.dto.response.admin.category.DeleteCategoryResponse;
+import team2.elearningapplication.dto.response.admin.category.UpdateCategoryResponse;
+import team2.elearningapplication.service.ICategoryService;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/api/v1/category")
+@AllArgsConstructor
+public class CategoryController {
+    private ICategoryService categoryService;
+
+    @PostMapping("/add-category")
+    public ResponseEntity<ResponseCommon<AddCategoryResponse>> addCategory(@Valid @RequestBody AddCategoryRequest addCategoryRequest){
+        ResponseCommon<AddCategoryResponse> response = categoryService.addCategory(addCategoryRequest);
+        // if code response equals code Success -> return ok
+        if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code response equals code category exist -> return error
+        else if(response.getCode() == ResponseCode.CATEGORY_EXIST.getCode()){
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(ResponseCode.CATEGORY_EXIST.getCode(),"Category already exist",null));
+        } // else return fail
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"System error",null));
+        }
+    }
+    @PostMapping("/update-category")
+    public ResponseEntity<ResponseCommon<UpdateCategoryResponse>> updateCategory(@Valid @RequestBody UpdateCategoryRequest updateCategoryRequest){
+        ResponseCommon<UpdateCategoryResponse> response = categoryService.updateCategory(updateCategoryRequest);
+        // if code response equals code succes -> return ok
+        if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code response equals code category not exist -> return error
+        else if(response.getCode() == ResponseCode.CATEGORY_NOT_EXIST.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.CATEGORY_NOT_EXIST.getCode(),"Category not exist",null));
+        } // else - return fail
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update Fail",null));
+
+        }
+    }
+    @PostMapping("/delete-category")
+    public ResponseEntity<ResponseCommon<DeleteCategoryResponse>> deleteCategory(@Valid @RequestBody DeleteCategoryRequest deleteCategoryRequest){
+        ResponseCommon<DeleteCategoryResponse> response = categoryService.deleteCategory(deleteCategoryRequest);
+        // if code response equals code succes -> return ok
+        if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code response equals code category not exist -> return error
+        else if(response.getCode() == ResponseCode.CATEGORY_NOT_EXIST.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.CATEGORY_NOT_EXIST.getCode(),"Category not exist",null));
+        } // else - return fail
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete Fail",null));
+        }
+    }
+}

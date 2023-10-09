@@ -6,12 +6,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class UpdateCategoryRequest {
+
+    @NotNull
+    private int categoryID;
     @NotBlank
-    private String name;
+    private String categoryUpdate;
+
 }

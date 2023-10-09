@@ -30,10 +30,10 @@ public class CourseServiceImpl  implements ICourseService {
             Course course = courseRepository.findCourseByName(addCourseRequest.getName()).orElse(null);
             // if course not null -> tell user
             if (!Objects.isNull(course)) {
-                return new ResponseCommon<>(ResponseCode.COURSE_EXIST,null);
+                return new ResponseCommon<>(ResponseCode.COURSE_EXIST, null);
             }
             // if course is null -> new course
-            if(Objects.isNull(course)){
+            if (Objects.isNull(course)) {
                 course = new Course();
             }
             course.setName(addCourseRequest.getName());
@@ -43,13 +43,21 @@ public class CourseServiceImpl  implements ICourseService {
             course.setCreatedAt(LocalDateTime.now());
             Category category = categoryRepository.findCategoryByName(addCourseRequest.getCategory()).orElse(null);
             course.setCategory(category);
+
+            // Save course to database
+            Course savedCourse = courseRepository.save(course);
+
+            // If course is not saved successfully, return a FAIL response
+            if (savedCourse == null) {
+                return new ResponseCommon<>(ResponseCode.FAIL, null);
+            }
+
             AddCourseResponse addCourseResponse = new AddCourseResponse("Add course success");
-            return new ResponseCommon<>(ResponseCode.SUCCESS,addCourseResponse);
+            return new ResponseCommon<>(ResponseCode.SUCCESS, addCourseResponse);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
-
     }
 
     @Override
