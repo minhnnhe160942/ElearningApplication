@@ -63,16 +63,17 @@ public class CourseServiceImpl  implements ICourseService {
     @Override
     public ResponseCommon<UpdateCourseResponse> updateCourse(UpdateCourseRequest updateCourseRequest) {
         try {
-            Course courseExist = courseRepository.findCourseByName(updateCourseRequest.getName()).orElse(null);
+            Course courseExist = courseRepository.findCourseById(updateCourseRequest.getCourseID()).orElse(null);
             // if courseExist is null -> tell user
             if(Objects.isNull(courseExist)) return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST,null);
             else {
+                Category category = categoryRepository.findCategoryById(updateCourseRequest.getCategoryID()).orElse(null);
                 Course courseUpdate = courseExist;
-                courseUpdate.setCategory(courseExist.getCategory());
-                courseUpdate.setName(courseExist.getName());
-                courseUpdate.setDescription(courseExist.getDescription());
-                courseUpdate.setPrice(courseExist.getPrice());
-                courseUpdate.setLinkThumnail(courseExist.getLinkThumnail());
+                courseUpdate.setCategory(category);
+                courseUpdate.setName(updateCourseRequest.getName());
+                courseUpdate.setDescription(updateCourseRequest.getDescription());
+                courseUpdate.setPrice(updateCourseRequest.getPrice());
+                courseUpdate.setLinkThumnail(updateCourseRequest.getLink_thumnail());
                 courseUpdate.setCreatedAt(LocalDateTime.now());
                 courseRepository.save(courseUpdate);
                 UpdateCourseResponse updateCourseResponse = new UpdateCourseResponse("Update course success");
@@ -87,7 +88,7 @@ public class CourseServiceImpl  implements ICourseService {
     @Override
     public ResponseCommon<DeleteCourseResponse> deleteCourse(DeleteCourseRequest deleteCourseRequest) {
         try {
-            Course courseExist = courseRepository.findCourseByName(deleteCourseRequest.getName()).orElse(null);
+            Course courseExist = courseRepository.findCourseById(deleteCourseRequest.getCourseID()).orElse(null);
             // if courseExist is null -> tell user
             if(Objects.isNull(courseExist)) return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST,null);
             else {

@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Getter
 public class AddCourseRequest {
+
     @NotBlank
     private String name;
     @NotBlank

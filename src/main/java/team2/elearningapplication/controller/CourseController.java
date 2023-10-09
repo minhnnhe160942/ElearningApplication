@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
+import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
+import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.response.admin.course.AddCourseResponse;
+import team2.elearningapplication.dto.response.admin.course.DeleteCourseResponse;
+import team2.elearningapplication.dto.response.admin.course.UpdateCourseResponse;
 import team2.elearningapplication.service.ICourseService;
 
 import javax.validation.Valid;
@@ -30,7 +34,37 @@ public class CourseController {
         } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseCommon<>(ResponseCode.SYSTEM_ERROR.getCode(),"System error",null));
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
+        }
+    }
+
+    @PostMapping("update-course")
+    public ResponseEntity<ResponseCommon<UpdateCourseResponse>> updateCouse(@Valid @RequestBody UpdateCourseRequest updateCourseRequest){
+        ResponseCommon<UpdateCourseResponse> response = courseService.updateCourse(updateCourseRequest);
+        // if code of response equal code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code equal course not exist -> tell error
+        else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
+        } // else -> return fail  update
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update course fail",null));
+        }
+    }
+
+    @PostMapping("delete-course")
+    public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
+        ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
+        // if code of response equal code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code equal course not exist -> tell error
+        else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
+        } // else -> return fail  update
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
         }
     }
 }

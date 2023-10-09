@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import team2.elearningapplication.entity.Category;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -12,7 +13,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class UpdateCourseRequest {
-
+        @NotNull
+        private int courseID;
         @NotBlank
         private String name;
         @NotBlank
@@ -21,7 +23,7 @@ public class UpdateCourseRequest {
         private double price;
         @NotBlank
         private String link_thumnail;
-        @NotBlank
-        private String category;
+        @NotNull
+        private int categoryID;
 
 }
