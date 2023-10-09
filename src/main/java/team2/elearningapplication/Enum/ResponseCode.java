@@ -12,10 +12,12 @@ public enum ResponseCode {
     Expired_OTP(1300,"Expired OTP"),
     USER_EXIST(1400,"User exist"),
     OLD_PASSWORD_INCORRECT(1500,"Old password incorrect"),
-    COURSE_EXIST(1500, "Course exist"),
-    COURSE_NOT_EXIST(1600, "Course not exist"),
-    CATEGORY_EXIST(1700,"Category exist"),
-    CATEGORY_NOT_EXIST(1800,"Category not exist"),
+    COURSE_EXIST(1600, "Course exist"),
+    COURSE_NOT_EXIST(1700, "Course not exist"),
+    COURSE_LIST_IS_EMPTY(1800,"Course list is empty"),
+    CATEGORY_EXIST(1900,"Category exist"),
+    CATEGORY_NOT_EXIST(2000,"Category not exist"),
+    CATEGORY_LIST_IS_EMPTY(2100,"Cateogry list is empty"),
     SYSTEM_ERROR(100,"System Eroor"),
     ;
 

@@ -14,4 +14,6 @@ public interface ICourseService {
     ResponseCommon<UpdateCourseResponse> updateCourse(UpdateCourseRequest updateCourseRequest);
 
     ResponseCommon<DeleteCourseResponse> deleteCourse(DeleteCourseRequest deleteCourseRequest);
+
+
 }

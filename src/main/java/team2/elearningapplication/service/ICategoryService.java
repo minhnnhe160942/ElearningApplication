@@ -6,6 +6,7 @@ import team2.elearningapplication.dto.request.admin.category.DeleteCategoryReque
 import team2.elearningapplication.dto.request.admin.category.UpdateCategoryRequest;
 import team2.elearningapplication.dto.response.admin.category.AddCategoryResponse;
 import team2.elearningapplication.dto.response.admin.category.DeleteCategoryResponse;
+import team2.elearningapplication.dto.response.admin.category.FindAllCategoryResponse;
 import team2.elearningapplication.dto.response.admin.category.UpdateCategoryResponse;
 
 public interface ICategoryService {
@@ -14,4 +15,6 @@ public interface ICategoryService {
     ResponseCommon<UpdateCategoryResponse> updateCategory(UpdateCategoryRequest addCategoryRequest);
 
     ResponseCommon<DeleteCategoryResponse> deleteCategory(DeleteCategoryRequest deleteCategoryRequest);
+
+    ResponseCommon<FindAllCategoryResponse> findAllCategory();
 }

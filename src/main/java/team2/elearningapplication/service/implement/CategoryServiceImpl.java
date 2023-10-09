@@ -10,11 +10,13 @@ import team2.elearningapplication.dto.request.admin.category.DeleteCategoryReque
 import team2.elearningapplication.dto.request.admin.category.UpdateCategoryRequest;
 import team2.elearningapplication.dto.response.admin.category.AddCategoryResponse;
 import team2.elearningapplication.dto.response.admin.category.DeleteCategoryResponse;
+import team2.elearningapplication.dto.response.admin.category.FindAllCategoryResponse;
 import team2.elearningapplication.dto.response.admin.category.UpdateCategoryResponse;
 import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.repository.ICategoryRepository;
 import team2.elearningapplication.service.ICategoryService;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.mysql.cj.conf.PropertyKey.logger;
@@ -23,6 +25,8 @@ import static com.mysql.cj.conf.PropertyKey.logger;
 @RequiredArgsConstructor
 @Slf4j
 public class CategoryServiceImpl implements ICategoryService {
+
+
     private final ICategoryRepository categoryRepository;
     @Override
     public ResponseCommon<AddCategoryResponse> addCategory(AddCategoryRequest addCategoryRequest) {
@@ -87,6 +91,24 @@ public class CategoryServiceImpl implements ICategoryService {
                 return new ResponseCommon<>(ResponseCode.SUCCESS, new DeleteCategoryResponse("Delete Category Success"));
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<FindAllCategoryResponse> findAllCategory() {
+        try {
+            List<Category> listCategory = categoryRepository.findAll();
+            // if list is empty -> tell user
+            if(listCategory.isEmpty()){
+                return new ResponseCommon<>(ResponseCode.CATEGORY_LIST_IS_EMPTY,null);
+            } // else -> return list
+            else {
+                FindAllCategoryResponse response = new FindAllCategoryResponse("Get all success",listCategory);
+                return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+            }
+        } catch  (Exception e) {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }

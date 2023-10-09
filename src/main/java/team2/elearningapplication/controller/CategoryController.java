@@ -3,10 +3,7 @@ package team2.elearningapplication.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.category.AddCategoryRequest;
@@ -14,6 +11,7 @@ import team2.elearningapplication.dto.request.admin.category.DeleteCategoryReque
 import team2.elearningapplication.dto.request.admin.category.UpdateCategoryRequest;
 import team2.elearningapplication.dto.response.admin.category.AddCategoryResponse;
 import team2.elearningapplication.dto.response.admin.category.DeleteCategoryResponse;
+import team2.elearningapplication.dto.response.admin.category.FindAllCategoryResponse;
 import team2.elearningapplication.dto.response.admin.category.UpdateCategoryResponse;
 import team2.elearningapplication.service.ICategoryService;
 
@@ -66,6 +64,19 @@ public class CategoryController {
         } // else - return fail
         else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete Fail",null));
+        }
+    }
+
+    @GetMapping("/find-all-category")
+    public ResponseEntity<ResponseCommon<FindAllCategoryResponse>> findAllCategory(){
+        ResponseCommon<FindAllCategoryResponse> response = categoryService.findAllCategory();
+        // if code response equals code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } else if(response.getCode()==ResponseCode.CATEGORY_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.CATEGORY_LIST_IS_EMPTY.getCode(),"List Category is Empty",null));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Find All category fail",null));
         }
     }
 }
