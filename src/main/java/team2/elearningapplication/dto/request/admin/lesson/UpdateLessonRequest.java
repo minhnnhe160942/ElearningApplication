@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,4 +24,8 @@ public class UpdateLessonRequest {
     private String linkContent;
     @NotBlank
     private String description;
+    @NotNull
+    private LocalDateTime createdAt;
+    @NotNull
+    private LocalDateTime updateAt;
 }
