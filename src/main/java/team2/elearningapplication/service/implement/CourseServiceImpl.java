@@ -54,7 +54,14 @@ public class CourseServiceImpl  implements ICourseService {
                 return new ResponseCommon<>(ResponseCode.FAIL, null);
             }
 
-            AddCourseResponse addCourseResponse = new AddCourseResponse("Add course success");
+            AddCourseResponse addCourseResponse = new AddCourseResponse();
+            addCourseResponse.setCourseID(course.getId());
+            addCourseResponse.setCourseName(course.getName());
+            addCourseResponse.setDescription(course.getDescription());
+            addCourseResponse.setPrice(course.getPrice());
+            addCourseResponse.setCategory(course.getCategory());
+            addCourseResponse.setLinkThumail(course.getLinkThumnail());
+            addCourseResponse.setCreatedAt(course.getCreatedAt());
             return new ResponseCommon<>(ResponseCode.SUCCESS, addCourseResponse);
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +85,14 @@ public class CourseServiceImpl  implements ICourseService {
                 courseUpdate.setLinkThumnail(updateCourseRequest.getLink_thumnail());
                 courseUpdate.setCreatedAt(LocalDateTime.now());
                 courseRepository.save(courseUpdate);
-                UpdateCourseResponse updateCourseResponse = new UpdateCourseResponse("Update course success");
+                UpdateCourseResponse updateCourseResponse = new UpdateCourseResponse();
+                updateCourseResponse.setCourseID(courseUpdate.getId());
+                updateCourseResponse.setCourseName(courseUpdate.getName());
+                updateCourseResponse.setDescription(courseUpdate.getDescription());
+                updateCourseResponse.setPrice(courseUpdate.getPrice());
+                updateCourseResponse.setCategory(courseUpdate.getCategory());
+                updateCourseResponse.setLinkThumail(courseUpdate.getLinkThumnail());
+                updateCourseResponse.setCreatedAt(courseUpdate.getCreatedAt());
                 return new ResponseCommon<>(ResponseCode.SUCCESS,updateCourseResponse);
             }
         } catch (Exception e){
@@ -97,7 +111,15 @@ public class CourseServiceImpl  implements ICourseService {
                 Course courseDelete = courseExist;
                 courseDelete.setDeleted(true);
                 courseRepository.save(courseDelete);
-                DeleteCourseResponse deleteCourseResponse = new DeleteCourseResponse("Delete course success");
+                DeleteCourseResponse deleteCourseResponse = new DeleteCourseResponse();
+                deleteCourseResponse.setCourseID(courseDelete.getId());
+                deleteCourseResponse.setCourseName(courseDelete.getName());
+                deleteCourseResponse.setDescription(courseDelete.getDescription());
+                deleteCourseResponse.setPrice(courseDelete.getPrice());
+                deleteCourseResponse.setCategory(courseDelete.getCategory());
+                deleteCourseResponse.setLinkThumail(courseDelete.getLinkThumnail());
+                deleteCourseResponse.setCreatedAt(courseDelete.getCreatedAt());
+                deleteCourseResponse.setDeleted(courseDelete.isDeleted());
                 return new ResponseCommon<>(ResponseCode.SUCCESS,deleteCourseResponse);
             }
         } catch (Exception e){

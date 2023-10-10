@@ -52,7 +52,10 @@ public class CategoryServiceImpl implements ICategoryService {
             }
 
             log.debug("Add category success");
-            return new ResponseCommon<>(ResponseCode.SUCCESS,new AddCategoryResponse("Add category success"));
+            AddCategoryResponse addCategoryResponse = new AddCategoryResponse();
+            addCategoryResponse.setCategoryID(category.getId());
+            addCategoryResponse.setCategoryName(category.getName());
+            return new ResponseCommon<>(ResponseCode.SUCCESS,addCategoryResponse);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
@@ -70,7 +73,10 @@ public class CategoryServiceImpl implements ICategoryService {
                 Category categoryUpdate = category;
                 categoryUpdate.setName(updateCategoryRequest.getCategoryUpdate());
                 categoryRepository.save(categoryUpdate);
-                return new ResponseCommon<>(ResponseCode.SUCCESS,new UpdateCategoryResponse("Update Category Success"));
+                UpdateCategoryResponse updateCategoryResponse = new UpdateCategoryResponse();
+                updateCategoryResponse.setCategoryID(categoryUpdate.getId());
+                updateCategoryResponse.setCategoryName(categoryUpdate.getName());
+                return new ResponseCommon<>(ResponseCode.SUCCESS,updateCategoryResponse);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +94,11 @@ public class CategoryServiceImpl implements ICategoryService {
                 Category categoryUpdate = category;
                 categoryUpdate.setDeleted(true);
                 categoryRepository.save(categoryUpdate);
-                return new ResponseCommon<>(ResponseCode.SUCCESS, new DeleteCategoryResponse("Delete Category Success"));
+                DeleteCategoryResponse deleteCategoryResponse = new DeleteCategoryResponse();
+                deleteCategoryResponse.setCategoryID(categoryUpdate.getId());
+                deleteCategoryResponse.setCategoryName(categoryUpdate.getName());
+                deleteCategoryResponse.setDeleted(categoryUpdate.isDeleted());
+                return new ResponseCommon<>(ResponseCode.SUCCESS, deleteCategoryResponse);
             }
         } catch (Exception e) {
             e.printStackTrace();
