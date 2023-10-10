@@ -19,6 +19,9 @@ public enum ResponseCode {
     CATEGORY_NOT_EXIST(2000,"Category not exist"),
     CATEGORY_LIST_IS_EMPTY(2100,"Cateogry list is empty"),
     SYSTEM_ERROR(100,"System Eroor"),
+    LESSON_EXIST(2200,"Lesson exist"),
+    LESSON_NOT_EXIST(2300,"LESSON NOT EXIST"),
+    LESSON_LIST_IS_EMPTY(2400,"LESSON LIST IS EMPTY")
     ;
 
 

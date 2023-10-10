@@ -33,5 +33,7 @@ public class Lesson {
     private String description;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name="deleted")
+    private boolean isDeleted;
 
 }

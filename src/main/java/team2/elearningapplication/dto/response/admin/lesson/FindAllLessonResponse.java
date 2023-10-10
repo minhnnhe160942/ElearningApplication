@@ -4,25 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import team2.elearningapplication.entity.Course;
+import team2.elearningapplication.entity.Lesson;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddLessonResponse {
-    @NotNull
-    private int lessonID;
-    @NotNull
-    private int ordNumber;
-    @NotNull
-    private int courseID;
+public class FindAllLessonResponse {
     @NotBlank
-    private String linkContent;
-    @NotBlank
-    private String description;
-    @NotNull
-    private LocalDateTime createdAt;
+    private String message;
+    @NotEmpty
+    private List<Lesson> listLesson;
 }
