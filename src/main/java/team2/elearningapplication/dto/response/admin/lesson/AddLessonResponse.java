@@ -5,17 +5,17 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class AddLessonResponse {
-
     @NotNull
     private int lessonID;
     @NotNull
     private int ordNumber;
-    @NotBlank
-    private String courseName;
+    @NotNull
+    private int courseID;
     @NotBlank
     private String linkContent;
     @NotBlank
     private String description;
     @NotNull
     private LocalDateTime createdAt;
-}
+    @NotNull
+    private LocalDateTime updateAt;}

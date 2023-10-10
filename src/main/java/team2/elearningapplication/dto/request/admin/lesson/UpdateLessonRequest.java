@@ -25,7 +25,5 @@ public class UpdateLessonRequest {
     @NotBlank
     private String description;
     @NotNull
-    private LocalDateTime createdAt;
-    @NotNull
     private LocalDateTime updateAt;
 }
