@@ -38,4 +38,6 @@ public class Course {
     private double price;
     @Column(name="deleted")
     private boolean isDeleted;
+
+
 }

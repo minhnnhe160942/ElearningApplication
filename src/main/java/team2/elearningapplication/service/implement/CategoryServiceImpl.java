@@ -99,7 +99,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public ResponseCommon<FindAllCategoryResponse> findAllCategory() {
         try {
-            List<Category> listCategory = categoryRepository.findAll();
+            List<Category> listCategory = categoryRepository.findAllByIsDeleted(false);
             // if list is empty -> tell user
             if(listCategory.isEmpty()){
                 return new ResponseCommon<>(ResponseCode.CATEGORY_LIST_IS_EMPTY,null);

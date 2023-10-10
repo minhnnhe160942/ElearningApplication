@@ -9,6 +9,7 @@ import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.response.admin.course.AddCourseResponse;
 import team2.elearningapplication.dto.response.admin.course.DeleteCourseResponse;
+import team2.elearningapplication.dto.response.admin.course.FindAllCourseResponse;
 import team2.elearningapplication.dto.response.admin.course.UpdateCourseResponse;
 import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.entity.Course;
@@ -17,6 +18,7 @@ import team2.elearningapplication.repository.ICourseRepository;
 import team2.elearningapplication.service.ICourseService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -103,6 +105,26 @@ public class CourseServiceImpl  implements ICourseService {
             return new ResponseCommon<>(ResponseCode.FAIL,null);
         }
     }
+
+    public ResponseCommon<FindAllCourseResponse> findAllCourse() {
+        try {
+            // Get all courses with isDeleted is false
+            List<Course> listCourse = courseRepository.findAllByIsDeleted(false);
+
+            // if listCourse is empty -> tell user
+            if(listCourse.isEmpty()){
+                return new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY,null);
+            } // else -> return list course
+            else {
+                FindAllCourseResponse response = new FindAllCourseResponse("Get all course success",listCourse);
+                return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL,null);
+        }
+    }
+
 
 
 }
