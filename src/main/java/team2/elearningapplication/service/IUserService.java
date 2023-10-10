@@ -30,4 +30,6 @@ public interface IUserService {
     String genUserFromEmail(String email);
 
     User getUserByUsername(String username);
+
+
 }

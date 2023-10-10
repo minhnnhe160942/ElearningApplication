@@ -16,7 +16,9 @@ import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.*;
 import team2.elearningapplication.dto.response.*;
 import team2.elearningapplication.entity.User;
+import team2.elearningapplication.security.UserDetailsImpl;
 import team2.elearningapplication.security.jwt.JWTResponse;
+import team2.elearningapplication.security.jwt.JWTUtils;
 import team2.elearningapplication.service.IUserService;
 
 import javax.validation.Valid;
@@ -29,6 +31,7 @@ import java.util.Objects;
 public class UserController {
 
     private IUserService userService;
+    private final JWTUtils jwtUtils;
 
     //    @Operation(
 //            security = @SecurityRequirement(name = "bearerAuth")
@@ -85,15 +88,6 @@ public class UserController {
         }
     }
 
-//    @PostMapping("/forgotPassword")
-//    public ResponseEntity<ResponseCommon<ForgotPasswordResponse>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest){
-//        log.debug("forgot password with username{}",forgotPasswordRequest.getUsername());
-//        ResponseCommon<ForgotPasswordResponse> response = userService.forgotPassword(forgotPasswordRequest);
-//        // if response equals success -> return response
-//        if(response.getMessage().equals("Success")){
-//            return ResponseEntity.ok(response);
-//        } else return ResponseEntity.badRequest().build();
-//    }
 
     @PostMapping("/send-otp-forgot-password")
     public ResponseEntity<ResponseCommon<ForgotPasswordResponse>> sendOTPForgotPass(@Valid @RequestBody SendOTPForgotPasswordRequest sendOTPForgotPasswordRequest) {
@@ -139,4 +133,17 @@ public class UserController {
             return ResponseEntity.ok(response);
         } else return ResponseEntity.badRequest().build();
     }
+
+    @PostMapping("/refresh-access-token")
+    public ResponseEntity<JWTResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        String refreshToken = request.getRefreshToken();
+        User user = userService.getUserByUsername(userService.genUserFromEmail(request.getEmail()));
+        UserDetailsImpl userDetails =  UserDetailsImpl.build(user);
+        String accessToken = jwtUtils.generateAccessToken(userDetails);
+        JWTResponse response = new JWTResponse();
+        response.setAccessToken(accessToken);
+        return ResponseEntity.ok(response);
+    }
+
+
 }
