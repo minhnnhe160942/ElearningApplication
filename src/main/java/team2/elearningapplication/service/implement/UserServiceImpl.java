@@ -173,7 +173,6 @@ public class UserServiceImpl implements IUserService {
     }
 
 
-
     @Override
     public ResponseCommon<JWTResponse> login(LoginRequest loginRequest) {
         try {
@@ -188,16 +187,7 @@ public class UserServiceImpl implements IUserService {
                     return new ResponseCommon<>(ResponseCode.PASSWORD_INCORRECT, null);
                 } // else -> verify otp
                 else {
-//                    String otp = user.orElse(null).getOtp();
-//                    VerifyOtpRequest request = new VerifyOtpRequest(otp,user.orElse(null).getEmail());
-//                    ResponseCommon<VerifyOtpResponse> response = new ResponseCommon<>(new VerifyOtpResponse());
-//
-//                    // if code is false -> return error
-//                    if(response.getCode() != ResponseCode.SUCCESS.getCode()){
-//                        return new ResponseCommon<>(new JWTResponse(null,null,ResponseCode.FAIL.getMessage()));
-//                    }
-                    // esle -> return access token and refresh token
-//                    else {
+
                     JWTUtils utils = new JWTUtils();
                     UserDetailsImpl userDetails = UserDetailsImpl.build(user.get());
                     String accessToken = utils.generateAccessToken(userDetails);
@@ -211,6 +201,8 @@ public class UserServiceImpl implements IUserService {
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
+
+
 
     @Override
     public ResponseCommon<VerifyOtpResponse> verifyOtp(VerifyOtpRequest verifyOtpRequest) {
