@@ -29,5 +29,7 @@ public class UpdateCourseResponse {
     @NotBlank
     private String linkThumail;
     @NotNull
-    private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
+    @NotNull
+    private LocalDateTime createAt;
 }

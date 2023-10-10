@@ -92,7 +92,9 @@ public class CourseServiceImpl  implements ICourseService {
                 updateCourseResponse.setPrice(courseUpdate.getPrice());
                 updateCourseResponse.setCategory(courseUpdate.getCategory());
                 updateCourseResponse.setLinkThumail(courseUpdate.getLinkThumnail());
-                updateCourseResponse.setCreatedAt(courseUpdate.getCreatedAt());
+                LocalDateTime localDateTime = LocalDateTime.now();
+                updateCourseResponse.setUpdateAt(localDateTime);
+                updateCourseResponse.setCreateAt(courseUpdate.getCreatedAt());
                 return new ResponseCommon<>(ResponseCode.SUCCESS,updateCourseResponse);
             }
         } catch (Exception e){
