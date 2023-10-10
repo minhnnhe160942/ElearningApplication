@@ -12,15 +12,12 @@ import team2.elearningapplication.dto.response.*;
 import team2.elearningapplication.entity.Mail;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.IUserRepository;
-import team2.elearningapplication.security.Role;
-import team2.elearningapplication.security.SecurityUtils;
+
 import team2.elearningapplication.security.UserDetailsImpl;
 import team2.elearningapplication.security.jwt.JWTResponse;
 import team2.elearningapplication.security.jwt.JWTUtils;
 import team2.elearningapplication.service.IUserService;
 import team2.elearningapplication.utils.CommonUtils;
-import java.time.LocalDateTime;
-import java.util.*;
 
 
 @Service

@@ -134,16 +134,3 @@ public class UserController {
         } else return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/refresh-access-token")
-    public ResponseEntity<JWTResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
-        String refreshToken = request.getRefreshToken();
-        User user = userService.getUserByUsername(userService.genUserFromEmail(request.getEmail()));
-        UserDetailsImpl userDetails =  UserDetailsImpl.build(user);
-        String accessToken = jwtUtils.generateAccessToken(userDetails);
-        JWTResponse response = new JWTResponse();
-        response.setAccessToken(accessToken);
-        return ResponseEntity.ok(response);
-    }
-
-
-}

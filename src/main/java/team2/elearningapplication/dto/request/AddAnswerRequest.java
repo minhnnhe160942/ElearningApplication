@@ -1,18 +1,19 @@
 package team2.elearningapplication.dto.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
+import javax.validation.constraints.NotBlank;
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VerifyOtpRequest {
-    @NotBlank
-    private String otp;
 
+public class AddAnswerRequest {
+    @NotBlank
+    private String answerContent;
+    @NotBlank
+    private int questionId;
+}

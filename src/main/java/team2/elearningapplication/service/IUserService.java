@@ -27,9 +27,4 @@ public interface IUserService {
 
     ResponseCommon<ChangePasswordResponse> changePassword(ChangePasswordRequest changePasswordRequest);
 
-    String genUserFromEmail(String email);
 
-    User getUserByUsername(String username);
-
-
-}
