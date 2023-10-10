@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.request;
+package team2.elearningapplication.dto.request.user;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.request;
+package team2.elearningapplication.dto.response.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,16 +7,11 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangePasswordRequest {
+public class ForgotPasswordResponse {
     @NotBlank
-    private String oldPassword;
-    @NotBlank
-    private String newPassword;
-    @NotBlank
-    private String reNewPassword;
-
+    private String message;
 }

@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.response;
+package team2.elearningapplication.dto.response.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

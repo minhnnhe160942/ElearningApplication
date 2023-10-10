@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.response;
+package team2.elearningapplication.dto.request.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,12 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForgotPasswordResponse {
+@Setter
+@Getter
+public class RefreshTokenRequest {
     @NotBlank
-    private String message;
+    private String email;
+    @NotBlank
+    private String refreshToken;
 }
