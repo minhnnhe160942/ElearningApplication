@@ -22,4 +22,5 @@ public interface ILessonService {
     ResponseCommon<GetLessonFromCourseResponse> getLessonFromCourse(GetLessonFromCourseRequest requestDTO);
 
     ResponseCommon<DeleteLessonResponse> deleteLesson(DeleteLessonRequest requestDTO);
+    List<Lesson> getAllLessons();
 }
