@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ILessonRespository extends JpaRepository<Lesson,Integer> {
     Optional<Lesson> findLessonById(int id);
     Optional<Lesson> findLessonByOrdNumberAndCourse(int ordNumber, int courseID);
-    List<Lesson> findAllByDeleted(boolean isDeleted);
+    List<Lesson> findAllByIsDeleted(boolean isDeleted);
 }

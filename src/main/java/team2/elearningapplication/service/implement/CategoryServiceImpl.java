@@ -19,67 +19,70 @@ import team2.elearningapplication.service.ICategoryService;
 import java.util.List;
 import java.util.Objects;
 
-import static com.mysql.cj.conf.PropertyKey.logger;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CategoryServiceImpl implements ICategoryService {
 
-
     private final ICategoryRepository categoryRepository;
+
     @Override
     public ResponseCommon<AddCategoryResponse> addCategory(AddCategoryRequest addCategoryRequest) {
         try {
             Category category = categoryRepository.findCategoryByName(addCategoryRequest.getName()).orElse(null);
             // if category not null -> tell user
-            if(!Objects.isNull(category)){
-                return new ResponseCommon<>(ResponseCode.CATEGORY_EXIST,null);
+            if (!Objects.isNull(category)) {
+                log.debug("Add Category failed: Category already exists");
+                return new ResponseCommon<>(ResponseCode.CATEGORY_EXIST, null);
             }
             // if category is null -> new category
-            if(Objects.isNull(category)){
+            if (Objects.isNull(category)) {
                 category = new Category();
             }
 
-
             category.setName(addCategoryRequest.getName());
-            // Save category to database
+            // Save category to the database
             Category savedCategory = categoryRepository.save(category);
 
             // If category is not saved successfully, return a FAIL response
             if (savedCategory == null) {
+                log.debug("Add Category failed: Unable to save the category");
                 return new ResponseCommon<>(ResponseCode.FAIL, null);
             }
 
-            log.debug("Add category success");
+            log.debug("Add Category successful");
             AddCategoryResponse addCategoryResponse = new AddCategoryResponse();
             addCategoryResponse.setCategoryID(category.getId());
             addCategoryResponse.setCategoryName(category.getName());
-            return new ResponseCommon<>(ResponseCode.SUCCESS,addCategoryResponse);
+            return new ResponseCommon<>(ResponseCode.SUCCESS, addCategoryResponse);
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("Add Category failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
-
 
     @Override
     public ResponseCommon<UpdateCategoryResponse> updateCategory(UpdateCategoryRequest updateCategoryRequest) {
         try {
             Category category = categoryRepository.findCategoryById(updateCategoryRequest.getCategoryID()).orElse(null);
             // if category is null -> tell user
-            if(Objects.isNull(category)) return new ResponseCommon<>(ResponseCode.CATEGORY_NOT_EXIST,null);
-            else {
+            if (Objects.isNull(category)) {
+                log.debug("Update Category failed: Category does not exist");
+                return new ResponseCommon<>(ResponseCode.CATEGORY_NOT_EXIST, null);
+            } else {
                 Category categoryUpdate = category;
                 categoryUpdate.setName(updateCategoryRequest.getCategoryUpdate());
                 categoryRepository.save(categoryUpdate);
                 UpdateCategoryResponse updateCategoryResponse = new UpdateCategoryResponse();
                 updateCategoryResponse.setCategoryID(categoryUpdate.getId());
                 updateCategoryResponse.setCategoryName(categoryUpdate.getName());
-                return new ResponseCommon<>(ResponseCode.SUCCESS,updateCategoryResponse);
+                log.debug("Update Category successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, updateCategoryResponse);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("Update Category failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
@@ -88,9 +91,11 @@ public class CategoryServiceImpl implements ICategoryService {
     public ResponseCommon<DeleteCategoryResponse> deleteCategory(DeleteCategoryRequest deleteCategoryRequest) {
         try {
             Category category = categoryRepository.findCategoryById(deleteCategoryRequest.getCategoryID()).orElse(null);
-            // if category is null -> tell user
-            if(Objects.isNull(category)) return new ResponseCommon<>(ResponseCode.CATEGORY_NOT_EXIST,null);
-            else {
+            // if category is null -> tell the user
+            if (Objects.isNull(category)) {
+                log.debug("Delete Category failed: Category does not exist");
+                return new ResponseCommon<>(ResponseCode.CATEGORY_NOT_EXIST, null);
+            } else {
                 Category categoryUpdate = category;
                 categoryUpdate.setDeleted(true);
                 categoryRepository.save(categoryUpdate);
@@ -98,10 +103,12 @@ public class CategoryServiceImpl implements ICategoryService {
                 deleteCategoryResponse.setCategoryID(categoryUpdate.getId());
                 deleteCategoryResponse.setCategoryName(categoryUpdate.getName());
                 deleteCategoryResponse.setDeleted(categoryUpdate.isDeleted());
+                log.debug("Delete Category successful");
                 return new ResponseCommon<>(ResponseCode.SUCCESS, deleteCategoryResponse);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("Delete Category failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
@@ -110,16 +117,18 @@ public class CategoryServiceImpl implements ICategoryService {
     public ResponseCommon<FindAllCategoryResponse> findAllCategory() {
         try {
             List<Category> listCategory = categoryRepository.findAllByIsDeleted(false);
-            // if list is empty -> tell user
-            if(listCategory.isEmpty()){
-                return new ResponseCommon<>(ResponseCode.CATEGORY_LIST_IS_EMPTY,null);
-            } // else -> return list
-            else {
-                FindAllCategoryResponse response = new FindAllCategoryResponse("Get all success",listCategory);
-                return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+            // if the list is empty -> tell the user
+            if (listCategory.isEmpty()) {
+                log.debug("Get all Category failed: Category list is empty");
+                return new ResponseCommon<>(ResponseCode.CATEGORY_LIST_IS_EMPTY, null);
+            } else {
+                FindAllCategoryResponse response = new FindAllCategoryResponse("Get all success", listCategory);
+                log.debug("Get all Category successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
             }
-        } catch  (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            log.debug("Get all Category failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }

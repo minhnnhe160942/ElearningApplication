@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.response.admin.lesson;
+package team2.elearningapplication.dto.response.admin.quiz;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,26 +8,21 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class DeleteLessonResponse {
+public class DeleteQuizResponse {
+    @NotNull
+    private int quizID;
     @NotNull
     private int lessonID;
     @NotBlank
     private String lessonName;
     @NotNull
-    private int ordNumber;
-    @NotNull
-    private int courseID;
-    @NotBlank
-    private String linkContent;
-    @NotBlank
-    private String description;
-    @NotNull
-    private LocalDateTime createdAt;
+    private List<Integer> questionID;
     @NotNull
     private LocalDateTime updateAt;
 }

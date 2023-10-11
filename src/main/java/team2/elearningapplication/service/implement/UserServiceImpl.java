@@ -8,10 +8,7 @@ import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.user.*;
-import team2.elearningapplication.dto.response.user.ChangePasswordResponse;
-import team2.elearningapplication.dto.response.user.CreateUserResponseDTO;
-import team2.elearningapplication.dto.response.user.GetOTPResponse;
-import team2.elearningapplication.dto.response.user.VerifyOtpResponse;
+import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.Mail;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.IUserRepository;
@@ -76,7 +73,6 @@ public class UserServiceImpl implements IUserService {
             emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
             log.info("END... Email sent success");
             CreateUserResponseDTO responseDTO = new CreateUserResponseDTO();
-            responseDTO.setId(createdUser.getId());
             responseDTO.setUsername(createdUser.getUsername());
             responseDTO.setEmail(createdUser.getEmail());
             responseDTO.setCreatedAt(createdUser.getCreatedAt());
@@ -134,6 +130,8 @@ public class UserServiceImpl implements IUserService {
         User user = userRepository.findByUsername(username).orElse(null);
         return user;
     }
+
+
 
     @Override
     public List<User> getAllUsers() {
@@ -254,6 +252,35 @@ public class UserServiceImpl implements IUserService {
         } catch (Exception e){
             e.printStackTrace();
             return new ResponseCommon<>(new ChangePasswordResponse("Error"));
+        }
+    }
+
+    @Override
+    public ResponseCommon<ChangeProfileResponse> changeProfile(ChangeProfileRequest changeProfileRequest) {
+        try {
+            User user = userRepository.findByUsername(genUserFromEmail(changeProfileRequest.getEmail())).orElse(null);
+            if (user == null) {
+                log.debug("User not found for email: {}", changeProfileRequest.getEmail());
+                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND, null);
+            }
+
+            user.setFullName(changeProfileRequest.getFullName());
+            user.setPhone(changeProfileRequest.getPhoneNum());
+            user.setGender(changeProfileRequest.getGender());
+            user.setDate_of_birth(changeProfileRequest.getDateOfBirth());
+
+            userRepository.save(user);
+
+            ChangeProfileResponse changeProfileResponse = new ChangeProfileResponse();
+            changeProfileResponse.setFullName(user.getFullName());
+            changeProfileResponse.setPhoneNum(user.getPhone());
+            changeProfileResponse.setGender(user.getGender());
+
+            log.debug("User profile updated successfully for email: {}", changeProfileRequest.getEmail());
+            return new ResponseCommon<>(ResponseCode.SUCCESS, changeProfileResponse);
+        } catch (Exception e) {
+            log.error("Error while updating user profile for email: {}", changeProfileRequest.getEmail(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
 }

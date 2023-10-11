@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.response.admin.lesson;
+package team2.elearningapplication.dto.response.user.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,19 +12,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddLessonResponse {
+public class DeletePostResponse {
     @NotBlank
-    private String lessonName;
+    private int postID;
+    @NotNull
+    private String email;
     @NotNull
     private int lessonID;
-    @NotNull
-    private int ordNumber;
-    @NotNull
-    private int courseID;
     @NotBlank
-    private String linkContent;
-    @NotBlank
-    private String description;
+    private String content;
     @NotNull
-    private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
+    @NotNull
+    private boolean isDeleted;
 }

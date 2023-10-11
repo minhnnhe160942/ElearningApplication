@@ -22,6 +22,8 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name="lesson_name")
+    private String name;
     @Column(name = "stt")
     private int ordNumber;
     @ManyToOne

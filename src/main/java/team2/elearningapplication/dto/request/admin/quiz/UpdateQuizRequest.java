@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.request.admin.lesson;
+package team2.elearningapplication.dto.request.admin.quiz;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,19 +7,17 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddLessonRequest {
+public class UpdateQuizRequest {
+    @NotNull
+    private int lessonID;
     @NotBlank
     private String lessonName;
     @NotNull
-    private int ordNumber;
-    @NotNull
-    private int courseID;
-    @NotBlank
-    private String linkContent;
-    @NotBlank
-    private String description;
+    private List<Integer> questionID;
 }

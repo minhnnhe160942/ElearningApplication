@@ -4,50 +4,40 @@ package team2.elearningapplication.entity;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "post")
 @Accessors(chain = true)
 @Setter
 @Getter
-
+@AllArgsConstructor
+@NoArgsConstructor
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "name")
-    private String name;
-    @Column(name = "content")
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @JoinColumn(name = "lesson_id")
+    private int lessonId;
+
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-    @Column(name = "category_id")
-    private int categoryId;
-    @Column(name = "link_thumnail")
-    private String linkThumnail;
 
-    public Post() {
-    }
+    @Column(name = "created_at",columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
 
-    public Post(int id, String name, String content, int categoryId, String linkThumnail) {
-        this.id = id;
-        this.name = name;
-        this.content = content;
-        this.categoryId = categoryId;
-        this.linkThumnail = linkThumnail;
-    }
-
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", content='" + content + '\'' +
-                ", categoryId=" + categoryId +
-                ", linkThumnail='" + linkThumnail + '\'' +
-                '}';
-    }
+    @Column(name = "deleted")
+    private boolean deleted;
 }

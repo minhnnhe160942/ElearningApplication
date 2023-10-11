@@ -4,7 +4,9 @@ package team2.elearningapplication.entity;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -15,7 +17,8 @@ import java.util.List;
 @Accessors(chain = true)
 @Setter
 @Getter
-
+@AllArgsConstructor
+@NoArgsConstructor
 public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,26 +28,9 @@ public class Quiz {
     private Lesson lesson;
     @Column(name = "name")
     private String name;
-    @OneToMany
-    private List<Question> questionList;
-
-    public Quiz() {
-    }
-
-    public Quiz(int id, Lesson lesson, String name, List<Question> questionList) {
-        this.id = id;
-        this.lesson = lesson;
-        this.name = name;
-        this.questionList = questionList;
-    }
-
-    @Override
-    public String toString() {
-        return "Quiz{" +
-                "id=" + id +
-                ", lesson=" + lesson +
-                ", name='" + name + '\'' +
-                ", questionList=" + questionList +
-                '}';
-    }
+    @ManyToOne
+    @JoinColumn
+    private Question question;
+    @Column(name="deleted")
+    private boolean isDeleted;
 }

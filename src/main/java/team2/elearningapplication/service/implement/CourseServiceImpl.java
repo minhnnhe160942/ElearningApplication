@@ -1,6 +1,7 @@
 package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
@@ -23,15 +24,18 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class CourseServiceImpl  implements ICourseService {
+@Slf4j
+public class CourseServiceImpl implements ICourseService {
     private final ICourseRepository courseRepository;
     private final ICategoryRepository categoryRepository;
+
     @Override
     public ResponseCommon<AddCourseResponse> addCourse(AddCourseRequest addCourseRequest) {
         try {
             Course course = courseRepository.findCourseByName(addCourseRequest.getName()).orElse(null);
-            // if course not null -> tell user
+            // if course not null -> tell the user
             if (!Objects.isNull(course)) {
+                log.debug("Add Course failed: Course already exists");
                 return new ResponseCommon<>(ResponseCode.COURSE_EXIST, null);
             }
             // if course is null -> new course
@@ -46,11 +50,12 @@ public class CourseServiceImpl  implements ICourseService {
             Category category = categoryRepository.findCategoryByName(addCourseRequest.getCategory()).orElse(null);
             course.setCategory(category);
 
-            // Save course to database
+            // Save course to the database
             Course savedCourse = courseRepository.save(course);
 
-            // If course is not saved successfully, return a FAIL response
+            // If the course is not saved successfully, return a FAIL response
             if (savedCourse == null) {
+                log.debug("Add Course failed: Unable to save the course");
                 return new ResponseCommon<>(ResponseCode.FAIL, null);
             }
 
@@ -62,9 +67,11 @@ public class CourseServiceImpl  implements ICourseService {
             addCourseResponse.setCategory(course.getCategory());
             addCourseResponse.setLinkThumail(course.getLinkThumnail());
             addCourseResponse.setCreatedAt(course.getCreatedAt());
+            log.debug("Add Course successful");
             return new ResponseCommon<>(ResponseCode.SUCCESS, addCourseResponse);
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("Add Course failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
@@ -73,9 +80,11 @@ public class CourseServiceImpl  implements ICourseService {
     public ResponseCommon<UpdateCourseResponse> updateCourse(UpdateCourseRequest updateCourseRequest) {
         try {
             Course courseExist = courseRepository.findCourseById(updateCourseRequest.getCourseID()).orElse(null);
-            // if courseExist is null -> tell user
-            if(Objects.isNull(courseExist)) return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST,null);
-            else {
+            // if courseExist is null -> tell the user
+            if (Objects.isNull(courseExist)) {
+                log.debug("Update Course failed: Course does not exist");
+                return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST, null);
+            } else {
                 Category category = categoryRepository.findCategoryById(updateCourseRequest.getCategoryID()).orElse(null);
                 Course courseUpdate = courseExist;
                 courseUpdate.setCategory(category);
@@ -95,11 +104,13 @@ public class CourseServiceImpl  implements ICourseService {
                 LocalDateTime localDateTime = LocalDateTime.now();
                 updateCourseResponse.setUpdateAt(localDateTime);
                 updateCourseResponse.setCreateAt(courseUpdate.getCreatedAt());
-                return new ResponseCommon<>(ResponseCode.SUCCESS,updateCourseResponse);
+                log.debug("Update Course successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, updateCourseResponse);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseCommon<>(ResponseCode.FAIL,null);
+            log.debug("Update Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
 
@@ -107,9 +118,11 @@ public class CourseServiceImpl  implements ICourseService {
     public ResponseCommon<DeleteCourseResponse> deleteCourse(DeleteCourseRequest deleteCourseRequest) {
         try {
             Course courseExist = courseRepository.findCourseById(deleteCourseRequest.getCourseID()).orElse(null);
-            // if courseExist is null -> tell user
-            if(Objects.isNull(courseExist)) return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST,null);
-            else {
+            // if courseExist is null -> tell the user
+            if (Objects.isNull(courseExist)) {
+                log.debug("Delete Course failed: Course does not exist");
+                return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST, null);
+            } else {
                 Course courseDelete = courseExist;
                 courseDelete.setDeleted(true);
                 courseRepository.save(courseDelete);
@@ -122,11 +135,13 @@ public class CourseServiceImpl  implements ICourseService {
                 deleteCourseResponse.setLinkThumail(courseDelete.getLinkThumnail());
                 deleteCourseResponse.setCreatedAt(courseDelete.getCreatedAt());
                 deleteCourseResponse.setDeleted(courseDelete.isDeleted());
-                return new ResponseCommon<>(ResponseCode.SUCCESS,deleteCourseResponse);
+                log.debug("Delete Course successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, deleteCourseResponse);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseCommon<>(ResponseCode.FAIL,null);
+            log.debug("Delete Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
 
@@ -135,20 +150,20 @@ public class CourseServiceImpl  implements ICourseService {
             // Get all courses with isDeleted is false
             List<Course> listCourse = courseRepository.findAllByIsDeleted(false);
 
-            // if listCourse is empty -> tell user
-            if(listCourse.isEmpty()){
-                return new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY,null);
-            } // else -> return list course
+            // if listCourse is empty -> tell the user
+            if (listCourse.isEmpty()) {
+                log.debug("Get all Course failed: Course list is empty");
+                return new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY, null);
+            } // else -> return the list of courses
             else {
-                FindAllCourseResponse response = new FindAllCourseResponse("Get all course success",listCourse);
-                return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+                FindAllCourseResponse response = new FindAllCourseResponse("Get all success", listCourse);
+                log.debug("Get all Course successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseCommon<>(ResponseCode.FAIL,null);
+            log.debug("Get all Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
-
-
-
 }

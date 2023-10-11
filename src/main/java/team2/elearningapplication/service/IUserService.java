@@ -2,10 +2,7 @@ package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.user.*;
-import team2.elearningapplication.dto.response.user.ChangePasswordResponse;
-import team2.elearningapplication.dto.response.user.CreateUserResponseDTO;
-import team2.elearningapplication.dto.response.user.GetOTPResponse;
-import team2.elearningapplication.dto.response.user.VerifyOtpResponse;
+import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.security.jwt.JWTResponse;
 
@@ -34,5 +31,6 @@ public interface IUserService {
 
     User getUserByUsername(String username);
 
+    ResponseCommon<ChangeProfileResponse> changeProfile(ChangeProfileRequest changeProfileRequest);
 
 }

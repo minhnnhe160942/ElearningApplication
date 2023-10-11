@@ -1,6 +1,7 @@
 package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
@@ -22,37 +23,46 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LessonServiceImpl implements ILessonService {
     private final ILessonRespository lessonRespository;
     private final ICourseRepository courseRepository;
+
     @Override
     public ResponseCommon<AddLessonResponse> addLesson(AddLessonRequest addLessonRequest) {
         try {
             Lesson lesson = lessonRespository.findLessonByOrdNumberAndCourse(addLessonRequest.getOrdNumber(), addLessonRequest.getCourseID()).orElse(null);
-            // if lesson not null -> lesson exist -> tell user
-            if(!Objects.isNull(lesson)) return new ResponseCommon<>(ResponseCode.LESSON_EXIST,null);
-            // if lesson is null -> create new lesson
-            else  {
+            // if lesson not null -> lesson exists -> tell the user
+            if (!Objects.isNull(lesson)) {
+                log.debug("Add Lesson failed: Lesson already exists");
+                return new ResponseCommon<>(ResponseCode.LESSON_EXIST, null);
+            }
+            // if lesson is null -> create a new lesson
+            else {
                 Lesson addLesson = new Lesson();
+                addLesson.setName(addLessonRequest.getLessonName());
                 addLesson.setCourse(courseRepository.findCourseById(addLessonRequest.getCourseID()).orElse(null));
-                addLesson.setOrdNumber(addLesson.getOrdNumber());
-                addLesson.setLinkContent(addLesson.getLinkContent());
-                addLesson.setDescription(addLesson.getDescription());
+                addLesson.setOrdNumber(addLessonRequest.getOrdNumber());
+                addLesson.setLinkContent(addLessonRequest.getLinkContent());
+                addLesson.setDescription(addLessonRequest.getDescription());
                 LocalDateTime createdAt = LocalDateTime.now();
                 addLesson.setCreatedAt(createdAt);
                 lessonRespository.save(addLesson);
                 AddLessonResponse addLessonResponse = new AddLessonResponse();
+                addLessonResponse.setLessonName(addLesson.getName());
                 addLessonResponse.setLessonID(addLesson.getId());
                 addLessonResponse.setOrdNumber(addLesson.getOrdNumber());
                 addLessonResponse.setCourseID(addLesson.getCourse().getId());
                 addLessonResponse.setLinkContent(addLesson.getLinkContent());
                 addLessonResponse.setDescription(addLesson.getDescription());
                 addLessonResponse.setCreatedAt(addLesson.getCreatedAt());
-                return new ResponseCommon<>(ResponseCode.SUCCESS,addLessonResponse);
+                log.debug("Add Lesson successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, addLessonResponse);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add Lesson Fail",null);
+            log.debug("Add Lesson failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Add Lesson Fail", null);
         }
     }
 
@@ -60,11 +70,15 @@ public class LessonServiceImpl implements ILessonService {
     public ResponseCommon<UpdateLessonResponse> updateLesson(UpdateLessonRequest updateLessonRequest) {
         try {
             Lesson lesson = lessonRespository.findLessonById(updateLessonRequest.getLessonID()).orElse(null);
-            // if lesson is null -> lesson not exist -> tell user
-            if(Objects.isNull(lesson)) return new ResponseCommon<>(ResponseCode.LESSON_NOT_EXIST,null);
-                // if lesson not null -> update lesson
-            else  {
-                Lesson updateLesson = new Lesson();
+            // if lesson is null -> lesson does not exist -> tell the user
+            if (Objects.isNull(lesson)) {
+                log.debug("Update Lesson failed: Lesson does not exist");
+                return new ResponseCommon<>(ResponseCode.LESSON_NOT_EXIST, null);
+            }
+            // if lesson not null -> update the lesson
+            else {
+                Lesson updateLesson = lesson;
+                updateLesson.setName(updateLesson.getName());
                 updateLesson.setCourse(courseRepository.findCourseById(updateLessonRequest.getCourseID()).orElse(null));
                 updateLesson.setOrdNumber(updateLesson.getOrdNumber());
                 updateLesson.setLinkContent(updateLesson.getLinkContent());
@@ -74,17 +88,20 @@ public class LessonServiceImpl implements ILessonService {
                 lessonRespository.save(updateLesson);
                 UpdateLessonResponse updateLessonResponse = new UpdateLessonResponse();
                 updateLessonResponse.setLessonID(updateLesson.getId());
+                updateLessonResponse.setLessonName(updateLesson.getName());
                 updateLessonResponse.setOrdNumber(updateLesson.getOrdNumber());
                 updateLessonResponse.setCourseID(updateLesson.getCourse().getId());
                 updateLessonResponse.setLinkContent(updateLesson.getLinkContent());
                 updateLessonResponse.setDescription(updateLesson.getDescription());
                 updateLessonResponse.setCreatedAt(updateLesson.getCreatedAt());
                 updateLessonResponse.setUpdateAt(updateAt);
-                return new ResponseCommon<>(ResponseCode.SUCCESS,updateLessonResponse);
+                log.debug("Update Lesson successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, updateLessonResponse);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update Lesson Fail",null);
+            log.debug("Update Lesson failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Update Lesson Fail", null);
         }
     }
 
@@ -92,14 +109,18 @@ public class LessonServiceImpl implements ILessonService {
     public ResponseCommon<DeleteLessonResponse> deleteLesson(DeleteLessonRequest deleteLessonRequest) {
         try {
             Lesson lesson = lessonRespository.findLessonById(deleteLessonRequest.getLessonID()).orElse(null);
-            // if lesson is null -> lesson not exist -> tell user
-            if(Objects.isNull(lesson)) return new ResponseCommon<>(ResponseCode.LESSON_NOT_EXIST,null);
-                // if lesson not null -> update lesson
-            else  {
-                Lesson deleteLesson = new Lesson();
+            // if lesson is null -> lesson does not exist -> tell the user
+            if (Objects.isNull(lesson)) {
+                log.debug("Delete Lesson failed: Lesson does not exist");
+                return new ResponseCommon<>(ResponseCode.LESSON_NOT_EXIST, null);
+            }
+            // if lesson not null -> update the lesson
+            else {
+                Lesson deleteLesson = lesson;
                 deleteLesson.setDeleted(true);
                 lessonRespository.save(deleteLesson);
                 DeleteLessonResponse deleteLessonResponse = new DeleteLessonResponse();
+                deleteLessonResponse.setLessonName(deleteLesson.getName());
                 deleteLessonResponse.setLessonID(deleteLesson.getId());
                 deleteLessonResponse.setOrdNumber(deleteLesson.getOrdNumber());
                 deleteLessonResponse.setCourseID(deleteLesson.getCourse().getId());
@@ -108,29 +129,33 @@ public class LessonServiceImpl implements ILessonService {
                 deleteLessonResponse.setCreatedAt(deleteLesson.getCreatedAt());
                 LocalDateTime updateAt = LocalDateTime.now();
                 deleteLessonResponse.setUpdateAt(updateAt);
-                return new ResponseCommon<>(ResponseCode.SUCCESS,deleteLessonResponse);
+                log.debug("Delete Lesson successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, deleteLessonResponse);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete Lesson Fail",null);
+            log.debug("Delete Lesson failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Delete Lesson Fail", null);
         }
     }
 
     @Override
     public ResponseCommon<FindAllLessonResponse> findAllLesson() {
         try {
-            List<Lesson> listLesson = lessonRespository.findAllByDeleted(false);
-            // if list lesson is empty -> tell user
-            if(listLesson.isEmpty()){
-                return new ResponseCommon<>(ResponseCode.LESSON_LIST_IS_EMPTY,null);
+            List<Lesson> listLesson = lessonRespository.findAllByIsDeleted(false);
+            // if the list of lessons is empty -> tell the user
+            if (listLesson.isEmpty()) {
+                log.debug("Get all Lesson failed: Lesson list is empty");
+                return new ResponseCommon<>(ResponseCode.LESSON_LIST_IS_EMPTY, null);
             } else {
-                FindAllLessonResponse response = new FindAllLessonResponse("Get all lesson success",listLesson);
-                return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+                FindAllLessonResponse response = new FindAllLessonResponse("Get all lesson success", listLesson);
+                log.debug("Get all Lesson successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseCommon<>(ResponseCode.FAIL,null);
+            log.debug("Get all Lesson failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
-
     }
 }

@@ -4,12 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
@@ -32,6 +31,8 @@ public class UserController {
 
     private IUserService userService;
     private final JWTUtils jwtUtils;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
 
     //    @Operation(
 //            security = @SecurityRequirement(name = "bearerAuth")
@@ -138,12 +139,43 @@ public class UserController {
     public ResponseEntity<JWTResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
         User user = userService.getUserByUsername(userService.genUserFromEmail(request.getEmail()));
-        UserDetailsImpl userDetails =  UserDetailsImpl.build(user);
-        String accessToken = jwtUtils.generateAccessToken(userDetails);
-        JWTResponse response = new JWTResponse();
-        response.setAccessToken(accessToken);
-        return ResponseEntity.ok(response);
+
+        if (refreshToken.isEmpty() || refreshToken == null) {
+            return ResponseEntity.badRequest().body(null);
+        } else {
+            UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+            String accessToken = jwtUtils.generateAccessToken(userDetails);
+            String newRefreshToken = jwtUtils.generateRefreshToken(userDetails);
+            JWTResponse response = new JWTResponse();
+            response.setAccessToken(accessToken);
+            response.setRefreshToken(newRefreshToken);
+            return ResponseEntity.ok(response);
+        }
     }
 
+
+    @PutMapping("/change-profile")
+    public ResponseEntity<ResponseCommon<ChangeProfileResponse>> changeProfile(@Valid @RequestBody ChangeProfileRequest changeProfileRequest) {
+        try {
+            ResponseCommon<ChangeProfileResponse> response = userService.changeProfile(changeProfileRequest);
+
+            if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+                logger.info("Change profile success");
+                return ResponseEntity.ok(response);
+            } else if (response.getCode() == ResponseCode.USER_NOT_FOUND.getCode()) {
+                logger.error("User not found");
+                return ResponseEntity.status(404).body(new ResponseCommon<>(response.getCode(), "User not found", null));
+            } else if (response.getCode() == ResponseCode.INVALID_DATA.getCode()) {
+                logger.error("Invalid data");
+                return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Invalid data", null));
+            } else {
+                logger.error("Change profile failed");
+                return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Change profile failed", null));
+            }
+        } catch (Exception e) {
+            logger.error("An error occurred while changing profile", e);
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "An error occurred while changing profile", null));
+        }
+    }
 
 }

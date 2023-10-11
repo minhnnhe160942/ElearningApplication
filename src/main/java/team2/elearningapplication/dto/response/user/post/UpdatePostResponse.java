@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.response.admin.lesson;
+package team2.elearningapplication.dto.response.user.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,26 +8,21 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class DeleteLessonResponse {
+public class UpdatePostResponse {
+    @NotBlank
+    private int postID;
+    @NotNull
+    private String email;
     @NotNull
     private int lessonID;
     @NotBlank
-    private String lessonName;
-    @NotNull
-    private int ordNumber;
-    @NotNull
-    private int courseID;
-    @NotBlank
-    private String linkContent;
-    @NotBlank
-    private String description;
-    @NotNull
-    private LocalDateTime createdAt;
+    private String content;
     @NotNull
     private LocalDateTime updateAt;
+    @NotNull
+    private boolean isDeleted;
 }

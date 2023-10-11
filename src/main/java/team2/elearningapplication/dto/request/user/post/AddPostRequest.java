@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.request.admin.lesson;
+package team2.elearningapplication.dto.request.user.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,19 +7,16 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddLessonRequest {
+public class AddPostRequest {
     @NotBlank
-    private String lessonName;
+    private String email;
     @NotNull
-    private int ordNumber;
-    @NotNull
-    private int courseID;
+    private int lessonID;
     @NotBlank
-    private String linkContent;
-    @NotBlank
-    private String description;
+    private String content;
 }

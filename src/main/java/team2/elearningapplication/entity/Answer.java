@@ -2,7 +2,9 @@ package team2.elearningapplication.entity;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -11,7 +13,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Setter
 @Getter
-
+@AllArgsConstructor
+@NoArgsConstructor
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,21 +24,4 @@ public class Answer {
     @Column(name = "question_id")
     private int questionId;
 
-    public Answer() {
-    }
-
-    public Answer(int id, String answerContent, int questionId) {
-        this.id = id;
-        this.answerContent = answerContent;
-        this.questionId = questionId;
-    }
-
-    @Override
-    public String toString() {
-        return "Answer{" +
-                "id=" + id +
-                ", answerContent='" + answerContent + '\'' +
-                ", questionId=" + questionId +
-                '}';
-    }
 }

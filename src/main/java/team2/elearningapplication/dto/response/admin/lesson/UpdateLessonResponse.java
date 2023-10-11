@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 public class UpdateLessonResponse {
     @NotNull
     private int lessonID;
+    @NotBlank
+    private String lessonName;
     @NotNull
     private int ordNumber;
     @NotNull
