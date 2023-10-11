@@ -28,5 +28,10 @@ public class QuizController {
         Quiz updatedQuiz = quizService.updateQuiz(quizId, quiz);
         return ResponseEntity.ok(updatedQuiz);
     }
+    @GetMapping("/{quizId}/questions")
+    public ResponseEntity<List<Question>> getQuestionsForQuiz(@PathVariable Long quizId) {
+        List<Question> questions = questionService.getQuestionsByQuiz(quizId);
+        return ResponseEntity.ok(questions);
+    }
 }
 
