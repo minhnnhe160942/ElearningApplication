@@ -48,6 +48,10 @@ public class QuizController {
         Question question = questionService.getQuestionInQuiz(quizId, questionId);
         return ResponseEntity.ok(question);
     }
-
+    @GetMapping("/{quizId}/questions/{questionId}")
+    public ResponseEntity<Question> getQuestionInQuiz(@PathVariable Long quizId, @PathVariable Long questionId) {
+        Question question = questionService.getQuestionInQuiz(quizId, questionId);
+        return ResponseEntity.ok(question);
+    }
 }
 
