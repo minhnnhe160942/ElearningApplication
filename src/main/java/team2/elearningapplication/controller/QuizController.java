@@ -18,4 +18,10 @@ public class QuizController {
         Quiz quiz = quizService.getQuizById(quizId);
         return ResponseEntity.ok(quiz);
     }
+    @PostMapping
+    public ResponseEntity<Quiz> createQuiz(@RequestBody Quiz quiz) {
+        Quiz createdQuiz = quizService.createQuiz(quiz);
+        return ResponseEntity.ok(createdQuiz);
+    }
 }
+
