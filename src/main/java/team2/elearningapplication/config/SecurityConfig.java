@@ -30,6 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/user/changePassword",
                 "/api/v1/user/send-otp-forgot-password",
                 "/api/v1/user/verify-otp-forgotPass",
+                "/api/v1/user/refresh-access-token",
+                "/api/v1/user/change-profile",
                 "/api-docs",
                 "/swagger-ui",
                 "/api/v1/course/add-course",
@@ -40,6 +42,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/category/update-category",
                 "/api/v1/category/delete-category",
                 "/api/v1/category/find-all-category",
+                "/api/v1/lesson/add-lesson",
+                "/api/v1/lesson/update-lesson",
+                "/api/v1/lesson/delete-lesson",
+                "/api/v1/lesson/find-all-lesson",
+                "/api/v1/post/add-post",
+                "/api/v1/post/update-post",
+                "/api/v1/post/delete-post",
+                "/api/v1/post/find-all-post",
                 "/swagger-ui/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
