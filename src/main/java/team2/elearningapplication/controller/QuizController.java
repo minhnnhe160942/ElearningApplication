@@ -38,5 +38,10 @@ public class QuizController {
         Question addedQuestion = questionService.addQuestionToQuiz(quizId, question);
         return ResponseEntity.ok(addedQuestion);
     }
+    @GetMapping("/{quizId}/questions/{questionId}")
+    public ResponseEntity<Question> getQuestionInQuiz(@PathVariable Long quizId, @PathVariable Long questionId) {
+        Question question = questionService.getQuestionInQuiz(quizId, questionId);
+        return ResponseEntity.ok(question);
+    }
 }
 
