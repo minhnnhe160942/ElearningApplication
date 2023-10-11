@@ -626,3 +626,14 @@ public ResponseEntity<Question> updateQuestionInQuiz(@PathVariable Long quizId, 
         questionService.deleteQuestionFromQuiz(quizId, questionId);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping("/{quizId}/questions/{questionId}")
+    public ResponseEntity<Question> updateQuestionInQuiz(@PathVariable Long quizId, @PathVariable Long questionId, @RequestBody Question question) {
+        Question updatedQuestion = questionService.updateQuestionInQuiz(quizId, questionId, question);
+        return ResponseEntity.ok(updatedQuestion);
+    }
+
+    @DeleteMapping("/{quizId}/questions/{questionId}")
+    public ResponseEntity<Void> deleteQuestionFromQuiz(@PathVariable Long quizId, @PathVariable Long questionId) {
+        questionService.deleteQuestionFromQuiz(quizId, questionId);
+        return ResponseEntity.noContent().build();
+    }
