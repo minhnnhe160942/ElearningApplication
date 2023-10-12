@@ -78,11 +78,11 @@ public class LessonServiceImpl implements ILessonService {
             // if lesson not null -> update the lesson
             else {
                 Lesson updateLesson = lesson;
-                updateLesson.setName(updateLesson.getName());
+                updateLesson.setName(updateLessonRequest.getLessonName());
                 updateLesson.setCourse(courseRepository.findCourseById(updateLessonRequest.getCourseID()).orElse(null));
-                updateLesson.setOrdNumber(updateLesson.getOrdNumber());
-                updateLesson.setLinkContent(updateLesson.getLinkContent());
-                updateLesson.setDescription(updateLesson.getDescription());
+                updateLesson.setOrdNumber(updateLessonRequest.getOrdNumber());
+                updateLesson.setLinkContent(updateLessonRequest.getLinkContent());
+                updateLesson.setDescription(updateLessonRequest.getDescription());
                 LocalDateTime updateAt = LocalDateTime.now();
                 updateLesson.setCreatedAt(updateAt);
                 lessonRespository.save(updateLesson);

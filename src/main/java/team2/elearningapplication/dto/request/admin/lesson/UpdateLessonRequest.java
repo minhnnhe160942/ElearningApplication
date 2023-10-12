@@ -27,6 +27,5 @@ public class UpdateLessonRequest {
     private String linkContent;
     @NotBlank
     private String description;
-    @NotNull
-    private LocalDateTime updateAt;
+
 }

@@ -40,6 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/category/update-category",
                 "/api/v1/category/delete-category",
                 "/api/v1/category/find-all-category",
+                "/api/v1/lesson/add-lesson",
+                "/api/v1/lesson/update-lesson",
+                "/api/v1/lesson/delete-lesson",
+                "/api/v1/lesson/find-all-lesson",
                 "/swagger-ui/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
