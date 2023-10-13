@@ -35,6 +35,8 @@ public class Question {
     private List<Answer> answerList;
 
     @Column(name = "quiz_id")
-    private int quiz_id;
+    private int quizID;
+    @Column(name = "deleted")
+    private boolean deleted;
 
 }
