@@ -18,6 +18,7 @@ import team2.elearningapplication.service.ILessonService;
 import team2.elearningapplication.service.IQuizService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -75,11 +76,40 @@ public class QuizServiceImpl implements IQuizService {
 
     @Override
     public ResponseCommon<DeleteQuizResponse> deleteQuiz(DeleteQuizRequest deleteQuizRequest) {
-        return null;
+        try {
+            Quiz quiz = quizRepository.findQuizById(deleteQuizRequest.getQuizID()).orElse(null);
+            // if quiz is null -> tell user
+            if(Objects.isNull(quiz)) return  new ResponseCommon<>(ResponseCode.QUIZ_NOT_EXIST.getCode(),"Quiz not exist",null);
+            else {
+                quiz.setDeleted(true);
+                quizRepository.save(quiz);
+                DeleteQuizResponse deleteQuizResponse = new DeleteQuizResponse();
+                deleteQuizResponse.setUpdateAt(LocalDateTime.now());
+                deleteQuizResponse.setQuizName(quiz.getName());
+                deleteQuizResponse.setLessonID(quiz.getLesson().getId());
+                deleteQuizResponse.setLessonName(quiz.getLesson().getName());
+                deleteQuizResponse.setQuizName(quiz.getName());
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Delete quiz success",deleteQuizResponse);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete quiz fail",null);
+        }
     }
 
     @Override
     public ResponseCommon<FindAllQuizResponse> findAllQuiz() {
-        return null;
+        try {
+            List<Quiz> quizList = quizRepository.findAllByIsDeleted(false);
+            if(quizList.isEmpty()) return new ResponseCommon<>(ResponseCode.QUIZ_LIST_IS_EMPTY.getCode(),"Quiz list is empty",null);
+            else {
+                FindAllQuizResponse findAllQuizResponse = new FindAllQuizResponse();
+                findAllQuizResponse.setQuizList(quizList);
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Find all quiz success",findAllQuizResponse);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Find all quiz fail",null);
+        }
     }
 }

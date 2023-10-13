@@ -17,12 +17,12 @@ import java.util.List;
 public class DeleteQuizResponse {
     @NotNull
     private int quizID;
+    @NotBlank
+    private String quizName;
     @NotNull
     private int lessonID;
     @NotBlank
     private String lessonName;
-    @NotNull
-    private List<Integer> questionID;
     @NotNull
     private LocalDateTime updateAt;
 }

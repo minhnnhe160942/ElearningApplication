@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import team2.elearningapplication.entity.Quiz;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,10 +16,6 @@ import java.util.List;
 @Setter
 public class FindAllQuizResponse {
     @NotNull
-    private int lessonID;
-    @NotBlank
-    private String lessonName;
-    @NotNull
-    private List<Integer> questionID;
+    private List<Quiz> quizList;
 
 }

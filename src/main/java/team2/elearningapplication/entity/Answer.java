@@ -25,5 +25,6 @@ public class Answer {
     private boolean isCorrect;
     @Column(name = "question_id")
     private int questionId;
-
+    @Column(name="deleted")
+    private boolean isDeleted;
 }

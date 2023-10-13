@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class DeleteQuizRequest {
+
     @NotNull
-    private int lessonID;
+    private int quizID;
 }
