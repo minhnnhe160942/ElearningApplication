@@ -1,11 +1,11 @@
-package team2.elearningapplication.dto.request.admin.quiz;
+package team2.elearningapplication.dto.request.admin.question;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -13,9 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddQuizRequest {
+public class AddQuestionRequest {
     @NotNull
-    private int lessonID;
-    @NotBlank
-    private String quizName;
+    private int quizID;
+    @NotEmpty
+    private List<QuestionData> listQuestion;
 }

@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface IQuizRepository extends JpaRepository<Quiz,Integer> {
     Optional<Quiz> findQuizById(int id);
-    Optional<Quiz> findQuizByLessonName(String lessonName);
+    Optional<Quiz> findQuizByName(String quizName);
 }

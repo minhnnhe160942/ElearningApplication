@@ -15,9 +15,12 @@ import java.util.List;
 @Setter
 public class UpdateQuizRequest {
     @NotNull
+    private int quizID;
+    @NotBlank
+    private String quizName;
+    @NotNull
     private int lessonID;
     @NotBlank
     private String lessonName;
-    @NotNull
-    private List<Integer> questionID;
+
 }

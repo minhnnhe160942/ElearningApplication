@@ -21,6 +21,8 @@ public class Answer {
     private int id;
     @Column(name = "answer_content")
     private String answerContent;
+    @Column(name="is_correct")
+    private boolean isCorrect;
     @Column(name = "question_id")
     private int questionId;
 

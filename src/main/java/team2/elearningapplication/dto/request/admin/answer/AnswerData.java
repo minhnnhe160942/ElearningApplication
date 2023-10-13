@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import team2.elearningapplication.Enum.EnumQuestionType;
+import team2.elearningapplication.entity.Answer;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -13,10 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddAnswerRequest {
+public class AnswerData {
     @NotNull
     private int questionID;
-    @NotEmpty
-    private List<AnswerData> listAnswer;
-
+    @NotBlank
+    private String answerName;
+    @NotNull
+    private boolean isCorrect;
 }
