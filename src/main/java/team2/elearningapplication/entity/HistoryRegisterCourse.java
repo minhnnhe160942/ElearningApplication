@@ -4,11 +4,14 @@ package team2.elearningapplication.entity;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import team2.elearningapplication.Enum.EnumTypeProcess;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -16,7 +19,8 @@ import java.time.ZonedDateTime;
 @Accessors(chain = true)
 @Setter
 @Getter
-
+@AllArgsConstructor
+@NoArgsConstructor
 public class HistoryRegisterCourse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,29 +37,9 @@ public class HistoryRegisterCourse {
     @Column(name = "process")
     private EnumTypeProcess process;
     @Column(name = "created_at")
-    private ZonedDateTime createdAt;
+    private LocalDateTime createdAt;
+    @OneToOne
+    @JoinColumn(name="payment_id",referencedColumnName = "id")
+    private Payment payment;
 
-    public HistoryRegisterCourse() {
-    }
-
-    public HistoryRegisterCourse(int id, User user, Course courseId, int sttLessonCurrent, EnumTypeProcess process, ZonedDateTime createdAt) {
-        this.id = id;
-        this.user = user;
-        this.courseId = courseId;
-        this.sttLessonCurrent = sttLessonCurrent;
-        this.process = process;
-        this.createdAt = createdAt;
-    }
-
-    @Override
-    public String toString() {
-        return "HistoryRegisterCourse{" +
-                "id=" + id +
-                ", user=" + user +
-                ", courseId=" + courseId +
-                ", sttLessonCurrent=" + sttLessonCurrent +
-                ", process=" + process +
-                ", createdAt=" + createdAt +
-                '}';
-    }
 }

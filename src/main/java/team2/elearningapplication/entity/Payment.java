@@ -1,11 +1,20 @@
 package team2.elearningapplication.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import team2.elearningapplication.Enum.EnumPaymentGateway;
 import team2.elearningapplication.Enum.EnumPaymentProcess;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
+@Entity
+@Table(name="payment")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

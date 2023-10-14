@@ -152,6 +152,15 @@ public class UserServiceImpl implements IUserService {
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
             }
             // step1: gen otp
+            // if otp of user expried
+            LocalDateTime localDateTime = LocalDateTime.now();
+            if(!Objects.isNull(user.getExpiredOTP()) && localDateTime.isBefore(user.getExpiredOTP())){
+                log.info("START... Sending email");
+                emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
+                log.info("END... Email sent success");
+                GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+            }
             String otp = CommonUtils.getOTP();
             //step2: send email
             log.info("START... Sending email");
@@ -161,7 +170,6 @@ public class UserServiceImpl implements IUserService {
             if (request.isCreate()) {
                 user.setStatus(EnumUserStatus.IN_PROCESS);
             }
-            LocalDateTime localDateTime = LocalDateTime.now();
             LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
             log.debug("Value of expired{}",expired);
             user.setExpiredOTP(expired);
@@ -190,7 +198,6 @@ public class UserServiceImpl implements IUserService {
                     return new ResponseCommon<>(ResponseCode.PASSWORD_INCORRECT, null);
                 } // else -> verify otp
                 else {
-
                     JWTUtils utils = new JWTUtils();
                     UserDetailsImpl userDetails = UserDetailsImpl.build(user.get());
                     String accessToken = utils.generateAccessToken(userDetails);

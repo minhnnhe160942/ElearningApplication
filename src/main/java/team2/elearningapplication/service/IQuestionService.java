@@ -20,4 +20,5 @@ public interface IQuestionService  {
         ResponseCommon<DeleteQuestionResponse> deleteQuestion(DeleteQuestionRequest deleteQuestionRequest);
 
         ResponseCommon<List<Question>> findAllQuestion();
+
 }

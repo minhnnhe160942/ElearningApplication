@@ -56,7 +56,7 @@ public class UserController {
 
         ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
         // if response code == 0 -> return success
-        if(response.getCode()==0){
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
             user.setStatus(EnumUserStatus.ACTIVE);
             userService.updateUser(user);
             return new ResponseEntity<>(response, HttpStatus.OK);
