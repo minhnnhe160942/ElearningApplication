@@ -25,6 +25,8 @@ public class HistoryAnswer {
     private int userAnswerId;
     @Column(name = "correct")
     private int correct;
+    @Column(name="sessionId")
+    private int sessionId;
 
     public HistoryAnswer() {
     }

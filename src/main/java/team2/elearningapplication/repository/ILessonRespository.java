@@ -11,7 +11,8 @@ import java.util.Optional;
 
 public interface ILessonRespository extends JpaRepository<Lesson,Integer> {
     Optional<Lesson> findLessonById(int id);
-    @Query("SELECT l FROM Lesson l WHERE l.ordNumber = :ordNumber AND l.course.id = :courseId")
+    @Query("SELECT l FROM Lesson l WHERE l.ordNumber = :ordNumber AND l.course.id = :courseId AND l.isDeleted = false")
     Optional<Lesson> findLessonByOrdNumberAndCourse(@Param("ordNumber") int ordNumber, @Param("courseId") int courseId);
+
     List<Lesson> findAllByIsDeleted(boolean isDeleted);
 }
