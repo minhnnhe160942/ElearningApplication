@@ -8,11 +8,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.lesson.AddLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.DeleteLessonRequest;
+import team2.elearningapplication.dto.request.admin.lesson.GetLessonByIdRequest;
 import team2.elearningapplication.dto.request.admin.lesson.UpdateLessonRequest;
-import team2.elearningapplication.dto.response.admin.lesson.AddLessonResponse;
-import team2.elearningapplication.dto.response.admin.lesson.DeleteLessonResponse;
-import team2.elearningapplication.dto.response.admin.lesson.FindAllLessonResponse;
-import team2.elearningapplication.dto.response.admin.lesson.UpdateLessonResponse;
+import team2.elearningapplication.dto.response.admin.lesson.*;
 import team2.elearningapplication.service.ILessonService;
 
 import javax.validation.Valid;
@@ -68,6 +66,18 @@ public class LessonController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Lesson list is empty", null));
         } else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get All lesson fail", null));
+        }
+    }
+
+    @GetMapping("/get-lesson-by-id")
+    public ResponseEntity<ResponseCommon<GetLessonByIdResponse>> getLessonById(GetLessonByIdRequest request){
+        ResponseCommon<GetLessonByIdResponse> response = lessonService.getLessonById(request);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.LESSON_NOT_EXIST.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Lesson not exist", null));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get lesson by id fail", null));
         }
     }
 }
