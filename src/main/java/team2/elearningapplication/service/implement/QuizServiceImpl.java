@@ -1,16 +1,16 @@
 package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
+import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
-import team2.elearningapplication.dto.response.admin.quiz.AddQuizResponse;
-import team2.elearningapplication.dto.response.admin.quiz.DeleteQuizResponse;
-import team2.elearningapplication.dto.response.admin.quiz.FindAllQuizResponse;
-import team2.elearningapplication.dto.response.admin.quiz.UpdateQuizResponse;
+import team2.elearningapplication.dto.response.admin.quiz.*;
 import team2.elearningapplication.entity.Quiz;
 import team2.elearningapplication.repository.ILessonRespository;
 import team2.elearningapplication.repository.IQuizRepository;
@@ -26,6 +26,9 @@ import java.util.Objects;
 public class QuizServiceImpl implements IQuizService {
     private final IQuizRepository quizRepository;
     private final ILessonRespository lessonRespository;
+
+    private final Logger log = LoggerFactory.getLogger(QuestionServiceImpl.class);
+
     @Override
     public ResponseCommon<AddQuizResponse> addQuiz(AddQuizRequest addQuizRequest) {
         try {
@@ -79,7 +82,8 @@ public class QuizServiceImpl implements IQuizService {
         try {
             Quiz quiz = quizRepository.findQuizById(deleteQuizRequest.getQuizID()).orElse(null);
             // if quiz is null -> tell user
-            if(Objects.isNull(quiz)) return  new ResponseCommon<>(ResponseCode.QUIZ_NOT_EXIST.getCode(),"Quiz not exist",null);
+            if(Objects.isNull(quiz))
+                return  new ResponseCommon<>(ResponseCode.QUIZ_NOT_EXIST.getCode(),"Quiz not exist",null);
             else {
                 quiz.setDeleted(true);
                 quizRepository.save(quiz);
@@ -110,6 +114,35 @@ public class QuizServiceImpl implements IQuizService {
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Find all quiz fail",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetQuizByIdResponse> getQuizById(GetQuizByIdRequest getQuizByIdRequest) {
+        try {
+            Quiz quiz = quizRepository.findQuizById(getQuizByIdRequest.getId()).orElse(null);
+            // If quiz not exist -> tell user
+            if ( Objects.isNull(quiz) ) {
+                log.debug("Quiz not exist");
+                return  new ResponseCommon<>(ResponseCode.QUIZ_NOT_EXIST.getCode(),"Quiz not exist",null);
+            }
+            else {
+                GetQuizByIdResponse response = new GetQuizByIdResponse();
+
+                response.setId(quiz.getId());
+                response.setName(quiz.getName());
+                response.setLesson(quiz.getLesson());
+                response.setLesson(quiz.getLesson());
+                response.setDeleted(quiz.isDeleted());
+
+                log.debug("Get quiz by id successfully");
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Get quiz by id success", response);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get quiz by id failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get quiz by id failed",null);
         }
     }
 }

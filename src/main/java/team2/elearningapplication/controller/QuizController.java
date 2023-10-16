@@ -10,11 +10,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
+import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
-import team2.elearningapplication.dto.response.admin.quiz.AddQuizResponse;
-import team2.elearningapplication.dto.response.admin.quiz.DeleteQuizResponse;
-import team2.elearningapplication.dto.response.admin.quiz.FindAllQuizResponse;
-import team2.elearningapplication.dto.response.admin.quiz.UpdateQuizResponse;
+import team2.elearningapplication.dto.response.admin.quiz.*;
 import team2.elearningapplication.service.IQuizService;
 
 import javax.validation.Valid;
@@ -83,6 +81,21 @@ public class QuizController {
         } else {
             log.error("findAllQuiz: Find all quizzes failed.");
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all quizzes failed", null));
+        }
+    }
+
+    @GetMapping("/get-quiz-by-id")
+    public ResponseEntity<ResponseCommon<GetQuizByIdResponse>> getQuizById(GetQuizByIdRequest request) {
+        ResponseCommon<GetQuizByIdResponse> response = quizService.getQuizById(request);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            log.debug("Get quiz by id successfully.");
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.QUIZ_NOT_EXIST.getCode()) {
+            log.debug("Quiz not exist.");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Quiz not exist", null));
+        } else {
+            log.error("Get quiz by id failed");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get quiz by id failed", null));
         }
     }
 }
