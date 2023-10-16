@@ -1,6 +1,7 @@
 package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.user.GetUserByEmailRequest;
 import team2.elearningapplication.dto.request.user.*;
 import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.User;
@@ -33,4 +34,5 @@ public interface IUserService {
 
     ResponseCommon<ChangeProfileResponse> changeProfile(ChangeProfileRequest changeProfileRequest);
 
+    ResponseCommon<GetUserByEmailResponse> getUserByEmail(GetUserByEmailRequest getUserByEmailRequest);
 }
