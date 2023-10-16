@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.question.DeleteQuestionRequest;
+import team2.elearningapplication.dto.request.admin.question.GetQuestionByIdRequest;
 import team2.elearningapplication.dto.request.admin.question.QuestionData;
 import team2.elearningapplication.dto.request.admin.question.UpdateQuestionRequest;
 import team2.elearningapplication.dto.response.admin.question.AddQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.DeleteQuestionResponse;
+import team2.elearningapplication.dto.response.admin.question.GetQuestionByIdResponse;
 import team2.elearningapplication.dto.response.admin.question.UpdateQuestionResponse;
 import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.service.IQuestionService;
@@ -83,6 +85,21 @@ public class QuestionController {
         } else {
             log.error("findAllQuestion: Find all questions failed.");
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all questions failed", null));
+        }
+    }
+
+    @GetMapping("/get-question-by-id")
+    public ResponseEntity<ResponseCommon<GetQuestionByIdResponse>> getQuestionById(GetQuestionByIdRequest request) {
+        ResponseCommon<GetQuestionByIdResponse> response = questionService.getQuestionById(request);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            log.debug("Get question by id successfully.");
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.QUESTION_NOT_EXIST.getCode()) {
+            log.debug("Question not exits.");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Question not exits", null));
+        } else {
+            log.error("Get question by id failed");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get question by id failed", null));
         }
     }
 }

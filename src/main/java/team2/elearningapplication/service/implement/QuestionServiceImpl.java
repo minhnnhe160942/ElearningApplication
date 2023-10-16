@@ -8,12 +8,10 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.answer.AnswerData;
 import team2.elearningapplication.dto.request.admin.question.DeleteQuestionRequest;
+import team2.elearningapplication.dto.request.admin.question.GetQuestionByIdRequest;
 import team2.elearningapplication.dto.request.admin.question.QuestionData;
 import team2.elearningapplication.dto.request.admin.question.UpdateQuestionRequest;
-import team2.elearningapplication.dto.response.admin.question.AddQuestionResponse;
-import team2.elearningapplication.dto.response.admin.question.DeleteQuestionResponse;
-import team2.elearningapplication.dto.response.admin.question.FindAllQuestionResponse;
-import team2.elearningapplication.dto.response.admin.question.UpdateQuestionResponse;
+import team2.elearningapplication.dto.response.admin.question.*;
 import team2.elearningapplication.entity.Answer;
 import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.repository.IQuestionDataRepository;
@@ -159,6 +157,36 @@ public class QuestionServiceImpl implements IQuestionService {
         } catch (Exception e) {
             log.error("findAllQuestion: An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all question fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetQuestionByIdResponse> getQuestionById(GetQuestionByIdRequest getQuestionByIdRequest) {
+        try {
+            Question question = questionRepository.findQuestionById(getQuestionByIdRequest.getId()).orElse(null);
+            // If question not exist -> tell user
+            if ( Objects.isNull(question) ) {
+                log.debug("Get question by id: Question not exits.");
+                return new ResponseCommon<>(ResponseCode.QUESTION_NOT_EXIST.getCode(), "Question not exits", null);
+            }
+            else {
+                GetQuestionByIdResponse response = new GetQuestionByIdResponse();
+
+                response.setId(question.getId());
+                response.setQuizID(question.getQuizID());
+                response.setQuestionType(question.getQuestionType());
+                response.setQuestionName(question.getQuestionName());
+                response.setAnswerList(question.getAnswerList());
+                response.setDeleted(question.isDeleted());
+
+                log.debug("Get question by id successfully.");
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Get question by id success", response);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get question by id: An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get question by id fail", null);
         }
     }
 }
