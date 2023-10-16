@@ -302,7 +302,7 @@ public class UserServiceImpl implements IUserService {
             // If user in database not exist -> tell user
             if ( Objects.isNull(user) ) {
                 log.debug("User not exist");
-                return  new ResponseCommon<>(ResponseCode.USER_NOT_FOUND.getCode(),"User not exist",null);
+                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND.getCode(),"User not exist",null);
             }
             else {
                 GetUserByEmailResponse response = new GetUserByEmailResponse();

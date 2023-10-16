@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.user.*;
+import team2.elearningapplication.dto.response.admin.quiz.GetQuizByIdResponse;
 import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.security.UserDetailsImpl;
@@ -178,4 +180,18 @@ public class UserController {
         }
     }
 
+    @GetMapping("/get-user-by-email")
+    public ResponseEntity<ResponseCommon<GetUserByEmailResponse>> getUserByEmail(GetUserByEmailRequest request) {
+        ResponseCommon<GetUserByEmailResponse> response = userService.getUserByEmail(request);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            log.debug("Get user by email successfully.");
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.USER_NOT_FOUND.getCode()) {
+            log.debug("User not exist.");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "User not exist", null));
+        } else {
+            log.error("Get user by email failed");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get user by email failed", null));
+        }
+    }
 }
