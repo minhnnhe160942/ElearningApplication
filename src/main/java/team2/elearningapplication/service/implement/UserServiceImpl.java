@@ -30,7 +30,7 @@ import java.util.*;
 public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
     private final EmailService emailService;
-
+    private final PasswordService passwordService;
     private final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Value("minhnnde258@gmail.com")
@@ -58,7 +58,8 @@ public class UserServiceImpl implements IUserService {
                 user = new User();
             }
             user.setUsername(genUserFromEmail(requestDTO.getEmail()));
-            user.setPassword(requestDTO.getPassword());
+            String hassPass = passwordService.hashPassword(requestDTO.getPassword());
+            user.setPassword(hassPass);
             user.setEmail(requestDTO.getEmail());
             user.setPhone(requestDTO.getPhone());
             user.setRole(requestDTO.getRole());
