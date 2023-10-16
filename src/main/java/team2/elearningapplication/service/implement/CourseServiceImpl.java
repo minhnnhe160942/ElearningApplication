@@ -170,6 +170,7 @@ public class CourseServiceImpl implements ICourseService {
     public ResponseCommon<GetCourseByIdResponse> getCourseById(GetCourseByIdRequest getCourseByIdRequest) {
         try {
             Course course = courseRepository.findCourseById(getCourseByIdRequest.getId()).orElse(null);
+            // If course does not exist
             if ( Objects.isNull(course) ) {
                 log.debug("Get Course By Id failed: Course does not exist");
                 return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST, null);
