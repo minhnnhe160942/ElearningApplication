@@ -8,11 +8,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.user.post.AddPostRequest;
 import team2.elearningapplication.dto.request.user.post.DeletePostRequest;
+import team2.elearningapplication.dto.request.user.post.GetPostByIdRequest;
 import team2.elearningapplication.dto.request.user.post.UpdatePostRequest;
-import team2.elearningapplication.dto.response.user.post.AddPostResponse;
-import team2.elearningapplication.dto.response.user.post.DeletePostResponse;
-import team2.elearningapplication.dto.response.user.post.FindAllPostResponse;
-import team2.elearningapplication.dto.response.user.post.UpdatePostResponse;
+import team2.elearningapplication.dto.response.user.post.*;
 import team2.elearningapplication.entity.Post;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.ILessonRespository;
@@ -138,6 +136,37 @@ public class PostServiceImpl implements IPostService {
             e.printStackTrace();
             log.debug("Get all Post failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get all post fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetPostByIdResponse> getPostById(GetPostByIdRequest getPostByIdRequest) {
+        try {
+            Post post = postRepository.findById(getPostByIdRequest.getId()).orElse(null);
+            // If post not exist -> tell user
+            if ( Objects.isNull(post) ) {
+                log.debug("Get post by id failed: Post not exist");
+                return new ResponseCommon<>(ResponseCode.POST_NOT_EXIST, null);
+            }
+            else {
+                GetPostByIdResponse response = new GetPostByIdResponse();
+
+                response.setId(post.getId());
+                response.setContent(post.getContent());
+                response.setUser(post.getUser());
+                response.setLessonId(post.getLessonId());
+                response.setCreatedAt(post.getCreatedAt());
+                response.setDeleted(post.isDeleted());
+
+                log.debug("Get post by id successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Get post by id success", response);
+
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get post by id failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by id failed", null);
         }
     }
 }

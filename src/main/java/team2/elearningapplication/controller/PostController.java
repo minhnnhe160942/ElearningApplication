@@ -8,11 +8,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.user.post.AddPostRequest;
 import team2.elearningapplication.dto.request.user.post.DeletePostRequest;
+import team2.elearningapplication.dto.request.user.post.GetPostByIdRequest;
 import team2.elearningapplication.dto.request.user.post.UpdatePostRequest;
-import team2.elearningapplication.dto.response.user.post.AddPostResponse;
-import team2.elearningapplication.dto.response.user.post.DeletePostResponse;
-import team2.elearningapplication.dto.response.user.post.FindAllPostResponse;
-import team2.elearningapplication.dto.response.user.post.UpdatePostResponse;
+import team2.elearningapplication.dto.response.user.post.*;
 import team2.elearningapplication.service.IPostService;
 
 import javax.validation.Valid;
@@ -68,6 +66,18 @@ public class PostController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Post list is empty", null));
         } else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get all post failed", null));
+        }
+    }
+
+    @GetMapping("/get-post-by-id")
+    public ResponseEntity<ResponseCommon<GetPostByIdResponse>> getPostById(GetPostByIdRequest request) {
+        ResponseCommon<GetPostByIdResponse> response = postService.getPostById(request);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.POST_NOT_EXIST.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Post not exist", null));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by id failed", null));
         }
     }
 }
