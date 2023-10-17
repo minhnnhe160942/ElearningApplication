@@ -10,6 +10,8 @@ import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
+import team2.elearningapplication.dto.response.user.course.GetCourseByUserResponse;
+import team2.elearningapplication.dto.response.user.course.GetNewestCourseResponse;
 import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
 import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.entity.Course;
@@ -213,5 +215,28 @@ public class CourseServiceImpl implements ICourseService {
             log.debug("Get Top Course failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
+    }
+
+    @Override
+    public ResponseCommon<GetNewestCourseResponse> getNewestCourse(int numberCourse) {
+        try {
+            List<Course> topNewestCourse = courseRepository.getTopNewCourse(numberCourse);
+            // if topCourse is empty -> tell user
+            if(topNewestCourse.isEmpty()){
+                return new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null);
+            } else {
+                GetNewestCourseResponse getNewestCourseResponse = new GetNewestCourseResponse(topNewestCourse);
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get newest course success",getNewestCourseResponse);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get Newest Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetCourseByUserResponse> getCourseByUser(String username) {
+        return null;
     }
 }

@@ -23,5 +23,12 @@ public interface ICourseRepository extends JpaRepository<Course, Integer> {
             "ORDER BY COUNT(hrc.user_id) DESC " +
             "LIMIT :number", nativeQuery = true)
     List<Course> getTopCourses(@Param("number") int number);
+    @Query(value = "SELECT * FROM Course ORDER BY created_at DESC LIMIT :number", nativeQuery = true)
+    List<Course> getTopNewCourse(@Param("number") int number);
+
+    @Query(value = "SELECT c.* FROM Course c " +
+            "INNER JOIN history_register_course hrc ON c.id = hrc.course_id " +
+            "WHERE hrc.user_id = :userId", nativeQuery = true)
+    List<Course> getCoursesByUserId(@Param("userId") int userId);
 
 }
