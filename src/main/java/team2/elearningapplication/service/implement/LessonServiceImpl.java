@@ -7,11 +7,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.lesson.AddLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.DeleteLessonRequest;
+import team2.elearningapplication.dto.request.admin.lesson.GetLessonByIdRequest;
 import team2.elearningapplication.dto.request.admin.lesson.UpdateLessonRequest;
-import team2.elearningapplication.dto.response.admin.lesson.AddLessonResponse;
-import team2.elearningapplication.dto.response.admin.lesson.DeleteLessonResponse;
-import team2.elearningapplication.dto.response.admin.lesson.FindAllLessonResponse;
-import team2.elearningapplication.dto.response.admin.lesson.UpdateLessonResponse;
+import team2.elearningapplication.dto.response.admin.lesson.*;
 import team2.elearningapplication.entity.Lesson;
 import team2.elearningapplication.repository.ICourseRepository;
 import team2.elearningapplication.repository.ILessonRespository;
@@ -155,6 +153,37 @@ public class LessonServiceImpl implements ILessonService {
         } catch (Exception e) {
             e.printStackTrace();
             log.debug("Get all Lesson failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetLessonByIdResponse> getLessonById(GetLessonByIdRequest getLessonByIdRequest) {
+        try {
+            Lesson lesson = lessonRespository.findLessonById(getLessonByIdRequest.getId()).orElse(null);
+            // If lesson not exist -> tell user
+            if ( Objects.isNull(lesson) ) {
+                log.debug("Get Lesson by id failed: Lesson list not exist");
+                return new ResponseCommon<>(ResponseCode.LESSON_NOT_EXIST, null);
+            }
+            else {
+                GetLessonByIdResponse response = new GetLessonByIdResponse();
+
+                response.setId(lesson.getId());
+                response.setName(lesson.getName());
+                response.setDescription(lesson.getDescription());
+                response.setCourse(lesson.getCourse());
+                response.setOrdNumber(lesson.getOrdNumber());
+                response.setLinkContent(lesson.getLinkContent());
+                response.setCreatedAt(lesson.getCreatedAt());
+                response.setDeleted(lesson.isDeleted());
+
+                log.debug("Get Lesson by id successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get Lesson by id failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }

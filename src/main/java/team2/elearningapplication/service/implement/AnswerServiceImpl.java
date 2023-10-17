@@ -8,11 +8,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.answer.AnswerData;
 import team2.elearningapplication.dto.request.admin.answer.DeleteAnswerRequest;
+import team2.elearningapplication.dto.request.admin.answer.GetAnswerByIdRequest;
 import team2.elearningapplication.dto.request.admin.answer.UpdateAnswerRequest;
-import team2.elearningapplication.dto.response.admin.answer.AddAnswerResponse;
-import team2.elearningapplication.dto.response.admin.answer.DeleteAnswerResponse;
-import team2.elearningapplication.dto.response.admin.answer.FindAllAnswerResponse;
-import team2.elearningapplication.dto.response.admin.answer.UpdateAnswerResponse;
+import team2.elearningapplication.dto.response.admin.answer.*;
 import team2.elearningapplication.entity.Answer;
 import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.repository.IAnswerRepository;
@@ -156,6 +154,32 @@ public class AnswerServiceImpl implements IAnswerService {
         } catch (Exception e) {
             log.error("findAllAnswer: An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all answer fail" + e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetAnswerByIdResponse> getAnswerById(GetAnswerByIdRequest getAnswerByIdRequest) {
+        try {
+            Answer answer = answerRepository.findAnswerById(getAnswerByIdRequest.getId()).orElse(null);
+            // If answer not exist -> tell user
+            if ( Objects.isNull(answer) ) {
+                log.debug("Answer not exist.");
+                return new ResponseCommon<>(ResponseCode.ANSWER_NOT_EXIST.getCode(), "Answer not exist", null);
+            }
+            else {
+                GetAnswerByIdResponse response = new GetAnswerByIdResponse();
+                response.setId(answer.getId());
+                response.setAnswerContent(answer.getAnswerContent());
+                response.setCorrect(answer.isCorrect());
+                response.setQuestionId(answer.getQuestionId());
+                response.setDeleted(answer.isDeleted());
+
+                log.debug("Get Answer By id successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+            }
+        } catch (Exception e) {
+            log.error("Get answer by id failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Delete answer fail", null);
         }
     }
 }

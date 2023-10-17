@@ -8,11 +8,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
+import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
-import team2.elearningapplication.dto.response.admin.course.AddCourseResponse;
-import team2.elearningapplication.dto.response.admin.course.DeleteCourseResponse;
-import team2.elearningapplication.dto.response.admin.course.FindAllCourseResponse;
-import team2.elearningapplication.dto.response.admin.course.UpdateCourseResponse;
+import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.service.ICourseService;
 
 import javax.validation.Valid;
@@ -75,6 +73,21 @@ public class CourseController {
         } //  if code response equals code courseList empty -> tell user
         else if(response.getCode()==ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
+        } // else -> return fail
+        else{
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL,null));
+        }
+    }
+
+    @GetMapping("get-course-by-id")
+    public ResponseEntity<ResponseCommon<GetCourseByIdResponse>> getCourseById(GetCourseByIdRequest request){
+        ResponseCommon<GetCourseByIdResponse> response = courseService.getCourseById(request);
+        // if code response equal code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } //  if code response equals code course empty -> tell user
+        else if(response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST.getCode(),"Course not exist",null));
         } // else -> return fail
         else{
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL,null));

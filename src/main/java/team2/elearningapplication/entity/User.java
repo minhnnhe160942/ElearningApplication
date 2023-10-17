@@ -2,8 +2,7 @@ package team2.elearningapplication.entity;
 
 import javax.persistence.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 import team2.elearningapplication.Enum.EnumTypeGender;
 import team2.elearningapplication.Enum.EnumTypeRole;
@@ -17,6 +16,9 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,37 +50,4 @@ public class User {
     private EnumUserStatus status;
     @Column(name = "otp")
     private String otp;
-
-    public User() {
-    }
-
-    public User(int id, String username, String password, String email, String phone, EnumTypeRole role, LocalDateTime createdAt, String fullName, EnumTypeGender gender, LocalDate date_of_birth) {
-
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.phone = phone;
-        this.role = role;
-        this.createdAt = createdAt;
-        this.fullName = fullName;
-        this.gender = gender;
-        this.date_of_birth = date_of_birth;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", role=" + role +
-                ", createdAt=" + createdAt +
-                ", fullName='" + fullName + '\'' +
-                ", gender=" + gender +
-                ", date_of_birth=" + date_of_birth +
-                '}';
-    }
 }

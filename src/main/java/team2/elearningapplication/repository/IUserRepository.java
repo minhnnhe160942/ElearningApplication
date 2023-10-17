@@ -13,4 +13,5 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByUsernameAndStatus(String username, EnumUserStatus status);
 
+    Optional<User> findByEmail(String email);
 }

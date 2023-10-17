@@ -7,11 +7,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
+import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
-import team2.elearningapplication.dto.response.admin.course.AddCourseResponse;
-import team2.elearningapplication.dto.response.admin.course.DeleteCourseResponse;
-import team2.elearningapplication.dto.response.admin.course.FindAllCourseResponse;
-import team2.elearningapplication.dto.response.admin.course.UpdateCourseResponse;
+import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.entity.Course;
 import team2.elearningapplication.repository.ICategoryRepository;
@@ -21,6 +19,7 @@ import team2.elearningapplication.service.ICourseService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -163,6 +162,36 @@ public class CourseServiceImpl implements ICourseService {
         } catch (Exception e) {
             e.printStackTrace();
             log.debug("Get all Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetCourseByIdResponse> getCourseById(GetCourseByIdRequest getCourseByIdRequest) {
+        try {
+            Course course = courseRepository.findCourseById(getCourseByIdRequest.getId()).orElse(null);
+            // If course does not exist
+            if ( Objects.isNull(course) ) {
+                log.debug("Get Course By Id failed: Course does not exist");
+                return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST, null);
+            }
+            else {
+                GetCourseByIdResponse response = new GetCourseByIdResponse();
+                response.setId(course.getId());
+                response.setName(course.getName());
+                response.setDescription(course.getDescription());
+                response.setCategory(course.getCategory());
+                response.setPrice(course.getPrice());
+                response.setLinkThumail(course.getLinkThumnail());
+                response.setCreateAt(course.getCreatedAt());
+                response.setDeleted(course.isDeleted());
+
+                log.debug("Get Course by id successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get Course By Id failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }

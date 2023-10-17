@@ -7,11 +7,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.category.AddCategoryRequest;
 import team2.elearningapplication.dto.request.admin.category.DeleteCategoryRequest;
+import team2.elearningapplication.dto.request.admin.category.GetCategoryByIdRequest;
 import team2.elearningapplication.dto.request.admin.category.UpdateCategoryRequest;
-import team2.elearningapplication.dto.response.admin.category.AddCategoryResponse;
-import team2.elearningapplication.dto.response.admin.category.DeleteCategoryResponse;
-import team2.elearningapplication.dto.response.admin.category.FindAllCategoryResponse;
-import team2.elearningapplication.dto.response.admin.category.UpdateCategoryResponse;
+import team2.elearningapplication.dto.response.admin.category.*;
 import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.repository.ICategoryRepository;
 import team2.elearningapplication.service.ICategoryService;
@@ -129,6 +127,31 @@ public class CategoryServiceImpl implements ICategoryService {
         } catch (Exception e) {
             e.printStackTrace();
             log.debug("Get all Category failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetCategoryByIdResponse> getCategoryBYId(GetCategoryByIdRequest getCategoryByIdRequest) {
+        try {
+            Category category = categoryRepository.findCategoryById(getCategoryByIdRequest.getId()).orElse(null);
+            // if category is null -> tell the user
+            if (Objects.isNull(category)) {
+                log.debug("Get Category by id failed: Category does not exist");
+                return new ResponseCommon<>(ResponseCode.CATEGORY_NOT_EXIST, null);
+            }
+            else {
+                GetCategoryByIdResponse response = new GetCategoryByIdResponse();
+                response.setId(category.getId());
+                response.setName(category.getName());
+                response.setDeleted(category.isDeleted());
+
+                log.debug("Get Category By id successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get Category by id failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }

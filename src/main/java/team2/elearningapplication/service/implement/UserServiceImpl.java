@@ -1,12 +1,14 @@
 package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.user.GetUserByEmailRequest;
 import team2.elearningapplication.dto.request.user.*;
 import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.Mail;
@@ -17,17 +19,18 @@ import team2.elearningapplication.security.UserDetailsImpl;
 import team2.elearningapplication.security.jwt.JWTResponse;
 import team2.elearningapplication.security.jwt.JWTUtils;
 import team2.elearningapplication.service.IUserService;
+import team2.elearningapplication.service.email.EmailService;
 import team2.elearningapplication.utils.CommonUtils;
 import java.time.LocalDateTime;
 import java.util.*;
 
-
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
     private final EmailService emailService;
+    private final PasswordService passwordService;
+    private final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Value("minhnnde258@gmail.com")
     private String mailFrom;
@@ -54,7 +57,8 @@ public class UserServiceImpl implements IUserService {
                 user = new User();
             }
             user.setUsername(genUserFromEmail(requestDTO.getEmail()));
-            user.setPassword(requestDTO.getPassword());
+            String hassPass = passwordService.hashPassword(requestDTO.getPassword());
+            user.setPassword(hassPass);
             user.setEmail(requestDTO.getEmail());
             user.setPhone(requestDTO.getPhone());
             user.setRole(requestDTO.getRole());
@@ -154,13 +158,13 @@ public class UserServiceImpl implements IUserService {
             // step1: gen otp
             // if otp of user expried
             LocalDateTime localDateTime = LocalDateTime.now();
-            if(!Objects.isNull(user.getExpiredOTP()) && localDateTime.isBefore(user.getExpiredOTP())){
-                log.info("START... Sending email");
-                emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
-                log.info("END... Email sent success");
-                GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
-                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
-            }
+//            if(!Objects.isNull(user.getExpiredOTP()) && localDateTime.isBefore(user.getExpiredOTP())){
+//                log.info("START... Sending email");
+//                emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
+//                log.info("END... Email sent success");
+//                GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
+//                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+//            }
             String otp = CommonUtils.getOTP();
             //step2: send email
             log.info("START... Sending email");
@@ -288,6 +292,41 @@ public class UserServiceImpl implements IUserService {
         } catch (Exception e) {
             log.error("Error while updating user profile for email: {}", changeProfileRequest.getEmail(), e);
             return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetUserByEmailResponse> getUserByEmail(GetUserByEmailRequest getUserByEmailRequest) {
+        try {
+            User user = userRepository.findByEmail(getUserByEmailRequest.getEmail()).orElse(null);
+            // If user in database not exist -> tell user
+            if ( Objects.isNull(user) ) {
+                log.debug("User not exist");
+                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND.getCode(),"User not exist",null);
+            }
+            else {
+                GetUserByEmailResponse response = new GetUserByEmailResponse();
+
+                response.setId(user.getId());
+                response.setUsername(user.getUsername());
+                response.setPassword(user.getPassword());
+                response.setEmail(user.getEmail());
+                response.setPhone(user.getPhone());
+                response.setRole(user.getRole());
+                response.setCreatedAt(user.getCreatedAt());
+                response.setFullName(user.getFullName());
+                response.setGender(user.getGender());
+                response.setDate_of_birth(user.getDate_of_birth());
+                response.setStatus(user.getStatus());
+
+                log.debug("Get user by email successfully");
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Get user by email success", response);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get user by email failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get user by email failed",null);
         }
     }
 }

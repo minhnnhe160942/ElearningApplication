@@ -9,11 +9,9 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.answer.AnswerData;
 import team2.elearningapplication.dto.request.admin.answer.DeleteAnswerRequest;
+import team2.elearningapplication.dto.request.admin.answer.GetAnswerByIdRequest;
 import team2.elearningapplication.dto.request.admin.answer.UpdateAnswerRequest;
-import team2.elearningapplication.dto.response.admin.answer.AddAnswerResponse;
-import team2.elearningapplication.dto.response.admin.answer.DeleteAnswerResponse;
-import team2.elearningapplication.dto.response.admin.answer.FindAllAnswerResponse;
-import team2.elearningapplication.dto.response.admin.answer.UpdateAnswerResponse;
+import team2.elearningapplication.dto.response.admin.answer.*;
 import team2.elearningapplication.service.IAnswerService;
 
 import javax.validation.Valid;
@@ -83,6 +81,21 @@ public class AnswerController {
         } else {
             log.error("findAllAnswer: Find all answers failed.");
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all answers failed", null));
+        }
+    }
+
+    @GetMapping("/get-answer-by-id")
+    public ResponseEntity<ResponseCommon<GetAnswerByIdResponse>> getAnswerById(GetAnswerByIdRequest request) {
+        ResponseCommon<GetAnswerByIdResponse> response = answerService.getAnswerById(request);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            log.debug("Get answers by id successfully.");
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.ANSWER_NOT_EXIST.getCode()) {
+            log.debug("Answer not exist.");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Answer not exist", null));
+        } else {
+            log.error("Get answers by id failed.");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get answers by id failed", null));
         }
     }
 }
