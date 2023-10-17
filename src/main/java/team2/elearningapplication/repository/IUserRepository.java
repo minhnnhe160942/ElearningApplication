@@ -16,7 +16,7 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByEmail(String email);
 
-    @Query(value = "SELECT COUNT(*) FROM users", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM users WHERE deleted = false", nativeQuery = true)
     int getTotalUser();
 
 }

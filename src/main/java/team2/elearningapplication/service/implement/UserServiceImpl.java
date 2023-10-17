@@ -339,7 +339,7 @@ public class UserServiceImpl implements IUserService {
     public ResponseCommon<GetTotalUserResponse> getTotalUser() {
         try {
             int totalUser = userRepository.getTotalUser();
-            GetTotalUserResponse getTotalUserResponse = new GetTotalUserResponse(totalUser)
+            GetTotalUserResponse getTotalUserResponse = new GetTotalUserResponse(totalUser);
             return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total user success",getTotalUserResponse);
         } catch (Exception e) {
             e.printStackTrace();
