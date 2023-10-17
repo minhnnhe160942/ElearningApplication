@@ -10,7 +10,9 @@ import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
+import team2.elearningapplication.dto.request.user.course.GetAllCourseByUserRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
+import team2.elearningapplication.dto.response.user.course.GetCourseByUserResponse;
 import team2.elearningapplication.dto.response.user.course.GetNewestCourseResponse;
 import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
 import team2.elearningapplication.service.ICourseService;
@@ -117,9 +119,22 @@ public class CourseController {
         if(response.getCode() == ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
         } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get top course success",response.getData()));
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get newest course success",response.getData()));
         } else {
-            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get top course fail",null));
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get newest course fail",null));
+        }
+    }
+
+    @GetMapping("get-course-user")
+    public ResponseEntity<ResponseCommon<GetCourseByUserResponse>> getCourseByUser(GetAllCourseByUserRequest getAllCourseByUserRequest){
+        ResponseCommon<GetCourseByUserResponse> response = courseService.getCourseByUser(getAllCourseByUserRequest.getUsername());
+        // if response code quals empty list code -> tell user
+        if(response.getCode() == ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
+        } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get course success",response.getData()));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get course fail",null));
         }
     }
 }

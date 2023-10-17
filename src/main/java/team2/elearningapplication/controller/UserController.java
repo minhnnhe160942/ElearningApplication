@@ -199,4 +199,14 @@ public class UserController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get user by email failed", null));
         }
     }
+
+    @PostMapping("/log-out")
+    public ResponseEntity<ResponseCommon<LogOutResponse>> logOut(LogOutRequest logOutRequest){
+        ResponseCommon<LogOutResponse> response = userService.logOut(logOutRequest);
+        if(response.getCode()==ResponseCode.FAIL.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"LogOut fail",null));
+        } else {
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"LogOut fail",null));
+        }
+    }
 }

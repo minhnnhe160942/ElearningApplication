@@ -124,27 +124,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User getUserById(int id) {
-        Optional<User> user = userRepository.findById(id);
-        return user.orElse(null);
-    }
-
-    @Override
     public User getUserByUsername(String username) {
         User user = userRepository.findByUsername(username).orElse(null);
         return user;
-    }
-
-
-
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public void deleteUser(int id) {
-        userRepository.deleteById(id);
     }
 
     @Override
@@ -206,6 +188,7 @@ public class UserServiceImpl implements IUserService {
                     UserDetailsImpl userDetails = UserDetailsImpl.build(user.get());
                     String accessToken = utils.generateAccessToken(userDetails);
                     String refreshToken = utils.generateRefreshToken(userDetails);
+                    user.orElse(null).setSession_id(CommonUtils.getSessionID());
                     return new ResponseCommon<>(new JWTResponse(accessToken, refreshToken, ResponseCode.SUCCESS.getMessage()));
 //
                 }
@@ -328,6 +311,24 @@ public class UserServiceImpl implements IUserService {
             e.printStackTrace();
             log.error("Get user by email failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get user by email failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<LogOutResponse> logOut(LogOutRequest logOutRequest) {
+        try {
+            User user = userRepository.findByUsername(logOutRequest.getUsername()).orElse(null);
+            if(!Objects.isNull(user)){
+                user.setSession_id(null);
+                userRepository.save(user);
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Logout successful", null);
+            } else {
+                return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Logout failed", null);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("Log out failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Log out failed",null);
         }
     }
 }

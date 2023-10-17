@@ -15,8 +15,10 @@ import team2.elearningapplication.dto.response.user.course.GetNewestCourseRespon
 import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
 import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.entity.Course;
+import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.ICategoryRepository;
 import team2.elearningapplication.repository.ICourseRepository;
+import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.service.ICourseService;
 
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ import java.util.Optional;
 public class CourseServiceImpl implements ICourseService {
     private final ICourseRepository courseRepository;
     private final ICategoryRepository categoryRepository;
+    private final IUserRepository userRepository;
 
     @Override
     public ResponseCommon<AddCourseResponse> addCourse(AddCourseRequest addCourseRequest) {
@@ -237,6 +240,21 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public ResponseCommon<GetCourseByUserResponse> getCourseByUser(String username) {
-        return null;
+        try {
+            User user = userRepository.findByUsername(username).orElse(null);
+            List<Course> courseList = courseRepository.getCoursesByUserId(user.getId());
+            // if courseList is empty -> tell user
+            if(courseList.isEmpty()){
+                return new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"User not enroll any course",null);
+            } else {
+                GetCourseByUserResponse getCourseByUserResponse = new GetCourseByUserResponse(courseList);
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get course by user success",getCourseByUserResponse);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get Newest Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
     }
 }

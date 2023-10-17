@@ -14,12 +14,6 @@ public interface IUserService {
 
     User updateUser(User user);
 
-    User getUserById(int id);
-
-    List<User> getAllUsers();
-
-    void deleteUser(int id);
-
     ResponseCommon<GetOTPResponse> getOtp(GetOTPRequest request);
 
     ResponseCommon<JWTResponse> login(LoginRequest loginRequest);
@@ -35,4 +29,6 @@ public interface IUserService {
     ResponseCommon<ChangeProfileResponse> changeProfile(ChangeProfileRequest changeProfileRequest);
 
     ResponseCommon<GetUserByEmailResponse> getUserByEmail(GetUserByEmailRequest getUserByEmailRequest);
+
+    ResponseCommon<LogOutResponse> logOut(LogOutRequest logOutRequest);
 }
