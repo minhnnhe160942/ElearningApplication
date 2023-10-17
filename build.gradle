@@ -37,8 +37,8 @@ dependencies {
     implementation 'com.auth0:java-jwt:4.4.0'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.security:spring-security-test'
-
-
+    implementation 'org.springframework.boot:spring-boot-starter-activemq'
+    implementation group: 'org.springframework', name: 'spring-jms', version: '6.0.12'
     /**
      * Spring Doc
      */

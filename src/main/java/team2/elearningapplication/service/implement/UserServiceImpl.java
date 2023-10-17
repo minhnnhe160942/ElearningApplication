@@ -10,10 +10,8 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.user.GetUserByEmailRequest;
 import team2.elearningapplication.dto.request.user.*;
-import team2.elearningapplication.dto.response.admin.quiz.GetQuizByIdResponse;
 import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.Mail;
-import team2.elearningapplication.entity.Quiz;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.security.SecurityUtils;
@@ -21,6 +19,7 @@ import team2.elearningapplication.security.UserDetailsImpl;
 import team2.elearningapplication.security.jwt.JWTResponse;
 import team2.elearningapplication.security.jwt.JWTUtils;
 import team2.elearningapplication.service.IUserService;
+import team2.elearningapplication.service.email.EmailService;
 import team2.elearningapplication.utils.CommonUtils;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -159,13 +158,13 @@ public class UserServiceImpl implements IUserService {
             // step1: gen otp
             // if otp of user expried
             LocalDateTime localDateTime = LocalDateTime.now();
-            if(!Objects.isNull(user.getExpiredOTP()) && localDateTime.isBefore(user.getExpiredOTP())){
-                log.info("START... Sending email");
-                emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
-                log.info("END... Email sent success");
-                GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
-                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
-            }
+//            if(!Objects.isNull(user.getExpiredOTP()) && localDateTime.isBefore(user.getExpiredOTP())){
+//                log.info("START... Sending email");
+//                emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
+//                log.info("END... Email sent success");
+//                GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
+//                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+//            }
             String otp = CommonUtils.getOTP();
             //step2: send email
             log.info("START... Sending email");

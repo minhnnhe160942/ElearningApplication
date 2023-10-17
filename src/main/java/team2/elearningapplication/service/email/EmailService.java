@@ -1,4 +1,4 @@
-package team2.elearningapplication.service.implement;
+package team2.elearningapplication.service.email;
 
 import javax.mail.internet.MimeMessage;
 
@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -21,6 +22,7 @@ public class EmailService {
     private final TemplateEngine templateEngine;
 
     @SneakyThrows
+    @Async
     public void sendEmail(Mail mail) {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,
