@@ -11,6 +11,7 @@ import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
+import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
 import team2.elearningapplication.service.ICourseService;
 
 import javax.validation.Valid;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class CourseController {
     private ICourseService courseService;
+    private final int TOP_COURSE = 5;
 
     @PostMapping("/add-course")
     public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
@@ -91,6 +93,19 @@ public class CourseController {
         } // else -> return fail
         else{
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL,null));
+        }
+    }
+
+    @GetMapping("get-top-course")
+    public ResponseEntity<ResponseCommon<GetTopCourseResponse>> getTopCourse(){
+        ResponseCommon<GetTopCourseResponse> response = courseService.getTopCourse(TOP_COURSE);
+        // if response code quals empty list code -> tell user
+        if(response.getCode() == ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
+        } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get top course success",response.getData()));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get top course fail",null));
         }
     }
 }

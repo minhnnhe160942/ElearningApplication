@@ -255,7 +255,8 @@ public class UserServiceImpl implements IUserService {
                 if(!changePasswordRequest.getOldPassword().equals(user.getPassword())){
                     return new ResponseCommon<>(ResponseCode.PASSWORD_INCORRECT,null);
                 } else {
-                    user.setPassword(changePasswordRequest.getNewPassword());
+                    String hassPass = passwordService.hashPassword(changePasswordRequest.getNewPassword());
+                    user.setPassword(hassPass);
                     userRepository.save(user);
                     return new ResponseCommon<>(ResponseCode.SUCCESS,null);
                 }
