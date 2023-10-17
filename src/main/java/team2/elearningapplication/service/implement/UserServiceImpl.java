@@ -10,6 +10,7 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.user.GetUserByEmailRequest;
 import team2.elearningapplication.dto.request.user.*;
+import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
 import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.Mail;
 import team2.elearningapplication.entity.User;
@@ -331,6 +332,19 @@ public class UserServiceImpl implements IUserService {
             e.printStackTrace();
             log.error("Log out failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Log out failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetTotalUserResponse> getTotalUser() {
+        try {
+            int totalUser = userRepository.getTotalUser();
+            GetTotalUserResponse getTotalUserResponse = new GetTotalUserResponse(totalUser)
+            return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total user success",getTotalUserResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get total user failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total user failed",null);
         }
     }
 }
