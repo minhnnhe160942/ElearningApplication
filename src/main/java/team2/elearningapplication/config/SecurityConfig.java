@@ -31,12 +31,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/user/send-otp-forgot-password",
                 "/api/v1/user/verify-otp-forgotPass",
                 "/api/v1/user/change-profile",
+                "/api/v1/user/log-out",
                 "/api-docs",
                 "/swagger-ui",
+
+
                 "/api/v1/course/add-course",
                 "/api/v1/course/update-course",
                 "/api/v1/course/delete-course",
                 "/api/v1/course/find-all-course",
+                "/api/v1/course/get-top-course",
+                "/api/v1/course/get-newest-course",
+                "/api/v1/course/get-course-user",
+
+
+
                 "/api/v1/category/add-category",
                 "/api/v1/category/update-category",
                 "/api/v1/category/delete-category",

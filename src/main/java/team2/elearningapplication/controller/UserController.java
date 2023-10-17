@@ -21,6 +21,7 @@ import team2.elearningapplication.security.UserDetailsImpl;
 import team2.elearningapplication.security.jwt.JWTResponse;
 import team2.elearningapplication.security.jwt.JWTUtils;
 import team2.elearningapplication.service.IUserService;
+import team2.elearningapplication.service.implement.PasswordService;
 
 import javax.validation.Valid;
 import java.util.Objects;
@@ -33,6 +34,7 @@ public class UserController {
 
     private IUserService userService;
     private final JWTUtils jwtUtils;
+    private final PasswordService passwordService;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/register")
@@ -116,7 +118,8 @@ public class UserController {
         VerifyOtpRequest request = new VerifyOtpRequest(forgotPasswordRequest.getOtp(), user.getEmail());
         ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
         if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
-            user.setPassword(forgotPasswordRequest.getPassword());
+            String hassPass = passwordService.hashPassword(forgotPasswordRequest.getPassword());
+            user.setPassword(hassPass);
             userService.updateUser(user);
             return ResponseEntity.ok(response);
         }
@@ -161,7 +164,9 @@ public class UserController {
             return ResponseEntity.ok(response);
         }
     }
-
+    @Operation(
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
     @PutMapping("/change-profile")
     public ResponseEntity<ResponseCommon<ChangeProfileResponse>> changeProfile(@Valid @RequestBody ChangeProfileRequest changeProfileRequest) {
         ResponseCommon<ChangeProfileResponse> response = userService.changeProfile(changeProfileRequest);
@@ -192,6 +197,16 @@ public class UserController {
         } else {
             log.error("Get user by email failed");
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get user by email failed", null));
+        }
+    }
+
+    @PostMapping("/log-out")
+    public ResponseEntity<ResponseCommon<LogOutResponse>> logOut(LogOutRequest logOutRequest){
+        ResponseCommon<LogOutResponse> response = userService.logOut(logOutRequest);
+        if(response.getCode()==ResponseCode.FAIL.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"LogOut fail",null));
+        } else {
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"LogOut success",null));
         }
     }
 }

@@ -50,4 +50,6 @@ public class User {
     private EnumUserStatus status;
     @Column(name = "otp")
     private String otp;
+    @Column(name="session_id")
+    private Integer session_id;
 }
