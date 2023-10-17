@@ -179,8 +179,9 @@ public class UserServiceImpl implements IUserService {
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
             } // else -> check password
             else {
+                String hashPass = passwordService.hashPassword(loginRequest.getPassword());
                 // if password not equals password in database -> return fail
-                if (!user.orElse(null).getPassword().equals(loginRequest.getPassword())) {
+                if (!user.orElse(null).getPassword().equals(hashPass)) {
                     return new ResponseCommon<>(ResponseCode.PASSWORD_INCORRECT, null);
                 } // else -> verify otp
                 else {
@@ -189,6 +190,7 @@ public class UserServiceImpl implements IUserService {
                     String accessToken = utils.generateAccessToken(userDetails);
                     String refreshToken = utils.generateRefreshToken(userDetails);
                     user.orElse(null).setSession_id(CommonUtils.getSessionID());
+                    userRepository.save(user.get());
                     return new ResponseCommon<>(new JWTResponse(accessToken, refreshToken, ResponseCode.SUCCESS.getMessage()));
 //
                 }

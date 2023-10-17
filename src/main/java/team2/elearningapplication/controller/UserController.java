@@ -206,7 +206,7 @@ public class UserController {
         if(response.getCode()==ResponseCode.FAIL.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"LogOut fail",null));
         } else {
-            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"LogOut fail",null));
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"LogOut success",null));
         }
     }
 }
