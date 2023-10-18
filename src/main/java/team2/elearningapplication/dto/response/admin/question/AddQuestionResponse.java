@@ -16,10 +16,5 @@ import java.util.List;
 @Getter
 @Setter
 public class AddQuestionResponse {
-    @NotNull
-    private int questionID;
-    @NotBlank
-    private String questionName;
-    @NotNull
-    private int quizID;
+    private boolean success = true;
 }
