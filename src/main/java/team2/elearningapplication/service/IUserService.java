@@ -34,4 +34,6 @@ public interface IUserService {
     ResponseCommon<LogOutResponse> logOut(LogOutRequest logOutRequest);
 
     ResponseCommon<GetTotalUserResponse> getTotalUser();
+
+    ResponseCommon<ResendOTPResponse> resendOTP(ResendOTPRequest request);
 }

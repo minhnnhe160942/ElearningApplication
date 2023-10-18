@@ -84,6 +84,16 @@ public class UserController {
         }
     }
 
+    @PostMapping("/resendOTP")
+    public ResponseEntity<ResponseCommon<ResendOTPResponse>> resendOTP(@Valid @RequestBody ResendOTPRequest request) {
+        ResponseCommon<ResendOTPResponse> responseDTO = userService.resendOTP(request);
+        if (responseDTO.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(responseDTO);
+        } else {
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ResponseCommon<JWTResponse>> login(@RequestBody LoginRequest loginRequest) {
         ResponseCommon<JWTResponse> response = userService.login(loginRequest);
@@ -119,15 +129,15 @@ public class UserController {
         }
         VerifyOtpRequest request = new VerifyOtpRequest(forgotPasswordRequest.getOtp(), user.getEmail());
         ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
-        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+        if(response.getCode()==ResponseCode.Expired_OTP.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.Expired_OTP.getCode(),"Expried otp",null));
+        } else if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
             String hassPass = passwordService.hashPassword(forgotPasswordRequest.getPassword());
             user.setPassword(hassPass);
             userService.updateUser(user);
             return ResponseEntity.ok(response);
         }
-        else if(response.getCode()==ResponseCode.Expired_OTP.getCode()){
-            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.Expired_OTP.getCode(),"Expried otp",null));
-        } else if(response.getCode() == ResponseCode.OTP_INCORRECT.getCode()){
+        else if(response.getCode() == ResponseCode.OTP_INCORRECT.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.OTP_INCORRECT.getCode(),"OTP incorrect",null));
         }
         else {

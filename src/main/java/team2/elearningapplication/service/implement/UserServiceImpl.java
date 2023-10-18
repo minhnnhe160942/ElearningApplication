@@ -240,7 +240,7 @@ public class UserServiceImpl implements IUserService {
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
             } else {
                 // if oldPassword not correct -> tell user
-                if(!changePasswordRequest.getOldPassword().equals(user.getPassword())){
+                if(!passwordService.hashPassword(changePasswordRequest.getOldPassword()).equals(user.getPassword())){
                     return new ResponseCommon<>(ResponseCode.PASSWORD_INCORRECT,null);
                 } else {
                     String hassPass = passwordService.hashPassword(changePasswordRequest.getNewPassword());
@@ -347,6 +347,29 @@ public class UserServiceImpl implements IUserService {
             e.printStackTrace();
             log.error("Get total user failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total user failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<ResendOTPResponse> resendOTP(ResendOTPRequest request) {
+        try {
+            User user = userRepository.findByUsername(genUserFromEmail(request.getEmail())).orElse(null);
+            LocalDateTime localDateTime = LocalDateTime.now();
+            String otp = CommonUtils.getOTP();
+            //step2: send email
+            log.info("START... Sending email");
+            emailService.sendEmail(setUpMail(user.getEmail(),otp));
+            log.info("END... Email sent success");
+            user.setUsername(genUserFromEmail(request.getEmail()));
+
+            LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
+            log.debug("Value of expired{}",expired);
+            user.setExpiredOTP(expired);
+            user.setOtp(otp);
+            return new ResponseCommon<>(ResponseCode.SUCCESS, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
 }
