@@ -9,6 +9,7 @@ import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.GetCourseByUserResponse;
 import team2.elearningapplication.dto.response.user.course.GetNewestCourseResponse;
 import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
+import team2.elearningapplication.dto.response.user.course.GetTotalCourseResponse;
 
 public interface ICourseService {
     ResponseCommon<AddCourseResponse> addCourse(AddCourseRequest addCourseRequest);
@@ -25,5 +26,7 @@ public interface ICourseService {
     ResponseCommon<GetNewestCourseResponse> getNewestCourse(int numberCourse);
 
     ResponseCommon<GetCourseByUserResponse> getCourseByUser(String username);
+
+    ResponseCommon<GetTotalCourseResponse> getTotalCourse();
 
 }

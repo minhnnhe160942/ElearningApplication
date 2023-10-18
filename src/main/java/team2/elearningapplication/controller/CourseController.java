@@ -15,6 +15,7 @@ import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.GetCourseByUserResponse;
 import team2.elearningapplication.dto.response.user.course.GetNewestCourseResponse;
 import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
+import team2.elearningapplication.dto.response.user.course.GetTotalCourseResponse;
 import team2.elearningapplication.service.ICourseService;
 
 import javax.validation.Valid;
@@ -135,6 +136,19 @@ public class CourseController {
             return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get course success",response.getData()));
         } else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get course fail",null));
+        }
+    }
+
+    @GetMapping("get-total-course")
+    public ResponseEntity<ResponseCommon<GetTotalCourseResponse>> getCourseByUser(){
+        ResponseCommon<GetTotalCourseResponse> response = courseService.getTotalCourse();
+        // if response code quals empty list code -> tell user
+        if(response.getCode() == ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
+        } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total course success",response.getData()));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total course fail",null));
         }
     }
 }

@@ -44,6 +44,8 @@ dependencies {
      */
     implementation "org.springdoc:springdoc-openapi-ui:1.7.0"
     implementation "org.springdoc:springdoc-openapi-data-rest:1.7.0"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {

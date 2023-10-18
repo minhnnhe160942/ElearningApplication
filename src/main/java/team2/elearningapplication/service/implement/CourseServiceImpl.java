@@ -13,6 +13,7 @@ import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.GetCourseByUserResponse;
 import team2.elearningapplication.dto.response.user.course.GetNewestCourseResponse;
 import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
+import team2.elearningapplication.dto.response.user.course.GetTotalCourseResponse;
 import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.entity.Course;
 import team2.elearningapplication.entity.User;
@@ -254,6 +255,19 @@ public class CourseServiceImpl implements ICourseService {
         } catch (Exception e) {
             e.printStackTrace();
             log.debug("Get Newest Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetTotalCourseResponse> getTotalCourse() {
+        try {
+            int totalCourse = courseRepository.getTotalCourse();
+            GetTotalCourseResponse getTotalCourseResponse = new GetTotalCourseResponse(totalCourse);
+            return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total course success",getTotalCourseResponse);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get Total Course failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }

@@ -31,4 +31,7 @@ public interface ICourseRepository extends JpaRepository<Course, Integer> {
             "WHERE hrc.user_id = :userId", nativeQuery = true)
     List<Course> getCoursesByUserId(@Param("userId") int userId);
 
+    @Query("SELECT COUNT(c) FROM Course c")
+    int getTotalCourse();
+
 }
