@@ -9,6 +9,7 @@ import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
+import team2.elearningapplication.dto.common.PageRequest;
 import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
@@ -23,7 +24,6 @@ import team2.elearningapplication.service.ICourseService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -288,4 +288,15 @@ public class CourseServiceImpl implements ICourseService {
         }
     }
 
+    @Override
+    public ResponseCommon<PageCourseResponse> getAllCoursePage(PageRequest pageRequest) {
+        try {
+return null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get  Course page  failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
 }

@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/user/change-profile",
                 "/api/v1/user/log-out",
                 "/api/v1/user/total-user",
+                "/api/v1/user/getOTP",
                 "/api-docs",
                 "/swagger-ui",
 
