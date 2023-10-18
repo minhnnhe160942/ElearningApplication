@@ -9,11 +9,9 @@ import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
+import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
-import team2.elearningapplication.dto.response.user.course.GetCourseByUserResponse;
-import team2.elearningapplication.dto.response.user.course.GetNewestCourseResponse;
-import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
-import team2.elearningapplication.dto.response.user.course.GetTotalCourseResponse;
+import team2.elearningapplication.dto.response.user.course.*;
 import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.entity.Course;
 import team2.elearningapplication.entity.User;
@@ -272,4 +270,21 @@ public class CourseServiceImpl implements ICourseService {
         }
     }
 
+    @Override
+    public ResponseCommon<SearchCourseByNameAndCategoryResponse> searchCourse(SearchCourseByNameAndCategoryRequest searchCourseByNameAndCategoryRequest) {
+        try {
+            List<Course> courseList = courseRepository.searchCoursesByNameOrCategory(searchCourseByNameAndCategoryRequest.getKeyword());
+            // if courseList is empty -> tell user
+            if(courseList.isEmpty()){
+                return new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Not course match with search",null);
+            } else {
+                SearchCourseByNameAndCategoryResponse searchCourseByNameAndCategoryResponse = new SearchCourseByNameAndCategoryResponse(courseList);
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Search success",searchCourseByNameAndCategoryResponse);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get search Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
 }
