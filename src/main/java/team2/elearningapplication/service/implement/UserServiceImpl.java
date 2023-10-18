@@ -133,54 +133,37 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<GetOTPResponse> getOtp(GetOTPRequest request) {
         try {
-            // if user have status in process
             User user = userRepository.findByUsername(genUserFromEmail(request.getEmail())).orElse(null);
-            // if  user is null ->throw error
-            if (Objects.isNull(user)) {
-                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
-            }
-            if(user.getStatus() == EnumUserStatus.IN_PROCESS){
-                LocalDateTime localDateTime = LocalDateTime.now();
-                String otp = CommonUtils.getOTP();
-                //step2: send email
-                log.info("START... Sending email");
-                emailService.sendEmail(setUpMail(user.getEmail(),otp));
-                log.info("END... Email sent success");
-                user.setUsername(genUserFromEmail(request.getEmail()));
-                LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
-                log.debug("Value of expired{}",expired);
-                user.setExpiredOTP(expired);
-                user.setOtp(otp);
-                User createdUser = userRepository.save(user);
-                GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
-                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
 
-            } else if(user.getStatus() == EnumUserStatus.ACTIVE){
-                LocalDateTime localDateTime = LocalDateTime.now();
-                String otp = CommonUtils.getOTP();
-                //step2: send email
-                log.info("START... Sending email");
-                emailService.sendEmail(setUpMail(user.getEmail(),otp));
-                log.info("END... Email sent success");
-                user.setUsername(genUserFromEmail(request.getEmail()));
-                if (request.isCreate()) {
-                    user.setStatus(EnumUserStatus.IN_PROCESS);
-                }
-                LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
-                log.debug("Value of expired{}",expired);
-                user.setExpiredOTP(expired);
-                user.setOtp(otp);
-                User createdUser = userRepository.save(user);
-                GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
-                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
-            } else {
-                return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get OTP fail",null);
+            if (Objects.isNull(user)) {
+                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND, null);
             }
+
+            LocalDateTime localDateTime = LocalDateTime.now();
+            String otp = CommonUtils.getOTP();
+            log.info("START... Sending email");
+            emailService.sendEmail(setUpMail(user.getEmail(), otp));
+            log.info("END... Email sent success");
+
+            user.setUsername(genUserFromEmail(request.getEmail()));
+            LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
+            log.debug("Value of expired{}", expired);
+            user.setExpiredOTP(expired);
+            user.setOtp(otp);
+
+            if (user.getStatus() == EnumUserStatus.IN_PROCESS || (user.getStatus() == EnumUserStatus.ACTIVE && request.isCreate())) {
+                user.setStatus(EnumUserStatus.IN_PROCESS);
+            }
+
+            User createdUser = userRepository.save(user);
+            GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
+            return new ResponseCommon<>(ResponseCode.SUCCESS, response);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
+
 
 
     @Override
