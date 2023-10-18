@@ -74,6 +74,8 @@ public class UserController {
         }
     }
 
+
+
     @PostMapping("/getOTP")
     public ResponseEntity<ResponseCommon<GetOTPResponse>> getOTP(@Valid @RequestBody GetOTPRequest request) {
         ResponseCommon<GetOTPResponse> responseDTO = userService.getOtp(request);

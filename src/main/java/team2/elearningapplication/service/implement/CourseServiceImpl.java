@@ -2,6 +2,7 @@ package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.converters.models.Sort;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
@@ -9,6 +10,7 @@ import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
+import team2.elearningapplication.dto.request.user.PageRequest;
 import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
@@ -288,4 +290,15 @@ public class CourseServiceImpl implements ICourseService {
         }
     }
 
+    @Override
+    public ResponseCommon<PageCourseResponse> getAllCoursePage(PageRequest pageRequest) {
+        try {
+return null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get  Course page  failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
 }
