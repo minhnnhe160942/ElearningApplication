@@ -13,12 +13,5 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class UpdateQuestionResponse {
-    @NotNull
-    private int questionID;
-    @NotNull
-    private int quizID;
-    @NotBlank
-    private String questionName;
-    @NotNull
-    private EnumQuestionType questionType;
+    private boolean success = true;
 }

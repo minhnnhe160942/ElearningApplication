@@ -24,6 +24,6 @@ public class QuestionData {
     private EnumQuestionType questionType;
     @NotBlank
     private String questionName;
-//    @NotEmpty
-//    private List<Answer> listAnswer;
+    @NotEmpty
+    private List<Answer> listAnswer;
 }
