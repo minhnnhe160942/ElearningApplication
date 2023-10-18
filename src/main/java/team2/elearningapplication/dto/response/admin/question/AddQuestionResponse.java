@@ -22,6 +22,4 @@ public class AddQuestionResponse {
     private String questionName;
     @NotNull
     private int quizID;
-    @NotEmpty
-    private List<Answer> answerList;
 }

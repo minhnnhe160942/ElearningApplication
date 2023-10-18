@@ -41,31 +41,21 @@ public class QuestionServiceImpl implements IQuestionService {
                 log.debug("addQuestion: Question already exists.");
                 return new ResponseCommon<>(ResponseCode.QUESTION_EXIST.getCode(), "Question exist", null);
             } else {
-                List<Answer> answerList = new ArrayList<>();
-                List<AnswerData> answerDataList = questionData.getListAnswer();
-
-                // Create and save answers
-                for (AnswerData answerData : answerDataList) {
-                    Answer answer = new Answer();
-                    answer.setAnswerContent(answerData.getAnswerName());
-                    answer.setCorrect(answerData.isCorrect());
-                    answer.setQuestionId(answerData.getQuestionID());
-                    answerList.add(answer);
-                }
+//                List<Answer> answerList =  questionData.getListAnswer();
 
                 // Create and save the question
                 Question questionAdd = new Question();
                 questionAdd.setQuestionName(questionData.getQuestionName());
                 questionAdd.setQuestionType(questionData.getQuestionType());
                 questionAdd.setQuizID(questionData.getQuizID());
-                questionAdd.setAnswerList(answerList);
+//                questionAdd.setAnswerList(answerList);
                 questionRepository.save(questionAdd);
 
                 // Create and return a success response
                 AddQuestionResponse addQuestionResponse = new AddQuestionResponse();
                 addQuestionResponse.setQuestionID(questionAdd.getId());
                 addQuestionResponse.setQuestionName(question.getQuestionName());
-                addQuestionResponse.setAnswerList(questionAdd.getAnswerList());
+//                addQuestionResponse.setAnswerList(questionAdd.getAnswerList());
                 addQuestionResponse.setQuizID(question.getQuizID());
 
                 log.debug("addQuestion: Question added successfully.");

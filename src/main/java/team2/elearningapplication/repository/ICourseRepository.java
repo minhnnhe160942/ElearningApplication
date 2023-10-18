@@ -37,6 +37,8 @@ public interface ICourseRepository extends JpaRepository<Course, Integer> {
             "WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(c.category.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Course> searchCoursesByNameOrCategory(@Param("keyword") String keyword);
+
+
 }
 
 

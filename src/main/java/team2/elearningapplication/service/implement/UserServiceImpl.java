@@ -216,8 +216,10 @@ public class UserServiceImpl implements IUserService {
                 return new ResponseCommon<>(ResponseCode.SUCCESS,null);
             }
             // else -> return fail
-            else {
-//                log.debug("verify otp fail");
+            else if(!verifyOtpRequest.getOtp().equals(user.getOtp())){
+                 return new ResponseCommon<>(ResponseCode.OTP_INCORRECT,null);
+
+            } else {
                 return new ResponseCommon<>(ResponseCode.Expired_OTP,null);
             }
         } catch (Exception e){
