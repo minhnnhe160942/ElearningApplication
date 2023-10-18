@@ -39,6 +39,9 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'org.springframework.boot:spring-boot-starter-activemq'
     implementation group: 'org.springframework', name: 'spring-jms', version: '6.0.12'
+    // https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44
+    implementation group: 'com.cloudinary', name: 'cloudinary-http44', version: '1.33.0'
+
     /**
      * Spring Doc
      */
