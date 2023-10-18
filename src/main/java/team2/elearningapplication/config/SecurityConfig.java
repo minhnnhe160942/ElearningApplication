@@ -56,6 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/lesson/update-lesson",
                 "/api/v1/lesson/delete-lesson",
                 "/api/v1/lesson/find-all-lesson",
+
+                "/api/v1/question/add-question",
+                "/api/v1/quiz/add-quiz",
                 "/swagger-ui/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

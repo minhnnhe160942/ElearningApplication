@@ -54,9 +54,9 @@ public class QuestionServiceImpl implements IQuestionService {
                 // Create and return a success response
                 AddQuestionResponse addQuestionResponse = new AddQuestionResponse();
                 addQuestionResponse.setQuestionID(questionAdd.getId());
-                addQuestionResponse.setQuestionName(question.getQuestionName());
+                addQuestionResponse.setQuestionName(questionAdd.getQuestionName());
 //                addQuestionResponse.setAnswerList(questionAdd.getAnswerList());
-                addQuestionResponse.setQuizID(question.getQuizID());
+                addQuestionResponse.setQuizID(questionAdd.getQuizID());
 
                 log.debug("addQuestion: Question added successfully.");
                 return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Add question success", addQuestionResponse);
