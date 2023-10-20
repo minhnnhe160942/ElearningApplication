@@ -133,28 +133,34 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<GetOTPResponse> getOtp(GetOTPRequest request) {
         try {
-            User user = userRepository.findByUsername(genUserFromEmail(request.getEmail())).orElse(null);
-
+            User user = userRepository.findByUsernameAndStatus(genUserFromEmail(request.getEmail()), EnumUserStatus.ACTIVE).orElse(null);
+            // if  user is null ->throw error
             if (Objects.isNull(user)) {
-                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND, null);
+                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
             }
-
+            // step1: gen otp
+            // if otp of user expried
             LocalDateTime localDateTime = LocalDateTime.now();
+//            if(!Objects.isNull(user.getExpiredOTP()) && localDateTime.isBefore(user.getExpiredOTP())){
+//                log.info("START... Sending email");
+//                emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
+//                log.info("END... Email sent success");
+//                GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
+//                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+//            }
             String otp = CommonUtils.getOTP();
+            //step2: send email
             log.info("START... Sending email");
-            emailService.sendEmail(setUpMail(user.getEmail(), otp));
+            emailService.sendEmail(setUpMail(user.getEmail(),otp));
             log.info("END... Email sent success");
-
             user.setUsername(genUserFromEmail(request.getEmail()));
-            LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
-            log.debug("Value of expired{}", expired);
-            user.setExpiredOTP(expired);
-            user.setOtp(otp);
-
-            if (user.getStatus() == EnumUserStatus.IN_PROCESS || (user.getStatus() == EnumUserStatus.ACTIVE && request.isCreate())) {
+            if (request.isCreate()) {
                 user.setStatus(EnumUserStatus.IN_PROCESS);
             }
-
+            LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
+            log.debug("Value of expired{}",expired);
+            user.setExpiredOTP(expired);
+            user.setOtp(otp);
             User createdUser = userRepository.save(user);
             GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
             return new ResponseCommon<>(ResponseCode.SUCCESS, response);
@@ -163,7 +169,6 @@ public class UserServiceImpl implements IUserService {
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
-
 
 
     @Override
@@ -228,6 +233,7 @@ public class UserServiceImpl implements IUserService {
     public ResponseCommon<ChangePasswordResponse> changePassword(ChangePasswordRequest changePasswordRequest) {
         try {
             String username = SecurityUtils.getUsernameAuth();
+            System.out.println(username);
             User user = userRepository.findByUsername(username).orElse(null);
             // if user is null -> tell error
             log.debug("change passsword with username{}",username);
@@ -235,9 +241,8 @@ public class UserServiceImpl implements IUserService {
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
             } else {
                 String hassPass = passwordService.hashPassword(changePasswordRequest.getNewPassword());
-
                 // if oldPassword not correct -> tell user
-                if(!changePasswordRequest.getOldPassword().equals(hassPass)){
+                if(!passwordService.hashPassword(changePasswordRequest.getOldPassword()).equals(user.getPassword())){
                     return new ResponseCommon<>(ResponseCode.PASSWORD_INCORRECT,null);
                 } else {
                     user.setPassword(hassPass);
@@ -343,6 +348,30 @@ public class UserServiceImpl implements IUserService {
             e.printStackTrace();
             log.error("Get total user failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total user failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<ResendOTPResponse> resendOTP(ResendOTPRequest request) {
+        try {
+            User user = userRepository.findByUsername(genUserFromEmail(request.getEmail())).orElse(null);
+            LocalDateTime localDateTime = LocalDateTime.now();
+            String otp = CommonUtils.getOTP();
+            //step2: send email
+            log.info("START... Sending email");
+            emailService.sendEmail(setUpMail(user.getEmail(),otp));
+            log.info("END... Email sent success");
+            user.setUsername(genUserFromEmail(request.getEmail()));
+
+            LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
+            log.debug("Value of expired{}",expired);
+            user.setExpiredOTP(expired);
+            user.setOtp(otp);
+            userRepository.save(user);
+            return new ResponseCommon<>(ResponseCode.SUCCESS, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
 }
