@@ -1,6 +1,6 @@
 package team2.elearningapplication.Enum;
 
-public enum EnumTypeProcess {
+public enum EnumTypeProcessAccount {
     NOT_READY,
     IN_PROCESS,
     FINISH
