@@ -1,20 +1,22 @@
 package team2.elearningapplication.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
+import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.request.user.course.GetAllCourseByUserRequest;
+import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
-import team2.elearningapplication.dto.response.user.course.GetCourseByUserResponse;
-import team2.elearningapplication.dto.response.user.course.GetNewestCourseResponse;
-import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
+import team2.elearningapplication.dto.response.user.course.*;
 import team2.elearningapplication.service.ICourseService;
 
 import javax.validation.Valid;
@@ -39,7 +41,7 @@ public class CourseController {
         }
     }
 
-    @PostMapping("update-course")
+    @PostMapping("/update-course")
     public ResponseEntity<ResponseCommon<UpdateCourseResponse>> updateCouse(@Valid @RequestBody UpdateCourseRequest updateCourseRequest){
         ResponseCommon<UpdateCourseResponse> response = courseService.updateCourse(updateCourseRequest);
         // if code of response equal code success -> return ok
@@ -54,7 +56,7 @@ public class CourseController {
         }
     }
 
-    @PostMapping("delete-course")
+    @PostMapping("/delete-course")
     public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
         ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
         // if code of response equal code success -> return ok
@@ -69,7 +71,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("find-all-course")
+    @GetMapping("/find-all-course")
     public ResponseEntity<ResponseCommon<FindAllCourseResponse>> findAllCourse(){
         ResponseCommon<FindAllCourseResponse> response = courseService.findAllCourse();
         // if code response equal code success -> return ok
@@ -84,7 +86,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("get-course-by-id")
+    @GetMapping("/get-course-by-id")
     public ResponseEntity<ResponseCommon<GetCourseByIdResponse>> getCourseById(GetCourseByIdRequest request){
         ResponseCommon<GetCourseByIdResponse> response = courseService.getCourseById(request);
         // if code response equal code success -> return ok
@@ -99,7 +101,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("get-top-course")
+    @GetMapping("/get-top-course")
     public ResponseEntity<ResponseCommon<GetTopCourseResponse>> getTopCourse(){
         ResponseCommon<GetTopCourseResponse> response = courseService.getTopCourse(TOP_COURSE);
         // if response code quals empty list code -> tell user
@@ -112,7 +114,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("get-newest-course")
+    @GetMapping("/get-newest-course")
     public ResponseEntity<ResponseCommon<GetNewestCourseResponse>> getNewestCourse(){
         ResponseCommon<GetNewestCourseResponse> response = courseService.getNewestCourse(TOP_COURSE);
         // if response code quals empty list code -> tell user
@@ -125,7 +127,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("get-course-user")
+    @GetMapping("/get-course-user")
     public ResponseEntity<ResponseCommon<GetCourseByUserResponse>> getCourseByUser(GetAllCourseByUserRequest getAllCourseByUserRequest){
         ResponseCommon<GetCourseByUserResponse> response = courseService.getCourseByUser(getAllCourseByUserRequest.getUsername());
         // if response code quals empty list code -> tell user
@@ -135,6 +137,45 @@ public class CourseController {
             return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get course success",response.getData()));
         } else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get course fail",null));
+        }
+    }
+
+    @GetMapping("/get-total-course")
+    public ResponseEntity<ResponseCommon<GetTotalCourseResponse>> getCourseByUser(){
+        ResponseCommon<GetTotalCourseResponse> response = courseService.getTotalCourse();
+        // if response code quals empty list code -> tell user
+        if(response.getCode() == ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
+        } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total course success",response.getData()));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total course fail",null));
+        }
+    }
+
+    @GetMapping("/search-course")
+    public ResponseEntity<ResponseCommon<SearchCourseByNameAndCategoryResponse>> searchCourse(SearchCourseByNameAndCategoryRequest searchCourseByNameAndCategoryRequest){
+        ResponseCommon<SearchCourseByNameAndCategoryResponse> response = courseService.searchCourse(searchCourseByNameAndCategoryRequest);
+        // if response code quals empty list code -> tell user
+        if(response.getCode() == ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
+        } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Search course success",response.getData()));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Search course fail",null));
+        }
+    }
+
+    @GetMapping("/page-course")
+    public ResponseEntity<ResponseCommon<PageCourseResponse>> coursePage(PageRequestDTO pageRequestDTO){
+        ResponseCommon<PageCourseResponse> response = courseService.getAllCoursePage(pageRequestDTO);
+        // if response code quals empty list code -> tell user
+        if(response.getCode() == ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
+        } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total course success",response.getData()));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total course fail",null));
         }
     }
 }

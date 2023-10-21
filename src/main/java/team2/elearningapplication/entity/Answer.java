@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "answer")
 @Accessors(chain = true)
@@ -27,4 +29,8 @@ public class Answer {
     private int questionId;
     @Column(name="deleted")
     private boolean isDeleted;
+    @Column(name="session_id")
+    private int sessionId;
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
 }

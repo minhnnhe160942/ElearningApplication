@@ -37,5 +37,6 @@ public class Lesson {
     private LocalDateTime createdAt;
     @Column(name="deleted")
     private boolean isDeleted;
-
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
 }

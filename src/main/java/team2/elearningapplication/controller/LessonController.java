@@ -70,7 +70,7 @@ public class LessonController {
     }
 
     @GetMapping("/get-lesson-by-id")
-    public ResponseEntity<ResponseCommon<GetLessonByIdResponse>> getLessonById(GetLessonByIdRequest request){
+    public ResponseEntity<ResponseCommon<GetLessonByIdResponse>> getLessonById(@Valid @RequestBody GetLessonByIdRequest request){
         ResponseCommon<GetLessonByIdResponse> response = lessonService.getLessonById(request);
         if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
             return ResponseEntity.ok(response);

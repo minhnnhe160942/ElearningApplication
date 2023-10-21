@@ -32,6 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/user/verify-otp-forgotPass",
                 "/api/v1/user/change-profile",
                 "/api/v1/user/log-out",
+                "/api/v1/user/total-user",
+                "/api/v1/user/getOTP",
+                "/api/v1/user/resendOTP",
                 "/api-docs",
                 "/swagger-ui",
 
@@ -43,29 +46,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/course/get-top-course",
                 "/api/v1/course/get-newest-course",
                 "/api/v1/course/get-course-user",
+                "/api/v1/course/get-total-course",
+                "/api/v1/course/search-course",
+                "/api/v1/course/get-course-by-id",
+                "/api/v1/course/page-course",
 
-
-
+                "/api/v1/category/get-category-by-id",
                 "/api/v1/category/add-category",
                 "/api/v1/category/update-category",
                 "/api/v1/category/delete-category",
                 "/api/v1/category/find-all-category",
+
+
                 "/api/v1/lesson/add-lesson",
                 "/api/v1/lesson/update-lesson",
                 "/api/v1/lesson/delete-lesson",
                 "/api/v1/lesson/find-all-lesson",
+
                 "/api/v1/quiz/add-quiz",
                 "/api/v1/quiz/update-quiz",
                 "/api/v1/quiz/delete-quiz",
                 "/api/v1/quiz/find-all-quiz",
-                "/api/v1/question/add-question",
-                "/api/v1/question/update-question",
-                "/api/v1/question/delete-question",
-                "/api/v1/question/find-all-question",
-                "/api/v1/answer/add-lesson",
-                "/api/v1/answer/update-lesson",
-                "/api/v1/answer/delete-lesson",
-                "/api/v1/answer/find-all-lesson",
+
                 "/swagger-ui/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

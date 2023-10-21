@@ -5,10 +5,10 @@ import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
+import team2.elearningapplication.dto.common.PageRequestDTO;
+import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
-import team2.elearningapplication.dto.response.user.course.GetCourseByUserResponse;
-import team2.elearningapplication.dto.response.user.course.GetNewestCourseResponse;
-import team2.elearningapplication.dto.response.user.course.GetTopCourseResponse;
+import team2.elearningapplication.dto.response.user.course.*;
 
 public interface ICourseService {
     ResponseCommon<AddCourseResponse> addCourse(AddCourseRequest addCourseRequest);
@@ -25,5 +25,11 @@ public interface ICourseService {
     ResponseCommon<GetNewestCourseResponse> getNewestCourse(int numberCourse);
 
     ResponseCommon<GetCourseByUserResponse> getCourseByUser(String username);
+
+    ResponseCommon<GetTotalCourseResponse> getTotalCourse();
+
+    ResponseCommon<SearchCourseByNameAndCategoryResponse> searchCourse(SearchCourseByNameAndCategoryRequest searchCourseByNameAndCategoryRequest);
+
+    ResponseCommon<PageCourseResponse> getAllCoursePage(PageRequestDTO pageRequestDTO);
 
 }

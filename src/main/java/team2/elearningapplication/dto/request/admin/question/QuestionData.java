@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import team2.elearningapplication.Enum.EnumQuestionType;
 import team2.elearningapplication.dto.request.admin.answer.AnswerData;
+import team2.elearningapplication.entity.Answer;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -24,5 +25,5 @@ public class QuestionData {
     @NotBlank
     private String questionName;
     @NotEmpty
-    private List<AnswerData> listAnswer;
+    private List<Answer> listAnswer;
 }

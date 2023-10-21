@@ -9,10 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import team2.elearningapplication.Enum.EnumTypeProcess;
+import team2.elearningapplication.Enum.EnumTypeProcessAccount;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "history_register_course")
@@ -35,11 +34,14 @@ public class HistoryRegisterCourse {
     private int sttLessonCurrent;
     @Enumerated(EnumType.STRING)
     @Column(name = "process")
-    private EnumTypeProcess process;
+    private EnumTypeProcessAccount process;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @OneToOne
     @JoinColumn(name="payment_id",referencedColumnName = "id")
     private Payment payment;
+    @OneToOne
+    @JoinColumn(name="order_id",referencedColumnName = "id")
+    private Order order;
 
 }

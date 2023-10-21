@@ -10,6 +10,7 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.user.GetUserByEmailRequest;
 import team2.elearningapplication.dto.request.user.*;
+import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
 import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.Mail;
 import team2.elearningapplication.entity.User;
@@ -215,8 +216,10 @@ public class UserServiceImpl implements IUserService {
                 return new ResponseCommon<>(ResponseCode.SUCCESS,null);
             }
             // else -> return fail
-            else {
-//                log.debug("verify otp fail");
+            else if(!verifyOtpRequest.getOtp().equals(user.getOtp())){
+                 return new ResponseCommon<>(ResponseCode.OTP_INCORRECT,null);
+
+            } else {
                 return new ResponseCommon<>(ResponseCode.Expired_OTP,null);
             }
         } catch (Exception e){
@@ -230,17 +233,18 @@ public class UserServiceImpl implements IUserService {
     public ResponseCommon<ChangePasswordResponse> changePassword(ChangePasswordRequest changePasswordRequest) {
         try {
             String username = SecurityUtils.getUsernameAuth();
+            System.out.println(username);
             User user = userRepository.findByUsername(username).orElse(null);
             // if user is null -> tell error
             log.debug("change passsword with username{}",username);
             if(Objects.isNull(user)){
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
             } else {
+                String hassPass = passwordService.hashPassword(changePasswordRequest.getNewPassword());
                 // if oldPassword not correct -> tell user
-                if(!changePasswordRequest.getOldPassword().equals(user.getPassword())){
+                if(!passwordService.hashPassword(changePasswordRequest.getOldPassword()).equals(user.getPassword())){
                     return new ResponseCommon<>(ResponseCode.PASSWORD_INCORRECT,null);
                 } else {
-                    String hassPass = passwordService.hashPassword(changePasswordRequest.getNewPassword());
                     user.setPassword(hassPass);
                     userRepository.save(user);
                     return new ResponseCommon<>(ResponseCode.SUCCESS,null);
@@ -331,6 +335,43 @@ public class UserServiceImpl implements IUserService {
             e.printStackTrace();
             log.error("Log out failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Log out failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetTotalUserResponse> getTotalUser() {
+        try {
+            int totalUser = userRepository.getTotalUser();
+            GetTotalUserResponse getTotalUserResponse = new GetTotalUserResponse(totalUser);
+            return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total user success",getTotalUserResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get total user failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total user failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<ResendOTPResponse> resendOTP(ResendOTPRequest request) {
+        try {
+            User user = userRepository.findByUsername(genUserFromEmail(request.getEmail())).orElse(null);
+            LocalDateTime localDateTime = LocalDateTime.now();
+            String otp = CommonUtils.getOTP();
+            //step2: send email
+            log.info("START... Sending email");
+            emailService.sendEmail(setUpMail(user.getEmail(),otp));
+            log.info("END... Email sent success");
+            user.setUsername(genUserFromEmail(request.getEmail()));
+
+            LocalDateTime expired = localDateTime.plusMinutes(Long.valueOf(otpValid));
+            log.debug("Value of expired{}",expired);
+            user.setExpiredOTP(expired);
+            user.setOtp(otp);
+            userRepository.save(user);
+            return new ResponseCommon<>(ResponseCode.SUCCESS, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
 }

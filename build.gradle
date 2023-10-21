@@ -39,11 +39,16 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'org.springframework.boot:spring-boot-starter-activemq'
     implementation group: 'org.springframework', name: 'spring-jms', version: '6.0.12'
+    // https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44
+    implementation group: 'com.cloudinary', name: 'cloudinary-http44', version: '1.33.0'
+
     /**
      * Spring Doc
      */
     implementation "org.springdoc:springdoc-openapi-ui:1.7.0"
     implementation "org.springdoc:springdoc-openapi-data-rest:1.7.0"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {

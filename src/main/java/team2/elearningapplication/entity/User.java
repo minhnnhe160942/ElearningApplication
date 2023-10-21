@@ -52,4 +52,6 @@ public class User {
     private String otp;
     @Column(name="session_id")
     private Integer session_id;
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
 }

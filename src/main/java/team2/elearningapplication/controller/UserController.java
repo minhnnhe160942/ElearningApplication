@@ -3,6 +3,7 @@ package team2.elearningapplication.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,11 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.user.*;
+import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
 import team2.elearningapplication.dto.response.admin.quiz.GetQuizByIdResponse;
 import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.User;
+import team2.elearningapplication.security.SecurityUtils;
 import team2.elearningapplication.security.UserDetailsImpl;
 import team2.elearningapplication.security.jwt.JWTResponse;
 import team2.elearningapplication.security.jwt.JWTUtils;
@@ -72,9 +75,21 @@ public class UserController {
         }
     }
 
+
+
     @PostMapping("/getOTP")
     public ResponseEntity<ResponseCommon<GetOTPResponse>> getOTP(@Valid @RequestBody GetOTPRequest request) {
         ResponseCommon<GetOTPResponse> responseDTO = userService.getOtp(request);
+        if (responseDTO.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(responseDTO);
+        } else {
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PostMapping("/resendOTP")
+    public ResponseEntity<ResponseCommon<ResendOTPResponse>> resendOTP(@Valid @RequestBody ResendOTPRequest request) {
+        ResponseCommon<ResendOTPResponse> responseDTO = userService.resendOTP(request);
         if (responseDTO.getCode() == ResponseCode.SUCCESS.getCode()) {
             return ResponseEntity.ok(responseDTO);
         } else {
@@ -117,15 +132,15 @@ public class UserController {
         }
         VerifyOtpRequest request = new VerifyOtpRequest(forgotPasswordRequest.getOtp(), user.getEmail());
         ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
-        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+        if(response.getCode()==ResponseCode.Expired_OTP.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.Expired_OTP.getCode(),"Expried otp",null));
+        } else if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
             String hassPass = passwordService.hashPassword(forgotPasswordRequest.getPassword());
             user.setPassword(hassPass);
             userService.updateUser(user);
             return ResponseEntity.ok(response);
         }
-        else if(response.getCode()==ResponseCode.Expired_OTP.getCode()){
-            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.Expired_OTP.getCode(),"Expried otp",null));
-        } else if(response.getCode() == ResponseCode.OTP_INCORRECT.getCode()){
+        else if(response.getCode() == ResponseCode.OTP_INCORRECT.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.OTP_INCORRECT.getCode(),"OTP incorrect",null));
         }
         else {
@@ -139,6 +154,8 @@ public class UserController {
     @PostMapping("/changePassword")
     public ResponseEntity<ResponseCommon<ChangePasswordResponse>> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         ResponseCommon<ChangePasswordResponse> response = userService.changePassword(changePasswordRequest);
+        String username = SecurityUtils.getUsernameAuth();
+        System.out.println(username);
         if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
             return ResponseEntity.ok(response);
         }
@@ -206,7 +223,17 @@ public class UserController {
         if(response.getCode()==ResponseCode.FAIL.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"LogOut fail",null));
         } else {
-            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"LogOut success",null));
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"LogOut success",response.getData()));
+        }
+    }
+
+    @GetMapping("/total-user")
+    public ResponseEntity<ResponseCommon<GetTotalUserResponse>> getTotalUser(){
+        ResponseCommon<GetTotalUserResponse> response = userService.getTotalUser();
+        if(response.getCode()==ResponseCode.FAIL.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total user  fail",null));
+        } else {
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total user success",response.getData()));
         }
     }
 }
