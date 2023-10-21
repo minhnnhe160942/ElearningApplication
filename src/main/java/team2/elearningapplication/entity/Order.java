@@ -22,6 +22,9 @@ public class Order {
     @OneToOne
     @JoinColumn
     private Payment payment;
+    @OneToOne
+    @JoinColumn
+    private Course course;
     @Column(name="amount")
     private double amount;
     @Enumerated(EnumType.STRING)

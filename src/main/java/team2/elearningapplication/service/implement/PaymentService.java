@@ -79,19 +79,4 @@ public class PaymentService implements IPaymentService {
         return new ResponseCommon<>(ResponseCode.SUCCESS, paymentRes);
     }
 
-    @Override
-    public ResponseCommon<?> getPaymentInformation(String amount, String bankCode, String order, String responseCode) throws UnsupportedEncodingException {
-        TransactionStatus transactionStatus = new TransactionStatus();
-
-        if (responseCode.equals("00")) {
-            transactionStatus.setStatus("Done");
-            transactionStatus.setMessage("Successfully");
-            transactionStatus.setData("");
-        } else {
-            transactionStatus.setStatus("Fail");
-            transactionStatus.setMessage("Failed");
-            transactionStatus.setData("");
-        }
-        return new ResponseCommon<>(transactionStatus);
-    }
 }

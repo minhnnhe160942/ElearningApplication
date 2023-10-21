@@ -10,7 +10,8 @@ public class PaymentConfirmRequest {
     @NotNull
     private int orderId;
     @NotBlank
-    private String transactionId;
+    private String amount;
     @NotBlank
     private String responseCode;
+
 }
