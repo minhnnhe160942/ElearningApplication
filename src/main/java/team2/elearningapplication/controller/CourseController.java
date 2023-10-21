@@ -193,5 +193,17 @@ public class CourseController {
         }
     }
 
-
+    @GetMapping("/confirm-payment")
+    public ResponseEntity<ResponseCommon<PaymentConfirmResponse>> enrollCourse(PaymentConfirmRequest paymentConfirmRequest){
+        ResponseCommon<PaymentConfirmResponse> response = courseService.paymentConfirm(paymentConfirmRequest);
+        if(response.getCode() == ResponseCode.ORDER_NOT_EXIST.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.ORDER_NOT_EXIST.getCode(),"Order not exist",null));
+        } else if(response.getCode()==ResponseCode.PAYMENT_FAIL.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.PAYMENT_FAIL.getCode(),"Payment fail",null));
+        } else if(response.getCode()==ResponseCode.FAIL.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Confirm payment fail",null));
+        } else {
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Confirm payment success",response.getData()));
+        }
+    }
 }
