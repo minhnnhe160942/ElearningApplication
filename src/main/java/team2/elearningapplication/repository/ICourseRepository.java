@@ -1,5 +1,7 @@
 package team2.elearningapplication.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +17,8 @@ public interface ICourseRepository extends JpaRepository<Course, Integer> {
     Optional<Course> findCourseById(int id);
 
     List<Course> findAllByIsDeleted(boolean isDeleted);
+
+    Page<Course> findAllByIsDeleted(boolean isDeleted, Pageable pageable);
 
     @Query(value = "SELECT c.id, c.name, c.description, c.category_id, c.created_at, c.price, c.link_thumnail " +
             "FROM course c " +

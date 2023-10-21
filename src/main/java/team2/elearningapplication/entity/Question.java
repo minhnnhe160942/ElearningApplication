@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import team2.elearningapplication.Enum.EnumQuestionType;
 import team2.elearningapplication.Enum.EnumTypeGender;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -38,5 +39,6 @@ public class Question {
     private int quizID;
     @Column(name = "deleted")
     private boolean deleted;
-
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
 }

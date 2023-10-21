@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -33,4 +34,6 @@ public class Quiz {
     private Question question;
     @Column(name="deleted")
     private boolean isDeleted;
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
 }

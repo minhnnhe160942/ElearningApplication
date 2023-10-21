@@ -32,12 +32,13 @@ public class Course {
     private Category category;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    @Column(name = "link_thumnail")
+    @Column(name = "link_thummail")
     private String linkThumnail;
     @Column(name="price")
     private double price;
     @Column(name="deleted")
     private boolean isDeleted;
-
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
 
 }

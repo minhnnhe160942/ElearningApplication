@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "category")
@@ -27,5 +28,6 @@ public class Category {
     private String name;
     @Column(name="deleted")
     private boolean isDeleted;
-
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
 }

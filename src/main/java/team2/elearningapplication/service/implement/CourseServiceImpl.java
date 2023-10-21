@@ -2,6 +2,10 @@ package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
@@ -9,7 +13,7 @@ import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
-import team2.elearningapplication.dto.common.PageRequest;
+import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
@@ -289,10 +293,27 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
-    public ResponseCommon<PageCourseResponse> getAllCoursePage(PageRequest pageRequest) {
+    public ResponseCommon<PageCourseResponse> getAllCoursePage(PageRequestDTO pageRequestDTO) {
         try {
-return null;
+            int pageNo = pageRequestDTO.getPageNo();
+            int pageSize = pageRequestDTO.getPageSize();
+            String sortBy = pageRequestDTO.getSortBy();
+            String sortDir = pageRequestDTO.getSortDir();
 
+            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+
+            Page<Course> coursePage = courseRepository.findAllByIsDeleted(false,pageable);
+            if(coursePage.isEmpty()){
+                return new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY,null);
+            }
+            PageCourseResponse response = new PageCourseResponse();
+            response.setCourseList(coursePage.getContent());
+            response.setPageNo(pageNo);
+            response.setPageSize(pageSize);
+            response.setTotalElements((int) coursePage.getTotalElements());
+            response.setTotalPages(coursePage.getTotalPages());
+            response.setLast(coursePage.isLast());
+            return new ResponseCommon<>(ResponseCode.SUCCESS, response);
         } catch (Exception e) {
             e.printStackTrace();
             log.debug("Get  Course page  failed: " + e.getMessage());

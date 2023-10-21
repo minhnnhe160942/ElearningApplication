@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PageRequest {
+public class PageRequestDTO {
     @NotNull
     private int pageNo;
     @NotNull
