@@ -18,6 +18,7 @@ import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
+import team2.elearningapplication.dto.request.user.course.PaymentConfirmRequest;
 import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
@@ -353,6 +354,17 @@ public class CourseServiceImpl implements ICourseService {
         } catch (Exception e){
             e.printStackTrace();
             log.debug("Enroll Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<PaymentConfirmResponse> paymentConfirm(PaymentConfirmRequest paymentConfirmRequest) {
+        try {
+
+        } catch (Exception e){
+            e.printStackTrace();
+            log.debug(" Payment Course failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
