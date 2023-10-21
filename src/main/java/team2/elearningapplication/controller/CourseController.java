@@ -13,7 +13,9 @@ import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
+import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
 import team2.elearningapplication.dto.request.user.course.GetAllCourseByUserRequest;
+import team2.elearningapplication.dto.request.user.course.PaymentConfirmRequest;
 import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
@@ -178,4 +180,18 @@ public class CourseController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total course fail",null));
         }
     }
+
+    @PostMapping("/enroll-course")
+    public ResponseEntity<ResponseCommon<EnrollCourseResponse>> enrollCourse(EnrollCourseRequest enrollCourseRequest){
+        ResponseCommon<EnrollCourseResponse> response = courseService.enrollCourse(enrollCourseRequest);
+        if(response.getCode() == ResponseCode.SEND_URL_PAYMENT_FAIL.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.SEND_URL_PAYMENT_FAIL.getCode(),"Send url payment fail",null));
+        } else if(response.getCode()==ResponseCode.FAIL.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Exception send url",null));
+        } else {
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Send url payment success",response.getData()));
+        }
+    }
+
+
 }

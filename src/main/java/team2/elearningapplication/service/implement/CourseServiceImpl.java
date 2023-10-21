@@ -345,7 +345,7 @@ public class CourseServiceImpl implements ICourseService {
                 return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Send url done", enrollCourseResponse);
             } else {
                 log.debug("Enroll course response faile because paymentResponse not success.");
-                return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Send url fail", null);
+                return new ResponseCommon<>(ResponseCode.SEND_URL_PAYMENT_FAIL.getCode(), "Send url fail", null);
             }
         } catch (Exception e) {
             e.printStackTrace();
