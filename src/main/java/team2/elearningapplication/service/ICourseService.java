@@ -6,6 +6,8 @@ import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.common.PageRequestDTO;
+import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
+import team2.elearningapplication.dto.request.user.course.PaymentConfirmRequest;
 import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
@@ -32,4 +34,7 @@ public interface ICourseService {
 
     ResponseCommon<PageCourseResponse> getAllCoursePage(PageRequestDTO pageRequestDTO);
 
+    ResponseCommon<EnrollCourseResponse> enrollCourse(EnrollCourseRequest enrollCourseRequest);
+
+    ResponseCommon<PaymentConfirmResponse> paymentConfirm(PaymentConfirmRequest paymentConfirmRequest);
 }

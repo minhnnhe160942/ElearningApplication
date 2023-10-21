@@ -22,6 +22,8 @@ public class Order {
     @OneToOne
     @JoinColumn
     private Payment payment;
+    @Column(name="amount")
+    private double amount;
     @Enumerated(EnumType.STRING)
     @Column(name = "process")
     private EnumTypeProcessPayment process;

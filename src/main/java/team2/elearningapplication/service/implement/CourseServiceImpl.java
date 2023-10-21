@@ -2,27 +2,33 @@ package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import team2.elearningapplication.Enum.EnumTypeProcessPayment;
 import team2.elearningapplication.Enum.ResponseCode;
+import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.common.PageRequestDTO;
+import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
 import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
 import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.entity.Course;
+import team2.elearningapplication.entity.Order;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.ICategoryRepository;
 import team2.elearningapplication.repository.ICourseRepository;
 import team2.elearningapplication.repository.IUserRepository;
+import team2.elearningapplication.repository.OrderRepository;
 import team2.elearningapplication.service.ICourseService;
 
 import java.time.LocalDateTime;
@@ -36,6 +42,8 @@ public class CourseServiceImpl implements ICourseService {
     private final ICourseRepository courseRepository;
     private final ICategoryRepository categoryRepository;
     private final IUserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final PaymentService paymentService;
 
     @Override
     public ResponseCommon<AddCourseResponse> addCourse(AddCourseRequest addCourseRequest) {
@@ -317,6 +325,34 @@ public class CourseServiceImpl implements ICourseService {
         } catch (Exception e) {
             e.printStackTrace();
             log.debug("Get  Course page  failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<EnrollCourseResponse> enrollCourse(EnrollCourseRequest enrollCourseRequest) {
+        try {
+            EnrollCourseResponse enrollCourseResponse = new EnrollCourseResponse();
+
+            Order order = new Order();
+            order.setCreated_at(LocalDateTime.now());
+            order.setUser(userRepository.findById(enrollCourseRequest.getUserId()).orElse(null));
+            order.setProcess(EnumTypeProcessPayment.INPROCESS);
+            order.setAmount(enrollCourseRequest.getAmount());
+            orderRepository.save(order);
+
+            ResponseCommon<PaymentRes> paymentResponse = paymentService.addPayment(enrollCourseRequest.getAmount());
+            if(paymentResponse.getCode()==ResponseCode.SUCCESS.getCode()){
+                enrollCourseResponse.setOrderId(order.getId());
+                enrollCourseResponse.setUrlPayment(paymentResponse.getData().getUrl());
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Send url done",enrollCourseResponse);
+            } else {
+                log.debug("Enroll course response faile because paymentResponse not success.");
+                return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Send url fail",null);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            log.debug("Enroll Course failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
