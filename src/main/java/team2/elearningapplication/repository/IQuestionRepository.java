@@ -5,8 +5,7 @@ import team2.elearningapplication.entity.Question;
 
 import java.util.Optional;
 
-public interface IQuestionRepository extends JpaRepository<Question,Integer> {
+public interface IQuestionRepository extends JpaRepository<Question, Integer> {
     Optional<Question> findQuestionById(int questionID);
 
-    Optional<Question> findQuestionByQuestionName(String questionName);
 }
