@@ -7,10 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import team2.elearningapplication.Enum.EnumPaymentGateway;
-import team2.elearningapplication.Enum.EnumPaymentProcess;
-import team2.elearningapplication.Enum.EnumTypeProcessPayment;
-import team2.elearningapplication.Enum.ResponseCode;
+import team2.elearningapplication.Enum.*;
 import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
@@ -42,6 +39,7 @@ public class CourseServiceImpl implements ICourseService {
     private final OrderRepository orderRepository;
     private final PaymentService paymentService;
     private final IPaymentRepository paymentRepository;
+    private final IHistoryResgisterCourseRepository historyRegisterCourseRepository;
     @Override
     public ResponseCommon<AddCourseResponse> addCourse(AddCourseRequest addCourseRequest) {
         try {
@@ -334,7 +332,7 @@ public class CourseServiceImpl implements ICourseService {
             order.setCreated_at(LocalDateTime.now());
             order.setUser(userRepository.findById(enrollCourseRequest.getUserId()).orElse(null));
             order.setCourse(courseRepository.findCourseById(enrollCourseRequest.getCourseId()).orElse(null));
-            order.setProcess(EnumTypeProcessPayment.INPROCESS);
+            order.setEnumTypeProcessPayment(EnumTypeProcessPayment.INPROCESS);
             order.setAmount(enrollCourseRequest.getAmount());
             orderRepository.save(order);
 
@@ -366,6 +364,7 @@ public class CourseServiceImpl implements ICourseService {
                     return new ResponseCommon<>(ResponseCode.PAYMENT_FAIL,null);
                 } else {
                     Payment payment = new Payment();
+                    HistoryRegisterCourse historyRegisterCourse = new HistoryRegisterCourse();
                     payment.setUser(order.getUser());
                     payment.setCourse(order.getCourse());
                     payment.setPaymentGateway(EnumPaymentGateway.VN_PAY);
@@ -376,6 +375,15 @@ public class CourseServiceImpl implements ICourseService {
                     paymentRepository.save(payment);
                     order.setPayment(payment);
                     orderRepository.save(order);
+
+                    historyRegisterCourse.setCourseId(payment.getCourse());
+                    historyRegisterCourse.setUser(payment.getUser());
+                    historyRegisterCourse.setSttLessonCurrent(1);
+                    historyRegisterCourse.setPayment(payment);
+                    historyRegisterCourse.setProcess(EnumTypeProcessAccount.NOT_READY);
+                    historyRegisterCourse.setCreatedAt(LocalDateTime.now());
+                    historyRegisterCourse.setOrder(order);
+                    historyRegisterCourseRepository.save(historyRegisterCourse);
                     PaymentConfirmResponse paymentConfirmResponse = new PaymentConfirmResponse();
                     paymentConfirmResponse.setStatus("Payment done");
                     return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Accept to join course",paymentConfirmResponse);
@@ -386,7 +394,6 @@ public class CourseServiceImpl implements ICourseService {
             log.debug("Enroll Course failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
-
     }
 }
 

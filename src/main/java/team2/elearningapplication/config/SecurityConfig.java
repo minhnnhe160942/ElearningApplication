@@ -50,6 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/course/search-course",
                 "/api/v1/course/get-course-by-id",
                 "/api/v1/course/page-course",
+                "/api/v1/course/enroll-course",
+                "/api/v1/course/confirm-payment",
+
 
                 "/api/v1/category/get-category-by-id",
                 "/api/v1/category/add-category",

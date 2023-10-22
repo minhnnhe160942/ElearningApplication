@@ -17,19 +17,19 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name="user_id",referencedColumnName = "id")
     private User user;
     @OneToOne
     @JoinColumn
     private Payment payment;
     @OneToOne
-    @JoinColumn
+    @JoinColumn(name="course_id",referencedColumnName = "id")
     private Course course;
     @Column(name="amount")
     private double amount;
     @Enumerated(EnumType.STRING)
     @Column(name = "process")
-    private EnumTypeProcessPayment process;
+    private EnumTypeProcessPayment enumTypeProcessPayment;
     @Column(name="created_at")
     private LocalDateTime created_at;
     @Column(name="deleted")
