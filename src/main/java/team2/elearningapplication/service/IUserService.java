@@ -11,6 +11,8 @@ import team2.elearningapplication.security.jwt.JWTResponse;
 import java.util.List;
 
 public interface IUserService {
+
+    ResponseCommon<>
     ResponseCommon<CreateUserResponseDTO> createUser(CreateUserRequest requestDTO);
 
     User updateUser(User user);
