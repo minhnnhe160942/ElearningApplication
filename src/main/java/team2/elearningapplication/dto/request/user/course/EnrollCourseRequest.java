@@ -9,7 +9,7 @@ public class EnrollCourseRequest {
     @NotNull
     private int courseId;
     @NotNull
-    private int userId;
+    private String username;
     @NotNull
     private double amount;
 }

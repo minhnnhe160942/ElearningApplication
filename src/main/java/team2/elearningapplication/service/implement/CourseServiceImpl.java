@@ -330,7 +330,7 @@ public class CourseServiceImpl implements ICourseService {
 
             Order order = new Order();
             order.setCreated_at(LocalDateTime.now());
-            order.setUser(userRepository.findById(enrollCourseRequest.getUserId()).orElse(null));
+            order.setUser(userRepository.findByUsername(enrollCourseRequest.getUsername()).orElse(null));
             order.setCourse(courseRepository.findCourseById(enrollCourseRequest.getCourseId()).orElse(null));
             order.setEnumTypeProcessPayment(EnumTypeProcessPayment.INPROCESS);
             order.setAmount(enrollCourseRequest.getAmount());
