@@ -46,7 +46,7 @@ public class PostServiceImpl implements IPostService {
                 return new ResponseCommon<>(ResponseCode.POST_CONTENT_IS_EMPTY, null);
             } else {
                 Post postAdd = new Post();
-                postAdd.setUser(userRepository.findByUsername(userService.genUserFromEmail(addPostRequest.getEmail())).orElse(null));
+                postAdd.setUser(userRepository.findByEmail(addPostRequest.getEmail()).orElse(null));
                 postAdd.setLessonId(addPostRequest.getLessonID());
                 postAdd.setContent(addPostRequest.getContent());
                 postAdd.setCreatedAt(LocalDateTime.now());
@@ -65,7 +65,7 @@ public class PostServiceImpl implements IPostService {
     @Override
     public ResponseCommon<UpdatePostResponse> updatePost(UpdatePostRequest updatePostRequest) {
         try {
-            User user = userRepository.findByUsername(userService.genUserFromEmail(updatePostRequest.getEmail())).orElse(null);
+            User user = userRepository.findByEmail(updatePostRequest.getEmail()).orElse(null);
             Post post = postRepository.findPostByUserAndAndLessonId(user, updatePostRequest.getLessonID()).orElse(null);
             // if post not exist -> tell user
             if (Objects.isNull(post)) {
@@ -93,7 +93,7 @@ public class PostServiceImpl implements IPostService {
     @Override
     public ResponseCommon<DeletePostResponse> deletePost(DeletePostRequest deletePostRequest) {
         try {
-            User user = userRepository.findByUsername(userService.genUserFromEmail(deletePostRequest.getEmail())).orElse(null);
+            User user = userRepository.findByEmail(deletePostRequest.getEmail()).orElse(null);
             Post post = postRepository.findPostByUserAndAndLessonId(user, deletePostRequest.getLessonID()).orElse(null);
             // if post not exist -> tell user
             if (Objects.isNull(post)) {

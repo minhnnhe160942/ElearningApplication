@@ -19,6 +19,7 @@ import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserRespo
 import team2.elearningapplication.dto.response.admin.quiz.GetQuizByIdResponse;
 import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.User;
+import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.security.SecurityUtils;
 import team2.elearningapplication.security.UserDetailsImpl;
 import team2.elearningapplication.security.jwt.JWTResponse;
@@ -38,6 +39,7 @@ public class UserController {
     private IUserService userService;
     private final JWTUtils jwtUtils;
     private final PasswordService passwordService;
+    private IUserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/register")
@@ -57,25 +59,25 @@ public class UserController {
     @PostMapping("/verify-otp")
     public ResponseEntity<ResponseCommon<VerifyOtpResponse>> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
         log.debug("Handle verify otp with id {}", request.getEmail());
-        User user = userService.getUserByUsername(userService.genUserFromEmail(request.getEmail()));
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
         ResponseCommon<VerifyOtpResponse> response = userService.verifyOtp(request);
-        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+        if (response.getCode()==ResponseCode.Expired_OTP.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.Expired_OTP.getCode(),"Expried otp",null));
+        }
+        else  if(response.getCode() == ResponseCode.OTP_INCORRECT.getCode()){
+
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.OTP_INCORRECT.getCode(),"OTP incorrect",null));
+
+        } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
             user.setStatus(EnumUserStatus.ACTIVE);
             userService.updateUser(user);
             return ResponseEntity.ok(response);
-        }
-        else if(response.getCode()==ResponseCode.Expired_OTP.getCode()){
-            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.Expired_OTP.getCode(),"Expried otp",null));
-        } else if(response.getCode() == ResponseCode.OTP_INCORRECT.getCode()){
-            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.OTP_INCORRECT.getCode(),"OTP incorrect",null));
         }
         else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"verify otp fail",null));
         }
     }
-
-
 
     @PostMapping("/getOTP")
     public ResponseEntity<ResponseCommon<GetOTPResponse>> getOTP(@Valid @RequestBody GetOTPRequest request) {
@@ -114,7 +116,7 @@ public class UserController {
 
     @PostMapping("/send-otp-forgot-password")
     public ResponseEntity<ResponseCommon<ForgotPasswordResponse>> sendOTPForgotPass(@Valid @RequestBody SendOTPForgotPasswordRequest sendOTPForgotPasswordRequest) {
-        User user = userService.getUserByUsername(userService.genUserFromEmail(sendOTPForgotPasswordRequest.getEmail()));
+        User user = userRepository.findByEmail(sendOTPForgotPasswordRequest.getEmail()).orElse(null);
         if (Objects.isNull(user)) {
             return new ResponseEntity<>(new ResponseCommon<>(ResponseCode.USER_NOT_FOUND, null), HttpStatus.BAD_REQUEST);
         } else {
@@ -126,7 +128,7 @@ public class UserController {
 
     @PostMapping("/verify-otp-forgotPass")
     public ResponseEntity<ResponseCommon<VerifyOtpResponse>> verifyOtpForgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
-        User user = userService.getUserByUsername(userService.genUserFromEmail(forgotPasswordRequest.getEmail()));
+        User user = userRepository.findByEmail(forgotPasswordRequest.getEmail()).orElse(null);
         if (Objects.isNull(user)) {
             return new ResponseEntity<>(new ResponseCommon<>(ResponseCode.USER_NOT_FOUND, null), HttpStatus.BAD_REQUEST);
         }
@@ -167,7 +169,7 @@ public class UserController {
     @PostMapping("/refresh-access-token")
     public ResponseEntity<JWTResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
-        User user = userService.getUserByUsername(userService.genUserFromEmail(request.getEmail()));
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
         if (refreshToken.isEmpty() || refreshToken == null) {
             return ResponseEntity.badRequest().body(null);
