@@ -65,7 +65,7 @@ public class UserServiceImpl implements IUserService {
             if(Objects.isNull(user)){
                 user = new User();
             }
-//            user.setUsername(genUserFromEmail(requestDTO.getEmail()));
+            user.setUsername(genUserFromEmail(requestDTO.getEmail()));
             String hassPass = passwordService.hashPassword(requestDTO.getPassword());
             user.setPassword(hassPass);
             user.setEmail(requestDTO.getEmail());
@@ -154,7 +154,7 @@ public class UserServiceImpl implements IUserService {
             log.info("START... Sending email");
             emailService.sendEmail(setUpMail(user.getEmail(),otp));
             log.info("END... Email sent success");
-            user.setUsername(genUserFromEmail(request.getEmail()));
+//            user.setUsername(genUserFromEmail(request.getEmail()));
             if (request.isCreate()) {
                 user.setStatus(EnumUserStatus.IN_PROCESS);
             }
