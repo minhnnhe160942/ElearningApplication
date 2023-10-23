@@ -238,4 +238,15 @@ public class UserController {
             return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total user success",response.getData()));
         }
     }
+    @GetMapping("/get-user-by-username")
+    public ResponseEntity<ResponseCommon<GetUserByUsernameResponse>> getUserByUsername(@Valid @RequestBody GetUserByUsernameRequest getUserByUsernameRequest){
+        ResponseCommon<GetUserByUsernameResponse> response = userService.getUserByUsername(getUserByUsernameRequest);
+        if(response.getCode() == ResponseCode.USER_NOT_FOUND.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null));
+        } else if(response.getCode()==ResponseCode.FAIL.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL,null));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.SUCCESS,response.getData()));
+        }
+    }
 }

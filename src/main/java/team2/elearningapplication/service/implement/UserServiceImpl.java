@@ -39,6 +39,23 @@ public class UserServiceImpl implements IUserService {
     private int otpValid;
 
     @Override
+    public ResponseCommon<GetUserByUsernameResponse> getUserByUsername(GetUserByUsernameRequest getUserByUsernameRequest) {
+        try {
+            User user = userRepository.findByUsername(getUserByUsernameRequest.getUsername()).orElse(null);
+            if(Objects.isNull(user)){
+                return new ResponseCommon<>(ResponseCode.USER_EXIST,null);
+            } else {
+                GetUserByUsernameResponse getUserByUsernameResponse = new GetUserByUsernameResponse();
+                getUserByUsernameResponse.setUser(user);
+                return new ResponseCommon<>(ResponseCode.SUCCESS,getUserByUsernameResponse);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
     public String genUserFromEmail(String email) {
         String username = email.substring(0, email.indexOf("@"));
         Random random = new Random();

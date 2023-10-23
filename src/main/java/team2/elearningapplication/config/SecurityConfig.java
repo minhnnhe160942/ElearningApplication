@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/user/total-user",
                 "/api/v1/user/getOTP",
                 "/api/v1/user/resendOTP",
+                "/api/v1/get-user-by-username",
                 "/api-docs",
                 "/swagger-ui",
 

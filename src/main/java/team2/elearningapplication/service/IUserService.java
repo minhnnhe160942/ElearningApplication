@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface IUserService {
 
-    ResponseCommon<>
+    ResponseCommon<GetUserByUsernameResponse> getUserByUsername(GetUserByUsernameRequest getUserByUsernameRequest);
     ResponseCommon<CreateUserResponseDTO> createUser(CreateUserRequest requestDTO);
 
     User updateUser(User user);
