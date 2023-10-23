@@ -40,7 +40,15 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public String genUserFromEmail(String email) {
-        return email.substring(0, email.indexOf("@"));
+        String username = email.substring(0, email.indexOf("@"));
+        Random random = new Random();
+        StringBuilder randomNumber = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            int digit = random.nextInt(10); // Số ngẫu nhiên từ 0 đến 9
+            randomNumber.append(digit);
+        }
+        String result = username + randomNumber.toString();
+        return result;
     }
 
     @Override
@@ -259,9 +267,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<ChangeProfileResponse> changeProfile(ChangeProfileRequest changeProfileRequest) {
         try {
-            User user = userRepository.findByUsername(genUserFromEmail(changeProfileRequest.getEmail())).orElse(null);
+            User user = userRepository.findByUsername(changeProfileRequest.getUsername()).orElse(null);
             if (user == null) {
-                log.debug("User not found for email: {}", changeProfileRequest.getEmail());
+                log.debug("User not found for email: {}", changeProfileRequest.getUsername());
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND, null);
             }
 
@@ -277,10 +285,10 @@ public class UserServiceImpl implements IUserService {
             changeProfileResponse.setPhoneNum(user.getPhone());
             changeProfileResponse.setGender(user.getGender());
 
-            log.debug("User profile updated successfully for email: {}", changeProfileRequest.getEmail());
+            log.debug("User profile updated successfully for email: {}", changeProfileRequest.getUsername());
             return new ResponseCommon<>(ResponseCode.SUCCESS, changeProfileResponse);
         } catch (Exception e) {
-            log.error("Error while updating user profile for email: {}", changeProfileRequest.getEmail(), e);
+            log.error("Error while updating user profile for email: {}", changeProfileRequest.getUsername(), e);
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
