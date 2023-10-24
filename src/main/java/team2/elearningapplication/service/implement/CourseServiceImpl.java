@@ -327,16 +327,17 @@ public class CourseServiceImpl implements ICourseService {
     public ResponseCommon<EnrollCourseResponse> enrollCourse(EnrollCourseRequest enrollCourseRequest) {
         try {
             EnrollCourseResponse enrollCourseResponse = new EnrollCourseResponse();
-
+            Course courseBuy = courseRepository.findCourseById(enrollCourseRequest.getCourseId()).orElse(null);
+            System.out.println(courseBuy);
             Order order = new Order();
             order.setCreated_at(LocalDateTime.now());
-            order.setUser(userRepository.findById(enrollCourseRequest.getUserId()).orElse(null));
-            order.setCourse(courseRepository.findCourseById(enrollCourseRequest.getCourseId()).orElse(null));
+            order.setUser(userRepository.findByUsername(enrollCourseRequest.getUsername()).orElse(null));
+            order.setCourse(courseBuy);
             order.setEnumTypeProcessPayment(EnumTypeProcessPayment.INPROCESS);
-            order.setAmount(enrollCourseRequest.getAmount());
+            order.setAmount(courseBuy.getPrice());
             orderRepository.save(order);
 
-            ResponseCommon<PaymentRes> paymentResponse = paymentService.addPayment(enrollCourseRequest.getAmount());
+            ResponseCommon<PaymentRes> paymentResponse = paymentService.addPayment(courseBuy.getPrice());
             if (paymentResponse.getCode() == ResponseCode.SUCCESS.getCode()) {
                 enrollCourseResponse.setOrderId(order.getId());
                 enrollCourseResponse.setUrlPayment(paymentResponse.getData().getUrl());

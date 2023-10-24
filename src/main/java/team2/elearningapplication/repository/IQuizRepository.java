@@ -10,4 +10,6 @@ public interface IQuizRepository extends JpaRepository<Quiz,Integer> {
     Optional<Quiz> findQuizById(int id);
     Optional<Quiz> findQuizByName(String quizName);
     List<Quiz> findAllByIsDeleted(boolean isDeleted);
+
+    Optional<Quiz> findByLesson(int lessonId);
 }

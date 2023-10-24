@@ -175,14 +175,14 @@ public class CourseController {
         if(response.getCode() == ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
         } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get total course success",response.getData()));
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get  course page success",response.getData()));
         } else {
-            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get total course fail",null));
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get course page fail",null));
         }
     }
 
     @PostMapping("/enroll-course")
-    public ResponseEntity<ResponseCommon<EnrollCourseResponse>> enrollCourse(EnrollCourseRequest enrollCourseRequest){
+    public ResponseEntity<ResponseCommon<EnrollCourseResponse>> enrollCourse(@Valid @RequestBody EnrollCourseRequest enrollCourseRequest){
         ResponseCommon<EnrollCourseResponse> response = courseService.enrollCourse(enrollCourseRequest);
         if(response.getCode() == ResponseCode.SEND_URL_PAYMENT_FAIL.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.SEND_URL_PAYMENT_FAIL.getCode(),"Send url payment fail",null));

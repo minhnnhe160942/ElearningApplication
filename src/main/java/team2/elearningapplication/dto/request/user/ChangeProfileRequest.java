@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Getter
 public class ChangeProfileRequest {
     @NotBlank
-    private String email;
+    private String username;
     @NotBlank
     private String fullName;
     @NotBlank

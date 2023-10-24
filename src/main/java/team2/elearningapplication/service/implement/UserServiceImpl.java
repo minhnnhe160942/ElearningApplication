@@ -39,14 +39,39 @@ public class UserServiceImpl implements IUserService {
     private int otpValid;
 
     @Override
+    public ResponseCommon<GetUserByUsernameResponse> getUserByUsername(GetUserByUsernameRequest getUserByUsernameRequest) {
+        try {
+            User user = userRepository.findByUsername(getUserByUsernameRequest.getUsername()).orElse(null);
+            if(Objects.isNull(user)){
+                return new ResponseCommon<>(ResponseCode.USER_EXIST,null);
+            } else {
+                GetUserByUsernameResponse getUserByUsernameResponse = new GetUserByUsernameResponse();
+                getUserByUsernameResponse.setUser(user);
+                return new ResponseCommon<>(ResponseCode.SUCCESS,getUserByUsernameResponse);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
     public String genUserFromEmail(String email) {
-        return email.substring(0, email.indexOf("@"));
+        String username = email.substring(0, email.indexOf("@"));
+        Random random = new Random();
+        StringBuilder randomNumber = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            int digit = random.nextInt(10); // Số ngẫu nhiên từ 0 đến 9
+            randomNumber.append(digit);
+        }
+        String result = username + randomNumber.toString();
+        return result;
     }
 
     @Override
     public ResponseCommon<CreateUserResponseDTO> createUser(CreateUserRequest requestDTO) {
         try {
-            User user = userRepository.findByUsername(genUserFromEmail(requestDTO.getEmail())).orElse(null);
+            User user = userRepository.findByEmail(requestDTO.getEmail()).orElse(null);
             // if username exist and status equals inprocess -> get new otp
 //            log.debug("check user get by username and status{}",requestDTO.getUsername(),user.getStatus());
             if(Objects.nonNull(user) && user.getStatus() != EnumUserStatus.IN_PROCESS){
@@ -133,7 +158,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<GetOTPResponse> getOtp(GetOTPRequest request) {
         try {
-            User user = userRepository.findByUsernameAndStatus(genUserFromEmail(request.getEmail()), EnumUserStatus.ACTIVE).orElse(null);
+            User user = userRepository.findByEmailAndStatus(request.getEmail(), EnumUserStatus.ACTIVE).orElse(null);
             // if  user is null ->throw error
             if (Objects.isNull(user)) {
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
@@ -141,19 +166,12 @@ public class UserServiceImpl implements IUserService {
             // step1: gen otp
             // if otp of user expried
             LocalDateTime localDateTime = LocalDateTime.now();
-//            if(!Objects.isNull(user.getExpiredOTP()) && localDateTime.isBefore(user.getExpiredOTP())){
-//                log.info("START... Sending email");
-//                emailService.sendEmail(setUpMail(user.getEmail(),user.getOtp()));
-//                log.info("END... Email sent success");
-//                GetOTPResponse response = new GetOTPResponse(user.getUsername(), user.getEmail());
-//                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
-//            }
             String otp = CommonUtils.getOTP();
             //step2: send email
             log.info("START... Sending email");
             emailService.sendEmail(setUpMail(user.getEmail(),otp));
             log.info("END... Email sent success");
-            user.setUsername(genUserFromEmail(request.getEmail()));
+//            user.setUsername(genUserFromEmail(request.getEmail()));
             if (request.isCreate()) {
                 user.setStatus(EnumUserStatus.IN_PROCESS);
             }
@@ -174,7 +192,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<JWTResponse> login(LoginRequest loginRequest) {
         try {
-            Optional<User> user = userRepository.findByUsername(genUserFromEmail(loginRequest.getUsername()));
+            Optional<User> user = userRepository.findByEmail(loginRequest.getUsername());
             // if username request not found in database -> tell user
             if(user.isEmpty()){
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
@@ -207,26 +225,32 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<VerifyOtpResponse> verifyOtp(VerifyOtpRequest verifyOtpRequest) {
         try {
-            User user = userRepository.findByUsername(genUserFromEmail(verifyOtpRequest.getEmail())).orElse(null);
-            if(Objects.isNull(user)) return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null);
-            LocalDateTime localDateTime = LocalDateTime.now();
-            // if otp request equals otp generate and localDate before expired otp -> return success
-            if(verifyOtpRequest.getOtp().equals(user.getOtp())
-                    && localDateTime.isBefore(user.getExpiredOTP())){
-                return new ResponseCommon<>(ResponseCode.SUCCESS,null);
-            }
-            // else -> return fail
-            else if(!verifyOtpRequest.getOtp().equals(user.getOtp())){
-                 return new ResponseCommon<>(ResponseCode.OTP_INCORRECT,null);
+            User user = userRepository.findByEmail(verifyOtpRequest.getEmail()).orElse(null);
 
-            } else {
-                return new ResponseCommon<>(ResponseCode.Expired_OTP,null);
+            if (Objects.isNull(user)) {
+                return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND, null);
             }
-        } catch (Exception e){
+
+            LocalDateTime localDateTime = LocalDateTime.now();
+            LocalDateTime expiredOTP = user.getExpiredOTP();
+            String otp = user.getOtp();
+
+            if (localDateTime.isAfter(expiredOTP)) {
+                // Trường hợp OTP đã hết hạn
+                return new ResponseCommon<>(ResponseCode.Expired_OTP, null);
+            } else if (verifyOtpRequest.getOtp().equals(otp)) {
+                // Trường hợp OTP đúng
+                return new ResponseCommon<>(ResponseCode.SUCCESS, null);
+            } else {
+                // Trường hợp OTP sai
+                return new ResponseCommon<>(ResponseCode.OTP_INCORRECT, null);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
+
 
 
     @Override
@@ -259,9 +283,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<ChangeProfileResponse> changeProfile(ChangeProfileRequest changeProfileRequest) {
         try {
-            User user = userRepository.findByUsername(genUserFromEmail(changeProfileRequest.getEmail())).orElse(null);
+            User user = userRepository.findByUsername(changeProfileRequest.getUsername()).orElse(null);
             if (user == null) {
-                log.debug("User not found for email: {}", changeProfileRequest.getEmail());
+                log.debug("User not found for email: {}", changeProfileRequest.getUsername());
                 return new ResponseCommon<>(ResponseCode.USER_NOT_FOUND, null);
             }
 
@@ -277,10 +301,10 @@ public class UserServiceImpl implements IUserService {
             changeProfileResponse.setPhoneNum(user.getPhone());
             changeProfileResponse.setGender(user.getGender());
 
-            log.debug("User profile updated successfully for email: {}", changeProfileRequest.getEmail());
+            log.debug("User profile updated successfully for email: {}", changeProfileRequest.getUsername());
             return new ResponseCommon<>(ResponseCode.SUCCESS, changeProfileResponse);
         } catch (Exception e) {
-            log.error("Error while updating user profile for email: {}", changeProfileRequest.getEmail(), e);
+            log.error("Error while updating user profile for email: {}", changeProfileRequest.getUsername(), e);
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
@@ -299,7 +323,6 @@ public class UserServiceImpl implements IUserService {
 
                 response.setId(user.getId());
                 response.setUsername(user.getUsername());
-                response.setPassword(user.getPassword());
                 response.setEmail(user.getEmail());
                 response.setPhone(user.getPhone());
                 response.setRole(user.getRole());
@@ -354,7 +377,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseCommon<ResendOTPResponse> resendOTP(ResendOTPRequest request) {
         try {
-            User user = userRepository.findByUsername(genUserFromEmail(request.getEmail())).orElse(null);
+            User user = userRepository.findByEmail(request.getEmail()).orElse(null);
             LocalDateTime localDateTime = LocalDateTime.now();
             String otp = CommonUtils.getOTP();
             //step2: send email

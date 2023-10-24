@@ -1,5 +1,7 @@
 package team2.elearningapplication.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +17,6 @@ public interface ILessonRespository extends JpaRepository<Lesson,Integer> {
     Optional<Lesson> findLessonByOrdNumberAndCourse(@Param("ordNumber") int ordNumber, @Param("courseId") int courseId);
 
     List<Lesson> findAllByIsDeleted(boolean isDeleted);
+
+    Page<Lesson> findAllByIsDeleted(boolean isDeleted, Pageable pageable);
 }
