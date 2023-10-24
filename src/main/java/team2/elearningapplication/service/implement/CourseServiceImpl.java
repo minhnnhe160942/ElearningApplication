@@ -328,6 +328,7 @@ public class CourseServiceImpl implements ICourseService {
         try {
             EnrollCourseResponse enrollCourseResponse = new EnrollCourseResponse();
             Course courseBuy = courseRepository.findCourseById(enrollCourseRequest.getCourseId()).orElse(null);
+            System.out.println(courseBuy);
             Order order = new Order();
             order.setCreated_at(LocalDateTime.now());
             order.setUser(userRepository.findByUsername(enrollCourseRequest.getUsername()).orElse(null));

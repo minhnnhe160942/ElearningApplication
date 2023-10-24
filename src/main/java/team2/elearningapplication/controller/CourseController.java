@@ -182,7 +182,7 @@ public class CourseController {
     }
 
     @PostMapping("/enroll-course")
-    public ResponseEntity<ResponseCommon<EnrollCourseResponse>> enrollCourse(EnrollCourseRequest enrollCourseRequest){
+    public ResponseEntity<ResponseCommon<EnrollCourseResponse>> enrollCourse(@Valid @RequestBody EnrollCourseRequest enrollCourseRequest){
         ResponseCommon<EnrollCourseResponse> response = courseService.enrollCourse(enrollCourseRequest);
         if(response.getCode() == ResponseCode.SEND_URL_PAYMENT_FAIL.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.SEND_URL_PAYMENT_FAIL.getCode(),"Send url payment fail",null));
