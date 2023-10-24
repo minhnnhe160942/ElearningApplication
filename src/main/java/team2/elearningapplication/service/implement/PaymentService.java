@@ -19,25 +19,28 @@ public class PaymentService implements IPaymentService {
     public  ResponseCommon<PaymentRes> addPayment(double amount) throws UnsupportedEncodingException {
 
         String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
-        Long lastAmount = (long) (100L * amount);
         String vnp_TmnCode = VnPayConfig.vnp_TmnCode;
-
-        Map<String, String> vnp_Params = new HashMap<>();
-        vnp_Params.put("vnp_Version", VnPayConfig.vnp_Version);
-        vnp_Params.put("vnp_Command", VnPayConfig.vnp_Command);
-        vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(lastAmount));
-        vnp_Params.put("vnp_CurrCode", "VND");
-        vnp_Params.put("vnp_BankCode", "NCB");
-        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
-        vnp_Params.put("vnp_Locale", "vn");
-        vnp_Params.put("vnp_ReturnUrl", VnPayConfig.vnp_ReturnUrl);
-
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnp_CreateDate = formatter.format(cld.getTime());
+        Long lastAmount = (long) (100L * amount);
+
+        Map<String, String> vnp_Params = new HashMap<>();
+        vnp_Params.put("vnp_Amount", String.valueOf(lastAmount));
+        vnp_Params.put("vnp_Command", VnPayConfig.vnp_Command);
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+        vnp_Params.put("vnp_IpAddr","127.0.0.1");
+        vnp_Params.put("vnp_CurrCode", "VND");
+        vnp_Params.put("vnp_Locale", "vn");
+        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
+        vnp_Params.put("vnp_OrderType","other");
+        vnp_Params.put("vnp_ReturnUrl", VnPayConfig.vnp_ReturnUrl);
+        vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
+        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
+        vnp_Params.put("vnp_Version", VnPayConfig.vnp_Version);
+//        vnp_Params.put("vnp_BankCode", "NCB");
+
+
 
         cld.add(Calendar.MINUTE, 15);
         String vnp_ExpireDate = formatter.format(cld.getTime());
