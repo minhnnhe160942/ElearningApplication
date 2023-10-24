@@ -5,12 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
+import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.lesson.AddLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.DeleteLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.GetLessonByIdRequest;
 import team2.elearningapplication.dto.request.admin.lesson.UpdateLessonRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
+import team2.elearningapplication.dto.response.user.course.PageCourseResponse;
+import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
 import team2.elearningapplication.service.ILessonService;
 
 import javax.validation.Valid;
@@ -78,6 +81,19 @@ public class LessonController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Lesson not exist", null));
         } else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get lesson by id fail", null));
+        }
+    }
+
+    @GetMapping("/page-lesson")
+    public ResponseEntity<ResponseCommon<GetLessonPageResponse>> coursePage(PageRequestDTO pageRequestDTO){
+        ResponseCommon<GetLessonPageResponse> response = lessonService.getLessonPage(pageRequestDTO);
+        // if response code quals empty list code -> tell user
+        if(response.getCode() == ResponseCode.LESSON_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Lesson list is empty",null));
+        } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Get  lesson page success",response.getData()));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get lesson page fail",null));
         }
     }
 }

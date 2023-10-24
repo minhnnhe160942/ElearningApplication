@@ -2,15 +2,23 @@ package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
+import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.lesson.AddLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.DeleteLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.GetLessonByIdRequest;
 import team2.elearningapplication.dto.request.admin.lesson.UpdateLessonRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
+import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
+import team2.elearningapplication.dto.response.user.question.GetQuestionPageResponse;
 import team2.elearningapplication.entity.Lesson;
+import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.repository.ICourseRepository;
 import team2.elearningapplication.repository.ILessonRespository;
 import team2.elearningapplication.service.ILessonService;
@@ -185,6 +193,35 @@ public class LessonServiceImpl implements ILessonService {
             e.printStackTrace();
             log.debug("Get Lesson by id failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetLessonPageResponse> getLessonPage(PageRequestDTO pageRequestDTO) {
+        try {
+            int pageNo = pageRequestDTO.getPageNo();
+            int pageSize = pageRequestDTO.getPageSize();
+            String sortBy = pageRequestDTO.getSortBy();
+            String sortDir = pageRequestDTO.getSortDir();
+
+            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+
+            Page<Lesson> lessonPage = lessonRespository.findAllByIsDeleted(false, pageable);
+            if (lessonPage.isEmpty()) {
+                return new ResponseCommon<>(ResponseCode.LESSON_LIST_IS_EMPTY, null);
+            }
+            GetLessonPageResponse response = new GetLessonPageResponse();
+            response.setLessonsList(lessonPage.getContent());
+            response.setPageNo(pageNo);
+            response.setPageSize(pageSize);
+            response.setTotalElements((int) lessonPage.getTotalElements());
+            response.setTotalPages(lessonPage.getTotalPages());
+            response.setLast(lessonPage.isLast());
+            return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get lesson page An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lesson page fail", null);
         }
     }
 }
