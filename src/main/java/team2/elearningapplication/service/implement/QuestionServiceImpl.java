@@ -3,9 +3,14 @@ package team2.elearningapplication.service.implement;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team2.elearningapplication.Enum.ResponseCode;
+import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.question.DeleteQuestionRequest;
 import team2.elearningapplication.dto.request.admin.question.GetQuestionByIdRequest;
@@ -15,7 +20,10 @@ import team2.elearningapplication.dto.response.admin.question.AddQuestionRespons
 import team2.elearningapplication.dto.response.admin.question.DeleteQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.GetQuestionByIdResponse;
 import team2.elearningapplication.dto.response.admin.question.UpdateQuestionResponse;
+import team2.elearningapplication.dto.response.user.course.PageCourseResponse;
+import team2.elearningapplication.dto.response.user.question.GetQuestionPageResponse;
 import team2.elearningapplication.entity.Answer;
+import team2.elearningapplication.entity.Course;
 import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.entity.Quiz;
 import team2.elearningapplication.repository.IAnswerRepository;
@@ -184,6 +192,35 @@ public class QuestionServiceImpl implements IQuestionService {
             e.printStackTrace();
             log.error("Get question by id: An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get question by id fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetQuestionPageResponse> getQuestionPage(PageRequestDTO pageRequestDTO) {
+        try {
+            int pageNo = pageRequestDTO.getPageNo();
+            int pageSize = pageRequestDTO.getPageSize();
+            String sortBy = pageRequestDTO.getSortBy();
+            String sortDir = pageRequestDTO.getSortDir();
+
+            Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+
+            Page<Question> questionPage = questionRepository.findAllByDeleted(false, pageable);
+            if (questionPage.isEmpty()) {
+                return new ResponseCommon<>(ResponseCode.QUESTION_LIST_IS_EMPTY, null);
+            }
+            GetQuestionPageResponse response = new GetQuestionPageResponse();
+            response.setQuestionList(questionPage.getContent());
+            response.setPageNo(pageNo);
+            response.setPageSize(pageSize);
+            response.setTotalElements((int) questionPage.getTotalElements());
+            response.setTotalPages(questionPage.getTotalPages());
+            response.setLast(questionPage.isLast());
+            return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get question page An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get question page fail", null);
         }
     }
 }

@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/user/total-user",
                 "/api/v1/user/getOTP",
                 "/api/v1/user/resendOTP",
-                "/api/v1/get-user-by-username",
+                "/api/v1/user/get-user-by-username",
                 "/api-docs",
                 "/swagger-ui",
 
@@ -86,6 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/question/delete-question",
                 "/api/v1/question/find-all-question",
                 "/api/v1/question/get-question-by-id",
+                "/api/v1/question/get-question-page",
 
                 "/api/v1/quiz/add-quiz",
                 "/api/v1/quiz/update-quiz",

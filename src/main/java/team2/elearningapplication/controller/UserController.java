@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ import java.util.Objects;
 @RequestMapping("/api/v1/user")
 @AllArgsConstructor
 @Log4j2
+
 public class UserController {
 
     private IUserService userService;
@@ -239,14 +241,14 @@ public class UserController {
         }
     }
     @GetMapping("/get-user-by-username")
-    public ResponseEntity<ResponseCommon<GetUserByUsernameResponse>> getUserByUsername(@Valid @RequestBody GetUserByUsernameRequest getUserByUsernameRequest){
+    public ResponseEntity<ResponseCommon<GetUserByUsernameResponse>> getUserByUsername(@Valid @ParameterObject GetUserByUsernameRequest getUserByUsernameRequest){
         ResponseCommon<GetUserByUsernameResponse> response = userService.getUserByUsername(getUserByUsernameRequest);
         if(response.getCode() == ResponseCode.USER_NOT_FOUND.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.USER_NOT_FOUND,null));
         } else if(response.getCode()==ResponseCode.FAIL.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL,null));
         } else {
-            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.SUCCESS,response.getData()));
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS,response.getData()));
         }
     }
 }

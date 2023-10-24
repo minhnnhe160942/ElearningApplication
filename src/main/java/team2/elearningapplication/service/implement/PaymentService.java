@@ -19,13 +19,14 @@ public class PaymentService implements IPaymentService {
     public  ResponseCommon<PaymentRes> addPayment(double amount) throws UnsupportedEncodingException {
 
         String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
+        Long lastAmount = (long) (100L * amount);
         String vnp_TmnCode = VnPayConfig.vnp_TmnCode;
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", VnPayConfig.vnp_Version);
         vnp_Params.put("vnp_Command", VnPayConfig.vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(amount));
+        vnp_Params.put("vnp_Amount", String.valueOf(lastAmount));
         vnp_Params.put("vnp_CurrCode", "VND");
         vnp_Params.put("vnp_BankCode", "NCB");
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);

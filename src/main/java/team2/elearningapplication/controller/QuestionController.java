@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
+import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.question.DeleteQuestionRequest;
 import team2.elearningapplication.dto.request.admin.question.GetQuestionByIdRequest;
@@ -15,6 +16,8 @@ import team2.elearningapplication.dto.response.admin.question.AddQuestionRespons
 import team2.elearningapplication.dto.response.admin.question.DeleteQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.GetQuestionByIdResponse;
 import team2.elearningapplication.dto.response.admin.question.UpdateQuestionResponse;
+import team2.elearningapplication.dto.response.user.course.PageCourseResponse;
+import team2.elearningapplication.dto.response.user.question.GetQuestionPageResponse;
 import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.service.IQuestionService;
 
@@ -100,6 +103,19 @@ public class QuestionController {
         } else {
             log.error("Get question by id failed");
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get question by id failed", null));
+        }
+    }
+
+    @GetMapping("/get-question-page")
+    public  ResponseEntity<ResponseCommon<GetQuestionPageResponse>> getQuestionPage(PageRequestDTO pageRequestDTO){
+        ResponseCommon<GetQuestionPageResponse> response = questionService.getQuestionPage(pageRequestDTO);
+        // if response code quals empty list code -> tell user
+        if(response.getCode() == ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.QUESTION_LIST_IS_EMPTY.getCode(),"Question list is empty",null));
+        } else if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"get question page success",response.getData()));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"get question pagefail",null));
         }
     }
 }
