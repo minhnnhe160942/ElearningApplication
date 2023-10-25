@@ -2,11 +2,13 @@ package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import team2.elearningapplication.Enum.*;
 import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
@@ -15,6 +17,7 @@ import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.common.PageRequestDTO;
+import team2.elearningapplication.dto.request.user.course.CheckEnrollCourseRequest;
 import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
 import team2.elearningapplication.dto.request.user.course.PaymentConfirmRequest;
 import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
@@ -390,6 +393,25 @@ public class CourseServiceImpl implements ICourseService {
                     return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Accept to join course",paymentConfirmResponse);
                 }
             }
+        } catch (Exception e){
+            e.printStackTrace();
+            log.debug("Enroll Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<CheckEnrollCourseResponse> isEnrollCourse(CheckEnrollCourseRequest checkEnrollCourseRequest) {
+        try {
+            CheckEnrollCourseResponse checkEnrollCourseResponse = new CheckEnrollCourseResponse();
+            User user = userRepository.findByUsername(checkEnrollCourseRequest.getUsername()).orElse(null);
+            HistoryRegisterCourse historyRegisterCourse = historyRegisterCourseRepository.findHistoryRegisterCourseByCourseIdAndAndUser(checkEnrollCourseRequest.getCourseId(), user).orElse(null);
+            if(Objects.isNull(historyRegisterCourse)){
+                checkEnrollCourseResponse.setEnrollCourse(false);
+            } else{
+                checkEnrollCourseResponse.setEnrollCourse(true);
+            }
+            return new ResponseCommon<>(ResponseCode.SUCCESS,checkEnrollCourseResponse);
         } catch (Exception e){
             e.printStackTrace();
             log.debug("Enroll Course failed: " + e.getMessage());

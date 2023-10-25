@@ -1,11 +1,13 @@
 package team2.elearningapplication.service;
 
+import org.hibernate.annotations.Check;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.common.PageRequestDTO;
+import team2.elearningapplication.dto.request.user.course.CheckEnrollCourseRequest;
 import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
 import team2.elearningapplication.dto.request.user.course.PaymentConfirmRequest;
 import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
@@ -37,4 +39,6 @@ public interface ICourseService {
     ResponseCommon<EnrollCourseResponse> enrollCourse(EnrollCourseRequest enrollCourseRequest);
 
     ResponseCommon<PaymentConfirmResponse> paymentConfirm(PaymentConfirmRequest paymentConfirmRequest);
+
+    ResponseCommon<CheckEnrollCourseResponse> isEnrollCourse(CheckEnrollCourseRequest checkEnrollCourseRequest);
 }

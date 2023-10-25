@@ -1,6 +1,7 @@
 package team2.elearningapplication.controller;
 
 import lombok.AllArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,7 @@ import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
-import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
-import team2.elearningapplication.dto.request.user.course.GetAllCourseByUserRequest;
-import team2.elearningapplication.dto.request.user.course.PaymentConfirmRequest;
-import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
+import team2.elearningapplication.dto.request.user.course.*;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
 import team2.elearningapplication.service.ICourseService;
@@ -204,6 +202,15 @@ public class CourseController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Confirm payment fail",null));
         } else {
             return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Confirm payment success",response.getData()));
+        }
+    }
+    @PostMapping("/check-enroll")
+    public ResponseEntity<ResponseCommon<CheckEnrollCourseResponse>> checkEnrollCourse(@ParameterObject CheckEnrollCourseRequest checkEnrollCourseRequest) {
+        ResponseCommon<CheckEnrollCourseResponse> response = courseService.isEnrollCourse(checkEnrollCourseRequest);
+        if (response.getCode() == ResponseCode.FAIL.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Check enroll course failed", null));
+        } else {
+            return ResponseEntity.ok().body(response);
         }
     }
 }
