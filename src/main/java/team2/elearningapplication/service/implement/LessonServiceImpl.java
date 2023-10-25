@@ -14,9 +14,12 @@ import team2.elearningapplication.dto.request.admin.lesson.AddLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.DeleteLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.GetLessonByIdRequest;
 import team2.elearningapplication.dto.request.admin.lesson.UpdateLessonRequest;
+import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
+import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
 import team2.elearningapplication.dto.response.user.question.GetQuestionPageResponse;
+import team2.elearningapplication.entity.Course;
 import team2.elearningapplication.entity.Lesson;
 import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.repository.ICourseRepository;
@@ -24,6 +27,7 @@ import team2.elearningapplication.repository.ILessonRespository;
 import team2.elearningapplication.service.ILessonService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -222,6 +226,26 @@ public class LessonServiceImpl implements ILessonService {
             e.printStackTrace();
             log.error("Get lesson page An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lesson page fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetLessonByCourseIdResponse> getLessonByCourseId(GetLessonByCourseIdRequest getLessonByCourseIdRequest) {
+        try {
+            Course course = courseRepository.findCourseById(getLessonByCourseIdRequest.getCourseId()).orElse(null);
+            if(Objects.isNull(course)){
+                return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST,null);
+            } else {
+                List<Lesson> lessonList = lessonRespository.findAllByCourse(course);
+                GetLessonByCourseIdResponse response = new GetLessonByCourseIdResponse();
+                response.setLessonList(lessonList);
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Get lesson by course id success", response);
+
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get lesson by course id An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lesson by course id fail", null);
         }
     }
 }
