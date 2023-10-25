@@ -15,9 +15,11 @@ import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
 import team2.elearningapplication.dto.request.user.course.*;
+import team2.elearningapplication.dto.response.admin.GetTotalRevenueResponse;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
 import team2.elearningapplication.service.ICourseService;
+import team2.elearningapplication.service.IPaymentService;
 
 import javax.validation.Valid;
 
@@ -26,6 +28,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class CourseController {
     private ICourseService courseService;
+    private IPaymentService paymentService;
     private final int TOP_COURSE = 10;
 
     @PostMapping("/add-course")
@@ -213,4 +216,16 @@ public class CourseController {
             return ResponseEntity.ok().body(response);
         }
     }
+
+    @GetMapping("/total-revenue")
+    public ResponseEntity<ResponseCommon<GetTotalRevenueResponse>> getTotalRevenue() {
+        try {
+            ResponseCommon<GetTotalRevenueResponse> getTotalRevenueResponseResponseCommon = paymentService.getTotalRevenue();
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Total revenue retrieved successfully", getTotalRevenueResponseResponseCommon.getData()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Failed to retrieve total revenue", null));
+        }
+    }
+
 }
