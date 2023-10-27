@@ -796,5 +796,9 @@ public class commitController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
         }if(response.getCode()==ResponseCode.SUCCESS.getCode()){
             return ResponseEntity.ok(response);
-    }
+    }if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+                return ResponseEntity.ok(response);if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+                    return ResponseEntity.ok(response);if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+                        return ResponseEntity.ok(response);
 }
