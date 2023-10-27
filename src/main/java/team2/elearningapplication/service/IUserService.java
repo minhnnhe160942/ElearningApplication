@@ -1,15 +1,12 @@
 package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.user.GetUserByEmailRequest;
-import team2.elearningapplication.dto.request.user.*;
+import team2.elearningapplication.dto.request.user.authen.*;
 import team2.elearningapplication.dto.response.admin.GetUserResponse;
 import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
-import team2.elearningapplication.dto.response.user.*;
+import team2.elearningapplication.dto.response.user.authen.*;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.security.jwt.JWTResponse;
-
-import java.util.List;
 
 public interface IUserService {
 

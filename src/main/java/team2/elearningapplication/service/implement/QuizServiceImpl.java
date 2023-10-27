@@ -10,12 +10,19 @@ import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
+import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
+import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
 import team2.elearningapplication.dto.response.admin.quiz.*;
+import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
+import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
+import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.entity.Quiz;
 import team2.elearningapplication.repository.ILessonRespository;
+import team2.elearningapplication.repository.IQuestionRepository;
 import team2.elearningapplication.repository.IQuizRepository;
 import team2.elearningapplication.service.ILessonService;
 import team2.elearningapplication.service.IQuizService;
+import team2.elearningapplication.utils.CommonUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +33,7 @@ import java.util.Objects;
 public class QuizServiceImpl implements IQuizService {
     private final IQuizRepository quizRepository;
     private final ILessonRespository lessonRespository;
-
+    private  final IQuestionRepository questionRepository;
     private final Logger log = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
     @Override
@@ -143,6 +150,36 @@ public class QuizServiceImpl implements IQuizService {
             e.printStackTrace();
             log.error("Get quiz by id failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get quiz by id failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<StartQuizResponse> startQuiz(StartQuizRequest startQuizRequest) {
+        try {
+            Question question = questionRepository.findQuestionByQuizIDAndAndOrdQuestion(startQuizRequest.getQuizId(),1);
+            int sessionId = CommonUtils.getSessionID();
+            int totalQuestion = questionRepository.countQuestionsByQuizId(startQuizRequest.getQuizId());
+            StartQuizResponse startQuizResponse = new StartQuizResponse();
+            startQuizResponse.setQuestion(question);
+            startQuizResponse.setSessionId(sessionId);
+            startQuizResponse.setTotalQuestion(totalQuestion);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,startQuizResponse);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("start  quiz by id failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"start quiz by id failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<NextQuestionResponse> nextQuestion(NextQuestionRequest nextQuestionRequest) {
+        try {
+            Question question = questionRepository.findQuestionByQuizIDAndAndOrdQuestion(nextQuestionRequest.getQuizId(), nextQuestionRequest.getOrdQuestion());
+            return null;
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("next question failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"next question failed",null);
         }
     }
 }

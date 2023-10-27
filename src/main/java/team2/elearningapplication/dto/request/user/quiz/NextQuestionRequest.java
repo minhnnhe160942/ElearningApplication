@@ -3,6 +3,7 @@ package team2.elearningapplication.dto.request.user.quiz;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class NextQuestionRequest {
@@ -10,5 +11,5 @@ public class NextQuestionRequest {
     private int ordQuestion;
     @NotNull
     private int quizId;
-    private int answerId;
+    private List<Integer> answerId;
 }
