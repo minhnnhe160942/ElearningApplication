@@ -99,4 +99,6 @@ public class commitController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 }
