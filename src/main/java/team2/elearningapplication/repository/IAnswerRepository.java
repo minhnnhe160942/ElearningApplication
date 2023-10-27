@@ -12,4 +12,8 @@ public interface IAnswerRepository extends JpaRepository<Answer,Integer> {
     Optional<Answer> findAnswerByQuestionIdAndId(int questionID, int answerID);
 
     List<Answer> findAnswerByQuestionId(int questionID);
+
+    List<Answer> findAllByIdIn(List<Integer> answerId);
+
+    Optional<Answer> findAnswerByIdAndIsCorrect(int answerId, boolean isCorrect);
 }

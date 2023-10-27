@@ -13,8 +13,10 @@ import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
+import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
 import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
 import team2.elearningapplication.dto.response.admin.quiz.*;
+import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
 import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
 import team2.elearningapplication.service.IQuizService;
 
@@ -114,6 +116,22 @@ public class QuizController {
         } else {
             log.error("Start quiz by ID failed");
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Start quiz by ID failed", null));
+        }
+    }
+
+    @PostMapping("/next-question")
+    public ResponseEntity<ResponseCommon<NextQuestionResponse>> nextQuestion(@Valid @RequestBody NextQuestionRequest nextQuestionRequest) {
+        ResponseCommon<NextQuestionResponse> response = quizService.nextQuestion(nextQuestionRequest);
+
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            log.debug("Next question retrieved successfully.");
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.FAIL.getCode()) {
+            log.error("Next question retrieval failed");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Next question retrieval failed", null));
+        } else {
+            log.error("Next question retrieval failed");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Next question retrieval failed", null));
         }
     }
 

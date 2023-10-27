@@ -9,6 +9,5 @@ import javax.validation.constraints.NotNull;
 public class NextQuestionResponse {
     @NotNull
     private Question question;
-    @NotNull
-    private int sessionId;
+
 }

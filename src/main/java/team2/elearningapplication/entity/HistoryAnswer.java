@@ -24,7 +24,7 @@ public class HistoryAnswer {
     @Column(name = "user_answer_id")
     private int userAnswerId;
     @Column(name = "answer_id_correct")
-    private boolean answerIdCorrect;
+    private int answerIdCorrect;
     @Column(name="sessionId")
     private int sessionId;
 

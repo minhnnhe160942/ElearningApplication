@@ -15,11 +15,8 @@ import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
 import team2.elearningapplication.dto.response.admin.quiz.*;
 import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
 import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
-import team2.elearningapplication.entity.Question;
-import team2.elearningapplication.entity.Quiz;
-import team2.elearningapplication.repository.ILessonRespository;
-import team2.elearningapplication.repository.IQuestionRepository;
-import team2.elearningapplication.repository.IQuizRepository;
+import team2.elearningapplication.entity.*;
+import team2.elearningapplication.repository.*;
 import team2.elearningapplication.service.ILessonService;
 import team2.elearningapplication.service.IQuizService;
 import team2.elearningapplication.utils.CommonUtils;
@@ -34,6 +31,9 @@ public class QuizServiceImpl implements IQuizService {
     private final IQuizRepository quizRepository;
     private final ILessonRespository lessonRespository;
     private  final IQuestionRepository questionRepository;
+    private final IAnswerRepository answerRepository;
+    private final IUserRepository userRepository;
+    private  final HistoryAnswerRepository historyAnswerRepository;
     private final Logger log = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
     @Override
@@ -174,8 +174,23 @@ public class QuizServiceImpl implements IQuizService {
     @Override
     public ResponseCommon<NextQuestionResponse> nextQuestion(NextQuestionRequest nextQuestionRequest) {
         try {
+            HistoryAnswer historyAnswer = new HistoryAnswer();
             Question question = questionRepository.findQuestionByQuizIDAndAndOrdQuestion(nextQuestionRequest.getQuizId(), nextQuestionRequest.getOrdQuestion());
-            return null;
+            List<Answer> answerList = answerRepository.findAllByIdIn(nextQuestionRequest.getAnswerId());
+            User user = userRepository.findByUsername(nextQuestionRequest.getUsername()).orElse(null);
+            for (Answer answer: answerList) {
+                historyAnswer.setUserAnswerId(answer.getId());
+                historyAnswerRepository.save(historyAnswer);
+            }
+            Answer answerCorrect = answerRepository.findAnswerByIdAndIsCorrect(nextQuestionRequest.getPreQuestionId(), true).orElse(null);
+            historyAnswer.setQuestionId(nextQuestionRequest.getPreQuestionId());
+            historyAnswer.setSessionId(nextQuestionRequest.getSessionId());
+            historyAnswer.setUser(userRepository.findByUsername(nextQuestionRequest.getUsername()).orElse(null));
+            historyAnswer.setAnswerIdCorrect(answerCorrect.getId());
+            historyAnswerRepository.save(historyAnswer);
+            NextQuestionResponse nextQuestionResponse = new NextQuestionResponse();
+            nextQuestionResponse.setQuestion(question);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,nextQuestionResponse);
         }catch (Exception e) {
             e.printStackTrace();
             log.error("next question failed");
