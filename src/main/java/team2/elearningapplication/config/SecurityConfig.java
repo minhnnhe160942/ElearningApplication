@@ -91,7 +91,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/question/find-all-question",
                 "/api/v1/question/get-question-by-id",
                 "/api/v1/question/get-question-page",
-                "/api/v1/question/next-question",
 
                 "/api/v1/quiz/add-quiz",
                 "/api/v1/quiz/update-quiz",
@@ -99,6 +98,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/quiz/find-all-quiz",
                 "/api/v1/quiz/get-quiz-by-id",
                 "/api/v1/quiz/start-quiz",
+                "/api/v1/quiz/next-question",
+                "/api/v1/quiz/finish-quiz",
 
                 "/api/v1/payment/add-payment",
                 "api/v1/payment/payment-info",

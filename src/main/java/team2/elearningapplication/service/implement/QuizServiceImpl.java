@@ -10,19 +10,24 @@ import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
+import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
 import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
 import team2.elearningapplication.dto.response.admin.quiz.*;
+import team2.elearningapplication.dto.response.user.quiz.FinishQuizResponse;
 import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
 import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
 import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.*;
 import team2.elearningapplication.service.ILessonService;
 import team2.elearningapplication.service.IQuizService;
+import team2.elearningapplication.service.email.EmailService;
 import team2.elearningapplication.utils.CommonUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -34,6 +39,10 @@ public class QuizServiceImpl implements IQuizService {
     private final IAnswerRepository answerRepository;
     private final IUserRepository userRepository;
     private  final HistoryAnswerRepository historyAnswerRepository;
+    private final EmailService emailService;
+    private final ICourseRepository courseRepository;
+    private static final double BASE_MARK = 0.8;
+
     private final Logger log = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
     @Override
@@ -196,5 +205,45 @@ public class QuizServiceImpl implements IQuizService {
             log.error("next question failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"next question failed",null);
         }
+    }
+
+    @Override
+    public ResponseCommon<FinishQuizResponse> finishQuiz(FinishQuizRequest finishQuizRequest) {
+        try {
+            User user = userRepository.findByUsername(finishQuizRequest.getUsername()).orElse(null);
+            Course course = courseRepository.findCourseById(finishQuizRequest.getCourseId()).orElse(null);
+
+            List<HistoryAnswer> listCorrectAnswer = historyAnswerRepository.findMatchingAnswers(finishQuizRequest.getSessionId());
+            List<HistoryAnswer> listIncorrectAnswer = historyAnswerRepository.findNonMatchingAnswers(finishQuizRequest.getSessionId());
+            int totalCorrect = listCorrectAnswer.size();
+            int totalIncorrect = listIncorrectAnswer.size();
+            int totalQuestion = questionRepository.countQuestionsByQuizId(finishQuizRequest.getQuizId());
+            double mark = totalCorrect/totalQuestion;
+            if(mark >= BASE_MARK){
+                log.info("START... Sending email");
+                emailService.sendEmail(setUpMail(user.getEmail(), course.getName()));
+                log.info("END... Email sent success");
+            }
+            FinishQuizResponse finishQuizResponse = new FinishQuizResponse();
+            finishQuizResponse.setTotalCorrect(totalCorrect);
+            finishQuizResponse.setTotalInCorrect(totalIncorrect);
+            finishQuizResponse.setPercent(mark);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,finishQuizResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("finish quiz  failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"finish quiz  failed",null);
+        }
+    }
+
+    private Mail setUpMail(String mailTo, String courseName) {
+        Mail mail = new Mail();
+        mail.setTo(mailTo);
+        mail.setSubject("Congratulations on earning your " + courseName);
+        Map<String, Object> model = new HashMap<>();
+        model.put("course_name", courseName);
+        mail.setPros(model);
+        mail.setTemplate("certificate");
+        return mail;
     }
 }

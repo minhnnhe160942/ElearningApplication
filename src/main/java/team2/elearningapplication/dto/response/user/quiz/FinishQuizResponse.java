@@ -5,9 +5,11 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class FinishQuestionResponse {
+public class FinishQuizResponse {
     @NotNull
     private int totalCorrect;
     @NotNull
     private int totalInCorrect;
+    @NotNull
+    private double percent;
 }

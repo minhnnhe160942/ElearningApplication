@@ -13,9 +13,11 @@ import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
+import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
 import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
 import team2.elearningapplication.dto.response.admin.quiz.*;
+import team2.elearningapplication.dto.response.user.quiz.FinishQuizResponse;
 import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
 import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
 import team2.elearningapplication.service.IQuizService;
@@ -132,6 +134,18 @@ public class QuizController {
         } else {
             log.error("Next question retrieval failed");
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Next question retrieval failed", null));
+        }
+    }
+
+    @PostMapping("/finish-quiz")
+    public ResponseEntity<ResponseCommon<FinishQuizResponse>> finishQuiz(@Valid @RequestBody FinishQuizRequest finishQuizRequest) {
+        ResponseCommon<FinishQuizResponse> response = quizService.finishQuiz(finishQuizRequest);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            log.debug("Quiz finished successfully.");
+            return ResponseEntity.ok(response);
+        } else {
+            log.error("Quiz finishing failed");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Quiz finishing failed", null));
         }
     }
 
