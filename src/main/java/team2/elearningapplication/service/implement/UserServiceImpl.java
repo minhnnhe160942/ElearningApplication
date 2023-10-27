@@ -10,6 +10,7 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.user.GetUserByEmailRequest;
 import team2.elearningapplication.dto.request.user.*;
+import team2.elearningapplication.dto.response.admin.GetUserResponse;
 import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
 import team2.elearningapplication.dto.response.user.*;
 import team2.elearningapplication.entity.Mail;
@@ -396,5 +397,10 @@ public class UserServiceImpl implements IUserService {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
+    }
+
+    @Override
+    public ResponseCommon<GetUserResponse> getUser() {
+        return null;
     }
 }
