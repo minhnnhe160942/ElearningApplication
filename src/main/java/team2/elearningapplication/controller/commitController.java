@@ -88,4 +88,8 @@ public class commitController {
                     return ResponseEntity.ok(responseCommon.getData());
                 } else {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+                            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                        }
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 }
