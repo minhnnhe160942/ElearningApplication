@@ -743,5 +743,57 @@ public class commitController {
         else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
         }
+    }    @PostMapping("/update-course")
+    public ResponseEntity<ResponseCommon<UpdateCourseResponse>> updateCouse(@Valid @RequestBody UpdateCourseRequest updateCourseRequest){
+        ResponseCommon<UpdateCourseResponse> response = courseService.updateCourse(updateCourseRequest);
+        // if code of response equal code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code equal course not exist -> tell error
+        else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
+        } // else -> return fail  update
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update course fail",null));
+        }
+    }
+
+    @PostMapping("/delete-course")
+    public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
+        ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
+        // if code of response equal code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code equal course not exist -> tell error
+        else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
+        } // else -> return fail  update
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
+        }
+    }
+    @PostMapping("/delete-course")
+    public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
+        ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
+        // if code of response equal code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code equal course not exist -> tell error
+        else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
+        } // else -> return fail  update
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
+        }
+    }    @PostMapping("/delete-course")
+    public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
+        ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
+        // if code of response equal code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code equal course not exist -> tell error
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
+        }
     }
 }
