@@ -19,8 +19,10 @@ import team2.elearningapplication.dto.response.user.question.GetQuestionPageResp
 import team2.elearningapplication.entity.Course;
 import team2.elearningapplication.entity.Lesson;
 import team2.elearningapplication.entity.Question;
+import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.ICourseRepository;
 import team2.elearningapplication.repository.ILessonRespository;
+import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.service.ILessonService;
 
 import java.time.LocalDateTime;
@@ -34,11 +36,13 @@ import java.util.Objects;
 public class LessonServiceImpl implements ILessonService {
     private final ILessonRespository lessonRespository;
     private final ICourseRepository courseRepository;
+    private final IUserRepository userRepository;
 
     @Override
     public ResponseCommon<AddLessonResponse> addLesson(AddLessonRequest addLessonRequest) {
         try {
             Lesson lesson = lessonRespository.findLessonByOrdNumberAndCourse(addLessonRequest.getOrdNumber(), addLessonRequest.getCourseID()).orElse(null);
+            User user =  userRepository.findByUsername(addLessonRequest.getUsername()).orElse(null);
             // if lesson not null -> lesson exists -> tell the user
             if (!Objects.isNull(lesson)) {
                 log.debug("Add Lesson failed: Lesson already exists");
@@ -54,6 +58,7 @@ public class LessonServiceImpl implements ILessonService {
                 addLesson.setDescription(addLessonRequest.getDescription());
                 LocalDateTime createdAt = LocalDateTime.now();
                 addLesson.setCreatedAt(createdAt);
+                addLesson.setUserCreated(user);
                 lessonRespository.save(addLesson);
                 AddLessonResponse addLessonResponse = new AddLessonResponse();
                 addLessonResponse.setLessonName(addLesson.getName());
@@ -63,6 +68,7 @@ public class LessonServiceImpl implements ILessonService {
                 addLessonResponse.setLinkContent(addLesson.getLinkContent());
                 addLessonResponse.setDescription(addLesson.getDescription());
                 addLessonResponse.setCreatedAt(addLesson.getCreatedAt());
+                addLessonResponse.setCreatedBy(user.getUsername());
                 log.debug("Add Lesson successful");
                 return new ResponseCommon<>(ResponseCode.SUCCESS, addLessonResponse);
             }
@@ -77,6 +83,7 @@ public class LessonServiceImpl implements ILessonService {
     public ResponseCommon<UpdateLessonResponse> updateLesson(UpdateLessonRequest updateLessonRequest) {
         try {
             Lesson lesson = lessonRespository.findLessonById(updateLessonRequest.getLessonID()).orElse(null);
+            User user = userRepository.findByUsername(updateLessonRequest.getUsername()).orElse(null);
             // if lesson is null -> lesson does not exist -> tell the user
             if (Objects.isNull(lesson)) {
                 log.debug("Update Lesson failed: Lesson does not exist");
@@ -93,6 +100,7 @@ public class LessonServiceImpl implements ILessonService {
                 LocalDateTime updateAt = LocalDateTime.now();
                 updateLesson.setUpdatedAt(updateAt);
                 updateLesson.setDeleted(updateLessonRequest.isDeleted());
+                updateLesson.setUserUpdated(user);
                 lessonRespository.save(updateLesson);
                 UpdateLessonResponse updateLessonResponse = new UpdateLessonResponse();
                 updateLessonResponse.setLessonID(updateLesson.getId());
@@ -103,6 +111,9 @@ public class LessonServiceImpl implements ILessonService {
                 updateLessonResponse.setDescription(updateLesson.getDescription());
                 updateLessonResponse.setCreatedAt(updateLesson.getCreatedAt());
                 updateLessonResponse.setUpdateAt(updateAt);
+                updateLessonResponse.setUpdatedBy(updateLesson.getUserUpdated().getUsername());
+                updateLessonResponse.setCreatedBy(updateLesson.getUserCreated().getUsername());
+
                 log.debug("Update Lesson successful");
                 return new ResponseCommon<>(ResponseCode.SUCCESS, updateLessonResponse);
             }
@@ -117,6 +128,7 @@ public class LessonServiceImpl implements ILessonService {
     public ResponseCommon<DeleteLessonResponse> deleteLesson(DeleteLessonRequest deleteLessonRequest) {
         try {
             Lesson lesson = lessonRespository.findLessonById(deleteLessonRequest.getLessonID()).orElse(null);
+            User user = userRepository.findByUsername(deleteLessonRequest.getUsername()).orElse(null);
             // if lesson is null -> lesson does not exist -> tell the user
             if (Objects.isNull(lesson)) {
                 log.debug("Delete Lesson failed: Lesson does not exist");
@@ -127,6 +139,7 @@ public class LessonServiceImpl implements ILessonService {
                 Lesson deleteLesson = lesson;
                 deleteLesson.setDeleted(true);
                 deleteLesson.setUpdatedAt(LocalDateTime.now());
+                deleteLesson.setUserUpdated(user);
                 lessonRespository.save(deleteLesson);
                 DeleteLessonResponse deleteLessonResponse = new DeleteLessonResponse();
                 deleteLessonResponse.setLessonName(deleteLesson.getName());
@@ -136,6 +149,8 @@ public class LessonServiceImpl implements ILessonService {
                 deleteLessonResponse.setLinkContent(deleteLesson.getLinkContent());
                 deleteLessonResponse.setDescription(deleteLesson.getDescription());
                 deleteLessonResponse.setCreatedAt(deleteLesson.getCreatedAt());
+                deleteLessonResponse.setUpdatedBy(deleteLesson.getUserUpdated().getUsername());
+                deleteLessonResponse.setCreatedBy(deleteLesson.getUserCreated().getUsername());
                 LocalDateTime updateAt = LocalDateTime.now();
                 deleteLessonResponse.setUpdateAt(updateAt);
                 log.debug("Delete Lesson successful");

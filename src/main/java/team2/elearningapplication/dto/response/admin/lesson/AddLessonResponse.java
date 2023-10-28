@@ -27,4 +27,6 @@ public class AddLessonResponse {
     private String description;
     @NotNull
     private LocalDateTime createdAt;
+    @NotBlank
+    private String createdBy;
 }

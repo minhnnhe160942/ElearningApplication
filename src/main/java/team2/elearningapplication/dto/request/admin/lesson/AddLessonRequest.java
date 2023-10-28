@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class AddLessonRequest {
     @NotBlank
+    private String username;
+    @NotBlank
     private String lessonName;
     @NotNull
     private int ordNumber;

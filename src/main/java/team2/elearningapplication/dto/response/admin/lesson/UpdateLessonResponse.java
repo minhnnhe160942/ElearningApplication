@@ -30,4 +30,8 @@ public class UpdateLessonResponse {
     private LocalDateTime createdAt;
     @NotNull
     private LocalDateTime updateAt;
+    @NotBlank
+    private String createdBy;
+    @NotBlank
+    private String updatedBy;
 }
