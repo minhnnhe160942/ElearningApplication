@@ -29,7 +29,7 @@ public class HistoryRegisterCourse {
     private User user;
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
-    private Course courseId;
+    private Course course;
     @Column(name = "stt_lession_current")
     private int sttLessonCurrent;
     @Enumerated(EnumType.STRING)

@@ -380,7 +380,7 @@ public class CourseServiceImpl implements ICourseService {
                     order.setPayment(payment);
                     orderRepository.save(order);
 
-                    historyRegisterCourse.setCourseId(payment.getCourse());
+                    historyRegisterCourse.setCourse(payment.getCourse());
                     historyRegisterCourse.setUser(payment.getUser());
                     historyRegisterCourse.setSttLessonCurrent(1);
                     historyRegisterCourse.setPayment(payment);
@@ -405,7 +405,8 @@ public class CourseServiceImpl implements ICourseService {
         try {
             CheckEnrollCourseResponse checkEnrollCourseResponse = new CheckEnrollCourseResponse();
             User user = userRepository.findByUsername(checkEnrollCourseRequest.getUsername()).orElse(null);
-            HistoryRegisterCourse historyRegisterCourse = historyRegisterCourseRepository.findHistoryRegisterCourseByCourseIdAndAndUser(checkEnrollCourseRequest.getCourseId(), user).orElse(null);
+            Course course = courseRepository.findCourseById(checkEnrollCourseRequest.getCourseId()).orElse(null);
+            HistoryRegisterCourse historyRegisterCourse = historyRegisterCourseRepository.findHistoryRegisterCourseByCourseIdAndUser(course, user).orElse(null);
             if(Objects.isNull(historyRegisterCourse)){
                 checkEnrollCourseResponse.setEnrollCourse(false);
             } else{
