@@ -17,6 +17,8 @@ import java.util.List;
 @Getter
 @Setter
 public class AnswerData {
+    @NotBlank
+    private String username;
     @NotNull
     private int questionID;
     @NotBlank
