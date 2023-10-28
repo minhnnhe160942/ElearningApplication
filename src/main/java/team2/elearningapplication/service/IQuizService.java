@@ -1,10 +1,7 @@
 package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
-import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
-import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
-import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
+import team2.elearningapplication.dto.request.admin.quiz.*;
 import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
 import team2.elearningapplication.dto.request.user.quiz.ResetQuizRequest;
@@ -20,6 +17,7 @@ public interface IQuizService {
     ResponseCommon<UpdateQuizResponse> updateQuiz(UpdateQuizRequest updateQuizRequest);
     ResponseCommon<DeleteQuizResponse> deleteQuiz(DeleteQuizRequest deleteQuizRequest);
     ResponseCommon<FindAllQuizResponse> findAllQuiz();
+    ResponseCommon<FindAllQuizResponse> findAllQuizByDeleted(FindQuizByDeletedRequest findQuizByDeletedRequest);
 
     ResponseCommon<GetQuizByIdResponse> getQuizById(GetQuizByIdRequest getQuizByIdRequest);
 
