@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
-import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
-import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
-import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
+import team2.elearningapplication.dto.request.admin.quiz.*;
 import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
 import team2.elearningapplication.dto.request.user.quiz.ResetQuizRequest;
@@ -81,6 +78,22 @@ public class QuizController {
     @GetMapping("/find-all-quiz")
     public ResponseEntity<ResponseCommon<FindAllQuizResponse>> findAllQuiz() {
         ResponseCommon<FindAllQuizResponse> response = quizService.findAllQuiz();
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            log.debug("findAllQuiz: Found all quizzes successfully.");
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.QUIZ_LIST_IS_EMPTY.getCode()) {
+            log.debug("findAllQuiz: Quiz list is empty.");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Quiz list is empty", null));
+        } else {
+            log.error("findAllQuiz: Find all quizzes failed.");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all quizzes failed", null));
+        }
+    }
+
+
+    @GetMapping("/find-all-quiz-by-deleted")
+    public ResponseEntity<ResponseCommon<FindAllQuizResponse>> findAllQuizByDeleted(FindQuizByDeletedRequest findQuizByDeletedRequest) {
+        ResponseCommon<FindAllQuizResponse> response = quizService.findAllQuizByDeleted(findQuizByDeletedRequest);
         if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
             log.debug("findAllQuiz: Found all quizzes successfully.");
             return ResponseEntity.ok(response);

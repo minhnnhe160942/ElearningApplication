@@ -7,9 +7,14 @@ import team2.elearningapplication.config.VnPayConfig;
 import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.common.TransactionStatus;
+import team2.elearningapplication.dto.request.user.payment.GetPaymentByUserRequest;
 import team2.elearningapplication.dto.response.admin.GetTotalRevenueResponse;
+import team2.elearningapplication.dto.response.user.payment.GetPaymentByUserResponse;
+import team2.elearningapplication.dto.response.user.payment.ResponsePayment;
 import team2.elearningapplication.entity.Payment;
+import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.IPaymentRepository;
+import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.service.IPaymentService;
 
 import java.io.UnsupportedEncodingException;
@@ -17,11 +22,14 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class PaymentService implements IPaymentService {
 
     private final IPaymentRepository paymentRepository;
+    private final IUserRepository userRepository;
     @Override
     public  ResponseCommon<PaymentRes> addPayment(double amount) throws UnsupportedEncodingException {
 
@@ -109,4 +117,50 @@ public class PaymentService implements IPaymentService {
         }
     }
 
+    @Override
+    public ResponseCommon<ResponsePayment> getPaymentByUser(GetPaymentByUserRequest getPaymentByUserRequest) {
+        try {
+            User user = userRepository.findByUsername(getPaymentByUserRequest.getUsername()).orElse(null);
+            List<Payment> paymentList = paymentRepository.findPaymentByUser(user);
+            ResponsePayment responsePayment = new ResponsePayment();
+            List<GetPaymentByUserResponse> getPaymentByUserResponses = paymentList.stream()
+                    .map(payment -> {
+                        GetPaymentByUserResponse response = new GetPaymentByUserResponse();
+                        response.setCreatedAt(payment.getCreated_at());
+                        response.setStatus(String.valueOf(payment.getEnumPaymentProcess()));
+                        response.setAmount(payment.getAmount());
+                        response.setCourseName(payment.getCourse().getName());
+                        return response;
+                    })
+                    .collect(Collectors.toList());
+            responsePayment.setListPayment(getPaymentByUserResponses);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,responsePayment);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<ResponsePayment> getAllPayment() {
+        try {
+            List<Payment> paymentList = paymentRepository.findAll();
+            ResponsePayment responsePayment = new ResponsePayment();
+            List<GetPaymentByUserResponse> getPaymentByUserResponses = paymentList.stream()
+                    .map(payment -> {
+                        GetPaymentByUserResponse response = new GetPaymentByUserResponse();
+                        response.setCreatedAt(payment.getCreated_at());
+                        response.setStatus(String.valueOf(payment.getEnumPaymentProcess()));
+                        response.setAmount(payment.getAmount());
+                        response.setCourseName(payment.getCourse().getName());
+                        return response;
+                    })
+                    .collect(Collectors.toList());
+            responsePayment.setListPayment(getPaymentByUserResponses);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,responsePayment);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
 }

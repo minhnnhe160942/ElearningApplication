@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/user/getOTP",
                 "/api/v1/user/resendOTP",
                 "/api/v1/user/get-user-by-username",
+                "/api/v1/user/set-role-user",
                 "/api-docs",
                 "/swagger-ui",
 
@@ -55,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/course/confirm-payment",
                 "/api/v1/course/check-enroll",
                 "/api/v1/course/total-revenue",
+               "/api/v1/course/find-all-course-by-deleted",
 
 
                 "/api/v1/category/get-category-by-id",
@@ -62,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/category/update-category",
                 "/api/v1/category/delete-category",
                 "/api/v1/category/find-all-category",
+                "/api/v1/category/find-all-category-by-deleted",
 
 
                 "/api/v1/lesson/add-lesson",
@@ -71,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/lesson/get-lesson-by-id",
                 "/api/v1/lesson/page-lesson",
                 "/api/v1/lesson/get-lessons-by-course",
+                "/api/v1/lesson/find-all-lesson-by-deleted",
 
 
                 "/api/v1/answer/add-answer",
@@ -78,6 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/answer/delete-answer",
                 "/api/v1/answer/find-all-answer",
                 "/api/v1/answer/get-answer-by-id",
+                "/api/v1/answer/find-all-answer-by-deleted",
 
                 "/api/v1/post/add-post",
                 "/api/v1/post/update-post",
@@ -91,6 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/question/find-all-question",
                 "/api/v1/question/get-question-by-id",
                 "/api/v1/question/get-question-page",
+                "/api/v1/question/find-all-question-by-deleted",
 
                 "/api/v1/quiz/add-quiz",
                 "/api/v1/quiz/update-quiz",
@@ -101,7 +107,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/quiz/next-question",
                 "/api/v1/quiz/finish-quiz",
                 "/api/v1/quiz/reset-quiz",
+                "/api/v1/quiz/find-all-quiz-by-deleted",
 
+                "/api/v1/payment/get-payment-user",
+                "/api/v1/payment/get-all-payment",
                 "/api/v1/payment/add-payment",
                 "api/v1/payment/payment-info",
                 "/swagger-ui/**").permitAll();

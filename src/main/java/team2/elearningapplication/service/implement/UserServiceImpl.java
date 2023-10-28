@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.admin.SetRoleUserRequest;
+import team2.elearningapplication.dto.request.admin.SetRoleUserResponse;
 import team2.elearningapplication.dto.request.user.authen.*;
 import team2.elearningapplication.dto.response.admin.GetUserResponse;
 import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
@@ -399,7 +401,31 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public ResponseCommon<SetRoleUserResponse> setRole(SetRoleUserRequest setRoleUserRequest) {
+        try {
+            User user = userRepository.findByUsername(setRoleUserRequest.getUsername()).orElse(null);
+            user.setRole(setRoleUserRequest.getTypeRole());
+            userRepository.save(user);
+            SetRoleUserResponse setRoleUserResponse = new SetRoleUserResponse();
+            setRoleUserResponse.setUsername(user.getUsername());
+            setRoleUserResponse.setTypeRole(user.getRole());
+            return new ResponseCommon<>(ResponseCode.SUCCESS,setRoleUserResponse);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
     public ResponseCommon<GetUserResponse> getUser() {
-        return null;
+        try {
+            List<User> users = userRepository.findAll();
+            GetUserResponse getUserResponse = new GetUserResponse();
+            getUserResponse.setUserList(users);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,getUserResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
     }
 }

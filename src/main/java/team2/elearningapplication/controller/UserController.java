@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.admin.SetRoleUserRequest;
+import team2.elearningapplication.dto.request.admin.SetRoleUserResponse;
 import team2.elearningapplication.dto.request.user.authen.*;
+import team2.elearningapplication.dto.response.admin.GetUserResponse;
 import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
 import team2.elearningapplication.dto.response.user.authen.*;
 import team2.elearningapplication.entity.User;
@@ -249,4 +252,24 @@ public class UserController {
         }
     }
 
+    @PostMapping("/set-role-user")
+    public ResponseEntity<ResponseCommon<SetRoleUserResponse>> setRoleUser(@RequestBody SetRoleUserRequest setRoleUserRequest) {
+        try {
+            ResponseCommon<SetRoleUserResponse> response = userService.setRole(setRoleUserRequest);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ResponseCommon<>(ResponseCode.FAIL, null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/get-all-user")
+    public ResponseEntity<ResponseCommon<GetUserResponse>> getUsers() {
+        try {
+            ResponseCommon<GetUserResponse> response = userService.getUser();
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ResponseCommon<>(ResponseCode.FAIL, null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

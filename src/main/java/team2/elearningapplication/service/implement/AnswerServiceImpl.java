@@ -6,10 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.answer.AnswerData;
-import team2.elearningapplication.dto.request.admin.answer.DeleteAnswerRequest;
-import team2.elearningapplication.dto.request.admin.answer.GetAnswerByIdRequest;
-import team2.elearningapplication.dto.request.admin.answer.UpdateAnswerRequest;
+import team2.elearningapplication.dto.request.admin.answer.*;
 import team2.elearningapplication.dto.response.admin.answer.*;
 import team2.elearningapplication.entity.Answer;
 import team2.elearningapplication.entity.Question;
@@ -180,6 +177,33 @@ public class AnswerServiceImpl implements IAnswerService {
         } catch (Exception e) {
             log.error("Get answer by id failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Delete answer fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<List<FindAllAnswerResponse>> findAllAnswerByDeleted(FindAllAnswerByDeletedRequest findAllAnswerByDeletedRequest) {
+        try {
+            List<Answer> answers = answerRepository.findAnswerByIsDeleted(findAllAnswerByDeletedRequest.isDeleted());
+
+            if (answers.isEmpty()) {
+                log.debug("findAllAnswer: Answer list is empty.");
+                return new ResponseCommon<>(ResponseCode.ANSWER_LIST_IS_EMPTY.getCode(), "Answer list is empty", null);
+            }
+
+            List<FindAllAnswerResponse> responseList = new ArrayList<>();
+            for (Answer answer : answers) {
+                responseList.add(new FindAllAnswerResponse(
+                        answer.getQuestionId(),
+                        answer.getId(),
+                        answer.getAnswerContent(),
+                        answer.isCorrect()
+                ));
+            }
+            log.debug("findAllAnswer: Found all answers successfully.");
+            return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Find all answer success", responseList);
+        } catch (Exception e) {
+            log.error("findAllAnswer: An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all answer fail" + e.getMessage(), null);
         }
     }
 }

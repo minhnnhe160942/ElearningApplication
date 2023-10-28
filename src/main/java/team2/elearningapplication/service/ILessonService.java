@@ -2,10 +2,7 @@ package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.lesson.AddLessonRequest;
-import team2.elearningapplication.dto.request.admin.lesson.DeleteLessonRequest;
-import team2.elearningapplication.dto.request.admin.lesson.GetLessonByIdRequest;
-import team2.elearningapplication.dto.request.admin.lesson.UpdateLessonRequest;
+import team2.elearningapplication.dto.request.admin.lesson.*;
 import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
@@ -20,6 +17,7 @@ public interface ILessonService {
     ResponseCommon<DeleteLessonResponse> deleteLesson(DeleteLessonRequest deleteLessonRequest);
 
     ResponseCommon<FindAllLessonResponse> findAllLesson();
+    ResponseCommon<FindAllLessonResponse> findLessonByDeleted(FindLessonByDeletedRequest findLessonByDeletedRequest);
     ResponseCommon<GetLessonByIdResponse> getLessonById(GetLessonByIdRequest getLessonByIdRequest);
 
     ResponseCommon<GetLessonPageResponse> getLessonPage(PageRequestDTO pageRequestDTO);

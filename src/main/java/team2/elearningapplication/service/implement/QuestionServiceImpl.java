@@ -12,10 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.question.DeleteQuestionRequest;
-import team2.elearningapplication.dto.request.admin.question.GetQuestionByIdRequest;
-import team2.elearningapplication.dto.request.admin.question.QuestionData;
-import team2.elearningapplication.dto.request.admin.question.UpdateQuestionRequest;
+import team2.elearningapplication.dto.request.admin.question.*;
 import team2.elearningapplication.dto.response.admin.question.AddQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.DeleteQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.GetQuestionByIdResponse;
@@ -152,6 +149,25 @@ public class QuestionServiceImpl implements IQuestionService {
         try {
             // Find all questions
             List<Question> questions = questionRepository.findAll();
+
+            // Check if the question list is empty
+            if (questions.isEmpty()) {
+                log.debug("findAllQuestion: Question list is empty.");
+                return new ResponseCommon<>(ResponseCode.QUESTION_LIST_IS_EMPTY.getCode(), "Question list is empty", null);
+            }
+            log.debug("findAllQuestion: Found all questions successfully.");
+            return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Find all question success", questions);
+        } catch (Exception e) {
+            log.error("findAllQuestion: An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all question fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<List<Question>> findAllQuestionByDeleted(FindQuestionByDeletedRequest findQuestionByDeletedRequest) {
+        try {
+            // Find all questions
+            List<Question> questions = questionRepository.findQuestionByDeleted(findQuestionByDeletedRequest.isDeleted());
 
             // Check if the question list is empty
             if (questions.isEmpty()) {

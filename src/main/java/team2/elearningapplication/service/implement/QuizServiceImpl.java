@@ -6,10 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
-import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
-import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
-import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
+import team2.elearningapplication.dto.request.admin.quiz.*;
 import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
 import team2.elearningapplication.dto.request.user.quiz.ResetQuizRequest;
@@ -120,6 +117,22 @@ public class QuizServiceImpl implements IQuizService {
     public ResponseCommon<FindAllQuizResponse> findAllQuiz() {
         try {
             List<Quiz> quizList = quizRepository.findAllByIsDeleted(false);
+            if(quizList.isEmpty()) return new ResponseCommon<>(ResponseCode.QUIZ_LIST_IS_EMPTY.getCode(),"Quiz list is empty",null);
+            else {
+                FindAllQuizResponse findAllQuizResponse = new FindAllQuizResponse();
+                findAllQuizResponse.setQuizList(quizList);
+                return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Find all quiz success",findAllQuizResponse);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Find all quiz fail",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<FindAllQuizResponse> findAllQuizByDeleted(FindQuizByDeletedRequest findQuizByDeletedRequest) {
+        try {
+            List<Quiz> quizList = quizRepository.findAllByIsDeleted(findQuizByDeletedRequest.isDeleted());
             if(quizList.isEmpty()) return new ResponseCommon<>(ResponseCode.QUIZ_LIST_IS_EMPTY.getCode(),"Quiz list is empty",null);
             else {
                 FindAllQuizResponse findAllQuizResponse = new FindAllQuizResponse();

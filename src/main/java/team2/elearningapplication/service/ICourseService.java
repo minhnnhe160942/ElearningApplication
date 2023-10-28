@@ -2,10 +2,7 @@ package team2.elearningapplication.service;
 
 import org.hibernate.annotations.Check;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
-import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
-import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
-import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
+import team2.elearningapplication.dto.request.admin.course.*;
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.request.user.course.CheckEnrollCourseRequest;
 import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
@@ -22,6 +19,8 @@ public interface ICourseService {
     ResponseCommon<DeleteCourseResponse> deleteCourse(DeleteCourseRequest deleteCourseRequest);
 
     ResponseCommon<FindAllCourseResponse> findAllCourse();
+
+    ResponseCommon<FindAllCourseResponse> findAllCourseByDeleted(FindCourseByDeletedRequest findCourseByDeletedRequest);
     ResponseCommon<GetCourseByIdResponse> getCourseById(GetCourseByIdRequest getCourseByIdRequest);
 
     ResponseCommon<GetTopCourseResponse> getTopCourse(int numberCourse);

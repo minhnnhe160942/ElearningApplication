@@ -1,6 +1,8 @@
 package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.admin.SetRoleUserRequest;
+import team2.elearningapplication.dto.request.admin.SetRoleUserResponse;
 import team2.elearningapplication.dto.request.user.authen.*;
 import team2.elearningapplication.dto.response.admin.GetUserResponse;
 import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
@@ -38,4 +40,6 @@ public interface IUserService {
     ResponseCommon<GetTotalUserResponse> getTotalUser();
 
     ResponseCommon<ResendOTPResponse> resendOTP(ResendOTPRequest request);
+
+    ResponseCommon<SetRoleUserResponse> setRole(SetRoleUserRequest setRoleUserRequest);
 }

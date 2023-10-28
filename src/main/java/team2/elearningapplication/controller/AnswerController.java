@@ -3,14 +3,12 @@ package team2.elearningapplication.controller;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.answer.AnswerData;
-import team2.elearningapplication.dto.request.admin.answer.DeleteAnswerRequest;
-import team2.elearningapplication.dto.request.admin.answer.GetAnswerByIdRequest;
-import team2.elearningapplication.dto.request.admin.answer.UpdateAnswerRequest;
+import team2.elearningapplication.dto.request.admin.answer.*;
 import team2.elearningapplication.dto.response.admin.answer.*;
 import team2.elearningapplication.service.IAnswerService;
 
@@ -96,6 +94,21 @@ public class AnswerController {
         } else {
             log.error("Get answers by id failed.");
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get answers by id failed", null));
+        }
+    }
+
+    @GetMapping("/find-all-answer-by-deleted")
+    public ResponseEntity<ResponseCommon<List<FindAllAnswerResponse>>> findAllAnswerByDeleted(FindAllAnswerByDeletedRequest findAllAnswerByDeletedRequest) {
+        ResponseCommon<List<FindAllAnswerResponse>> response = answerService.findAllAnswerByDeleted(findAllAnswerByDeletedRequest);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            log.debug("findAllAnswer: Found all answers successfully.");
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.ANSWER_LIST_IS_EMPTY.getCode()) {
+            log.debug("findAllAnswer: Answer list is empty.");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Answer list is empty", null));
+        } else {
+            log.error("findAllAnswer: Find all answers failed.");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all answers failed", null));
         }
     }
 }
