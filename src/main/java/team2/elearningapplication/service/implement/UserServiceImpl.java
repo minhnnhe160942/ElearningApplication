@@ -418,6 +418,14 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ResponseCommon<GetUserResponse> getUser() {
-        return null;
+        try {
+            List<User> users = userRepository.findAll();
+            GetUserResponse getUserResponse = new GetUserResponse();
+            getUserResponse.setUserList(users);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,getUserResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
     }
 }
