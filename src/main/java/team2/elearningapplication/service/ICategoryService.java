@@ -1,10 +1,7 @@
 package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.category.AddCategoryRequest;
-import team2.elearningapplication.dto.request.admin.category.DeleteCategoryRequest;
-import team2.elearningapplication.dto.request.admin.category.GetCategoryByIdRequest;
-import team2.elearningapplication.dto.request.admin.category.UpdateCategoryRequest;
+import team2.elearningapplication.dto.request.admin.category.*;
 import team2.elearningapplication.dto.response.admin.category.*;
 
 public interface ICategoryService {
@@ -16,4 +13,6 @@ public interface ICategoryService {
 
     ResponseCommon<FindAllCategoryResponse> findAllCategory();
     ResponseCommon<GetCategoryByIdResponse> getCategoryBYId(GetCategoryByIdRequest getCategoryByIdRequest);
+
+    ResponseCommon<FindAllCategoryResponse> getCategoryByDeleted(GetCategoryByDeletedRequest getCategoryByDeletedRequest);
 }

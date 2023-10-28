@@ -6,10 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.category.AddCategoryRequest;
-import team2.elearningapplication.dto.request.admin.category.DeleteCategoryRequest;
-import team2.elearningapplication.dto.request.admin.category.GetCategoryByIdRequest;
-import team2.elearningapplication.dto.request.admin.category.UpdateCategoryRequest;
+import team2.elearningapplication.dto.request.admin.answer.FindAllAnswerByDeletedRequest;
+import team2.elearningapplication.dto.request.admin.category.*;
 import team2.elearningapplication.dto.response.admin.category.*;
 import team2.elearningapplication.service.ICategoryService;
 
@@ -88,6 +86,19 @@ public class CategoryController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.CATEGORY_NOT_EXIST.getCode(),"List Category is Empty",null));
         } else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get category by id fail",null));
+        }
+    }
+
+    @GetMapping("/find-all-category-by-deleted")
+    public ResponseEntity<ResponseCommon<FindAllCategoryResponse>> findAllCategoryByDeleted(GetCategoryByDeletedRequest findAllAnswerByDeletedRequest){
+        ResponseCommon<FindAllCategoryResponse> response = categoryService.getCategoryByDeleted(findAllAnswerByDeletedRequest);
+        // if code response equals code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } else if(response.getCode()==ResponseCode.CATEGORY_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.CATEGORY_LIST_IS_EMPTY.getCode(),"List Category is Empty",null));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Find All category fail",null));
         }
     }
 }

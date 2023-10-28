@@ -62,6 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/category/update-category",
                 "/api/v1/category/delete-category",
                 "/api/v1/category/find-all-category",
+                "/api/v1/category/find-all-category-by-deleted",
 
 
                 "/api/v1/lesson/add-lesson",
