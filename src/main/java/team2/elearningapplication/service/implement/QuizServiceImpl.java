@@ -25,10 +25,7 @@ import team2.elearningapplication.service.email.EmailService;
 import team2.elearningapplication.utils.CommonUtils;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -185,16 +182,29 @@ public class QuizServiceImpl implements IQuizService {
         try {
             HistoryAnswer historyAnswer = new HistoryAnswer();
             Question question = questionRepository.findQuestionByQuizIDAndAndOrdQuestion(nextQuestionRequest.getQuizId(), nextQuestionRequest.getOrdQuestion());
-            List<Answer> answerList = answerRepository.findAllByIdIn(nextQuestionRequest.getAnswerId());
-            User user = userRepository.findByUsername(nextQuestionRequest.getUsername()).orElse(null);
-            for (Answer answer: answerList) {
-                historyAnswer.setUserAnswerId(answer.getId());
-                historyAnswerRepository.save(historyAnswer);
-            }
-            Answer answerCorrect = answerRepository.findAnswerByIdAndIsCorrect(nextQuestionRequest.getPreQuestionId(), true).orElse(null);
+            log.error("next question: " + question.toString());
+            List<Answer> totalAnswer = answerRepository.findAll();
+//            List<Answer> answerList = new ArrayList<>();
+            // handle when multiple choice
+//            List<Integer> answerId = nextQuestionRequest.getAnswerId();
+//            for (int i = 0; i < totalAnswer.size(); i++) {
+//                for (int j = 0; j < answerId.size(); j++) {
+//                    if(totalAnswer.get(i).getId() == answerId.get(j)){
+//                        answerList.add(totalAnswer.get(i));
+//                    }
+//                }
+//            }
+//            for (Answer answer: answerList) {
+//                historyAnswer.setUserAnswerId(answer.getId());
+//                historyAnswerRepository.save(historyAnswer);
+//            }
+            historyAnswer.setUserAnswerId(nextQuestionRequest.getAnswerId());
+            Answer answerCorrect = answerRepository.findCorrectAnswer(nextQuestionRequest.getPreQuestionId());
+            log.error("answer correct" + answerCorrect);
             historyAnswer.setQuestionId(nextQuestionRequest.getPreQuestionId());
             historyAnswer.setSessionId(nextQuestionRequest.getSessionId());
             historyAnswer.setUser(userRepository.findByUsername(nextQuestionRequest.getUsername()).orElse(null));
+            historyAnswerRepository.save(historyAnswer);
             historyAnswer.setAnswerIdCorrect(answerCorrect.getId());
             historyAnswerRepository.save(historyAnswer);
             NextQuestionResponse nextQuestionResponse = new NextQuestionResponse();

@@ -29,8 +29,6 @@ public class Answer {
     private int questionId;
     @Column(name="deleted")
     private boolean isDeleted;
-    @Column(name="session_id")
-    private int sessionId;
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 }

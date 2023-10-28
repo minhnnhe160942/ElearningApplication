@@ -18,5 +18,5 @@ public class NextQuestionRequest {
     private int sessionId;
     @NotNull
     private int quizId;
-    private List<Integer> answerId;
+    private int answerId;
 }
