@@ -32,4 +32,8 @@ public class DeleteCourseResponse {
     private LocalDateTime createdAt;
     @NotNull
     private boolean isDeleted;
+    @NotBlank
+    private String createdBy;
+    @NotBlank
+    private String updatedBy;
 }

@@ -32,4 +32,8 @@ public class UpdateCourseResponse {
     private LocalDateTime updateAt;
     @NotNull
     private LocalDateTime createAt;
+    @NotBlank
+    private String createdBy;
+    @NotBlank
+    private String updatedBy;
 }

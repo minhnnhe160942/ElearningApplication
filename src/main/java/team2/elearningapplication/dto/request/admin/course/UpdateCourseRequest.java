@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class UpdateCourseRequest {
+        @NotBlank
+        private String username;
         @NotNull
         private int courseID;
         @NotBlank

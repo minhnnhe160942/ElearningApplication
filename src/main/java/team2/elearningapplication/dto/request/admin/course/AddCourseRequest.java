@@ -12,7 +12,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Getter
 public class AddCourseRequest {
-
+    @NotBlank
+    private String username;
     @NotBlank
     private String name;
     @NotBlank
@@ -23,4 +24,5 @@ public class AddCourseRequest {
     private String link_thumnail;
     @NotBlank
     private String category;
+
 }

@@ -44,6 +44,7 @@ public class CourseServiceImpl implements ICourseService {
     public ResponseCommon<AddCourseResponse> addCourse(AddCourseRequest addCourseRequest) {
         try {
             Course course = courseRepository.findCourseByName(addCourseRequest.getName()).orElse(null);
+            User user = userRepository.findByUsername(addCourseRequest.getUsername()).orElse(null);
             // if course not null -> tell the user
             if (!Objects.isNull(course)) {
                 log.debug("Add Course failed: Course already exists");
@@ -60,6 +61,7 @@ public class CourseServiceImpl implements ICourseService {
             course.setCreatedAt(LocalDateTime.now());
             Category category = categoryRepository.findCategoryByName(addCourseRequest.getCategory()).orElse(null);
             course.setCategory(category);
+            course.setUserCreated(user);
 
             // Save course to the database
             Course savedCourse = courseRepository.save(course);
@@ -78,6 +80,7 @@ public class CourseServiceImpl implements ICourseService {
             addCourseResponse.setCategory(course.getCategory());
             addCourseResponse.setLinkThumail(course.getLinkThumnail());
             addCourseResponse.setCreatedAt(course.getCreatedAt());
+            addCourseResponse.setCreatedBy(user.getUsername());
             log.debug("Add Course successful");
             return new ResponseCommon<>(ResponseCode.SUCCESS, addCourseResponse);
         } catch (Exception e) {
@@ -91,6 +94,7 @@ public class CourseServiceImpl implements ICourseService {
     public ResponseCommon<UpdateCourseResponse> updateCourse(UpdateCourseRequest updateCourseRequest) {
         try {
             Course courseExist = courseRepository.findCourseById(updateCourseRequest.getCourseID()).orElse(null);
+            User user = userRepository.findByUsername(updateCourseRequest.getUsername()).orElse(null);
             // if courseExist is null -> tell the user
             if (Objects.isNull(courseExist)) {
                 log.debug("Update Course failed: Course does not exist");
@@ -106,6 +110,7 @@ public class CourseServiceImpl implements ICourseService {
                 courseUpdate.setCreatedAt(LocalDateTime.now());
                 courseUpdate.setUpdatedAt(LocalDateTime.now());
                 courseUpdate.setDeleted(updateCourseRequest.isDeleted());
+                courseUpdate.setUserUpdated(user);
                 courseRepository.save(courseUpdate);
                 UpdateCourseResponse updateCourseResponse = new UpdateCourseResponse();
                 updateCourseResponse.setCourseID(courseUpdate.getId());
@@ -117,6 +122,8 @@ public class CourseServiceImpl implements ICourseService {
                 LocalDateTime localDateTime = LocalDateTime.now();
                 updateCourseResponse.setUpdateAt(localDateTime);
                 updateCourseResponse.setCreateAt(courseUpdate.getCreatedAt());
+                updateCourseResponse.setUpdatedBy(courseUpdate.getUserUpdated().getUsername());
+                updateCourseResponse.setCreatedBy(courseUpdate.getUserCreated().getUsername());
                 log.debug("Update Course successful");
                 return new ResponseCommon<>(ResponseCode.SUCCESS, updateCourseResponse);
             }
@@ -131,6 +138,7 @@ public class CourseServiceImpl implements ICourseService {
     public ResponseCommon<DeleteCourseResponse> deleteCourse(DeleteCourseRequest deleteCourseRequest) {
         try {
             Course courseExist = courseRepository.findCourseById(deleteCourseRequest.getCourseID()).orElse(null);
+            User user = userRepository.findByUsername(deleteCourseRequest.getUsername()).orElse(null);
             // if courseExist is null -> tell the user
             if (Objects.isNull(courseExist)) {
                 log.debug("Delete Course failed: Course does not exist");
@@ -139,6 +147,7 @@ public class CourseServiceImpl implements ICourseService {
                 Course courseDelete = courseExist;
                 courseDelete.setDeleted(true);
                 courseDelete.setUpdatedAt(LocalDateTime.now());
+                courseDelete.setUserUpdated(user);
                 courseRepository.save(courseDelete);
                 DeleteCourseResponse deleteCourseResponse = new DeleteCourseResponse();
                 deleteCourseResponse.setCourseID(courseDelete.getId());
@@ -149,6 +158,8 @@ public class CourseServiceImpl implements ICourseService {
                 deleteCourseResponse.setLinkThumail(courseDelete.getLinkThumnail());
                 deleteCourseResponse.setCreatedAt(courseDelete.getCreatedAt());
                 deleteCourseResponse.setDeleted(courseDelete.isDeleted());
+                deleteCourseResponse.setCreatedBy(courseDelete.getUserCreated().getUsername());
+                deleteCourseResponse.setUpdatedBy(courseDelete.getUserUpdated().getUsername());
                 log.debug("Delete Course successful");
                 return new ResponseCommon<>(ResponseCode.SUCCESS, deleteCourseResponse);
             }

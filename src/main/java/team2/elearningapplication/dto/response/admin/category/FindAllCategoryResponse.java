@@ -19,4 +19,5 @@ public class FindAllCategoryResponse {
     private String message;
     @NotEmpty
     private List<Category> categoryList;
+
 }
