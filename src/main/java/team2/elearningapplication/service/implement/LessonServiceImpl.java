@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.lesson.AddLessonRequest;
-import team2.elearningapplication.dto.request.admin.lesson.DeleteLessonRequest;
-import team2.elearningapplication.dto.request.admin.lesson.GetLessonByIdRequest;
-import team2.elearningapplication.dto.request.admin.lesson.UpdateLessonRequest;
+import team2.elearningapplication.dto.request.admin.lesson.*;
 import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
@@ -153,6 +150,26 @@ public class LessonServiceImpl implements ILessonService {
     public ResponseCommon<FindAllLessonResponse> findAllLesson() {
         try {
             List<Lesson> listLesson = lessonRespository.findAllByIsDeleted(false);
+            // if the list of lessons is empty -> tell the user
+            if (listLesson.isEmpty()) {
+                log.debug("Get all Lesson failed: Lesson list is empty");
+                return new ResponseCommon<>(ResponseCode.LESSON_LIST_IS_EMPTY, null);
+            } else {
+                FindAllLessonResponse response = new FindAllLessonResponse("Get all lesson success", listLesson);
+                log.debug("Get all Lesson successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get all Lesson failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<FindAllLessonResponse> findLessonByDeleted(FindLessonByDeletedRequest findLessonByDeletedRequest) {
+        try {
+            List<Lesson> listLesson = lessonRespository.findAllByIsDeleted(findLessonByDeletedRequest.isDeleted());
             // if the list of lessons is empty -> tell the user
             if (listLesson.isEmpty()) {
                 log.debug("Get all Lesson failed: Lesson list is empty");
