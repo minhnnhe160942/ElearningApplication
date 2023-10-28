@@ -17,7 +17,7 @@ public interface IQuestionService  {
         ResponseCommon<DeleteQuestionResponse> deleteQuestion(DeleteQuestionRequest deleteQuestionRequest);
 
         ResponseCommon<List<Question>> findAllQuestion();
-
+        ResponseCommon<List<Question>> findAllQuestionByDeleted(FindQuestionByDeletedRequest findQuestionByDeletedRequest);
         ResponseCommon<GetQuestionByIdResponse> getQuestionById(GetQuestionByIdRequest getQuestionByIdRequest);
 
         ResponseCommon<GetQuestionPageResponse> getQuestionPage(PageRequestDTO pageRequestDTO);
