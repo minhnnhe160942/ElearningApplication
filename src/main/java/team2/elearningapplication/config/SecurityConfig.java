@@ -78,6 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/answer/delete-answer",
                 "/api/v1/answer/find-all-answer",
                 "/api/v1/answer/get-answer-by-id",
+                "/api/v1/answer/find-all-answer-by-deleted",
 
                 "/api/v1/post/add-post",
                 "/api/v1/post/update-post",
