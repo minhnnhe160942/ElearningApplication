@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.answer.*;
+import team2.elearningapplication.dto.request.user.answer.GetAnswerByQuestionIdRequest;
 import team2.elearningapplication.dto.response.admin.answer.*;
+import team2.elearningapplication.dto.response.user.answer.GetAnswerByQuestionIdResponse;
 import team2.elearningapplication.entity.Answer;
 import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.repository.IAnswerRepository;
@@ -201,6 +203,19 @@ public class AnswerServiceImpl implements IAnswerService {
             }
             log.debug("findAllAnswer: Found all answers successfully.");
             return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Find all answer success", responseList);
+        } catch (Exception e) {
+            log.error("findAllAnswer: An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all answer fail" + e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetAnswerByQuestionIdResponse> getAnswerByQuestionId(GetAnswerByQuestionIdRequest getAnswerByQuestionIdRequest) {
+        try {
+            List<Answer> answerList = answerRepository.findAnswerByQuestionId(getAnswerByQuestionIdRequest.getQuestionId());
+            GetAnswerByQuestionIdResponse getAnswerByQuestionIdResponse = new GetAnswerByQuestionIdResponse();
+            getAnswerByQuestionIdResponse.setAnswerList(answerList);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,getAnswerByQuestionIdResponse);
         } catch (Exception e) {
             log.error("findAllAnswer: An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all answer fail" + e.getMessage(), null);
