@@ -17,6 +17,8 @@ import java.util.List;
 @Getter
 @Setter
 public class UpdateQuestionRequest {
+    @NotBlank
+    private String username;
     @NotNull
     private int questionID;
     @NotNull
