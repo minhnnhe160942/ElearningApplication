@@ -9,17 +9,20 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.question.*;
+import team2.elearningapplication.dto.request.user.question.GetQuestionByQuizIDRequest;
 import team2.elearningapplication.dto.response.admin.question.AddQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.DeleteQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.GetQuestionByIdResponse;
 import team2.elearningapplication.dto.response.admin.question.UpdateQuestionResponse;
 import team2.elearningapplication.dto.response.user.course.PageCourseResponse;
+import team2.elearningapplication.dto.response.user.question.GetQuestionByQuizIdResponse;
 import team2.elearningapplication.dto.response.user.question.GetQuestionPageResponse;
 import team2.elearningapplication.entity.Question;
 import team2.elearningapplication.service.IQuestionService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/question")
@@ -130,4 +133,20 @@ public class QuestionController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"get question pagefail",null));
         }
     }
+    @GetMapping("/get-questions-by-quiz-id")
+    public ResponseEntity<ResponseCommon<GetQuestionByQuizIdResponse>>getQuestionsByQuizId(GetQuestionByQuizIDRequest getQuestionByQuizIDRequest) {
+        try {
+            ResponseCommon<GetQuestionByQuizIdResponse> response = questionService.getQuestionByQuizId(getQuestionByQuizIDRequest);
+
+            if (Objects.isNull(response)) {
+                return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.QUESTION_LIST_IS_EMPTY.getCode(), "Question list is empty", null));
+            }
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Get questions by quiz ID success", response.getData()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("An error occurred while getting questions by quiz ID - " + e.getMessage(), e);
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get questions by quiz ID failed", null));
+        }
+    }
+
 }

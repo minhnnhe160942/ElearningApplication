@@ -21,4 +21,6 @@ public interface IQuestionRepository extends JpaRepository<Question, Integer> {
     @Query("SELECT COUNT(q) FROM Question q WHERE q.quizID = :quizId")
     int countQuestionsByQuizId(@Param("quizId") int quizId);
 
+    List<Question> getQuestionByQuizID(int quizId);
+
 }

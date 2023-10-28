@@ -13,11 +13,13 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.question.*;
+import team2.elearningapplication.dto.request.user.question.GetQuestionByQuizIDRequest;
 import team2.elearningapplication.dto.response.admin.question.AddQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.DeleteQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.GetQuestionByIdResponse;
 import team2.elearningapplication.dto.response.admin.question.UpdateQuestionResponse;
 import team2.elearningapplication.dto.response.user.course.PageCourseResponse;
+import team2.elearningapplication.dto.response.user.question.GetQuestionByQuizIdResponse;
 import team2.elearningapplication.dto.response.user.question.GetQuestionPageResponse;
 import team2.elearningapplication.entity.Answer;
 import team2.elearningapplication.entity.Course;
@@ -237,6 +239,20 @@ public class QuestionServiceImpl implements IQuestionService {
             e.printStackTrace();
             log.error("Get question page An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get question page fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetQuestionByQuizIdResponse> getQuestionByQuizId(GetQuestionByQuizIDRequest getQuestionByQuizIDRequest) {
+        try {
+            List<Question> questions = questionRepository.getQuestionByQuizID(getQuestionByQuizIDRequest.getQuizId());
+            GetQuestionByQuizIdResponse getQuestionByQuizIdResponse = new GetQuestionByQuizIdResponse();
+            getQuestionByQuizIdResponse.setQuestionList(questions);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,getQuestionByQuizIdResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get question by id An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get question by id  fail", null);
         }
     }
 }

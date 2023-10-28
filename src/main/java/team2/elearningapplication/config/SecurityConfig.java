@@ -97,6 +97,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/question/get-question-by-id",
                 "/api/v1/question/get-question-page",
                 "/api/v1/question/find-all-question-by-deleted",
+                "/api/v1/question/get-questions-by-quiz-id",
 
                 "/api/v1/quiz/add-quiz",
                 "/api/v1/quiz/update-quiz",
