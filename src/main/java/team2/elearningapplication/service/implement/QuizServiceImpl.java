@@ -12,10 +12,12 @@ import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
+import team2.elearningapplication.dto.request.user.quiz.ResetQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
 import team2.elearningapplication.dto.response.admin.quiz.*;
 import team2.elearningapplication.dto.response.user.quiz.FinishQuizResponse;
 import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
+import team2.elearningapplication.dto.response.user.quiz.ResetQuizResponse;
 import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
 import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.*;
@@ -255,5 +257,23 @@ public class QuizServiceImpl implements IQuizService {
         mail.setPros(model);
         mail.setTemplate("certificate");
         return mail;
+    }
+
+    @Override
+    public ResponseCommon<ResetQuizResponse> resetQuiz(ResetQuizRequest resetQuizRequest) {
+        try {
+            int sessionId = resetQuizRequest.getSessionId();
+            String username = resetQuizRequest.getUsername();
+            User user = userRepository.findByUsername(username).orElse(null);
+            historyAnswerRepository.deleteBySessionIdAndUser(sessionId,user);
+            int newSessionId = CommonUtils.getSessionID();
+            ResetQuizResponse resetQuizResponse = new ResetQuizResponse();
+            resetQuizResponse.setNewSessionId(newSessionId);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,resetQuizResponse);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("reset quiz  failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"reset quiz  failed",null);
+        }
     }
 }

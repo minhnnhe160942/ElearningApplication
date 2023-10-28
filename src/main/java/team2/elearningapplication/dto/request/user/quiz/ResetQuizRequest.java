@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ResetQuizRequest {
     @NotNull
-    private int quizId;
+    private String username;
     @NotNull
     private int sessionId;
 }

@@ -15,10 +15,12 @@ import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
+import team2.elearningapplication.dto.request.user.quiz.ResetQuizRequest;
 import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
 import team2.elearningapplication.dto.response.admin.quiz.*;
 import team2.elearningapplication.dto.response.user.quiz.FinishQuizResponse;
 import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
+import team2.elearningapplication.dto.response.user.quiz.ResetQuizResponse;
 import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
 import team2.elearningapplication.service.IQuizService;
 
@@ -146,6 +148,17 @@ public class QuizController {
         } else {
             log.error("Quiz finishing failed");
             return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Quiz finishing failed", null));
+        }
+    }
+    @PostMapping("/reset-quiz")
+    public ResponseEntity<ResponseCommon<ResetQuizResponse>> resetQuiz(@Valid @RequestBody ResetQuizRequest resetQuizRequest) {
+        ResponseCommon<ResetQuizResponse> response = quizService.resetQuiz(resetQuizRequest);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            log.debug("Quiz reset successfully.");
+            return ResponseEntity.ok(response);
+        } else {
+            log.error("Quiz reset failed");
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Quiz reset failed", null));
         }
     }
 

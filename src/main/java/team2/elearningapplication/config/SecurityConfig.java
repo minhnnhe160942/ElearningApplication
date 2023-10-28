@@ -100,6 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/quiz/start-quiz",
                 "/api/v1/quiz/next-question",
                 "/api/v1/quiz/finish-quiz",
+                "/api/v1/quiz/reset-quiz",
 
                 "/api/v1/payment/add-payment",
                 "api/v1/payment/payment-info",
