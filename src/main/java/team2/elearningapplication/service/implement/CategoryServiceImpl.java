@@ -11,6 +11,7 @@ import team2.elearningapplication.entity.Category;
 import team2.elearningapplication.repository.ICategoryRepository;
 import team2.elearningapplication.service.ICategoryService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,6 +69,8 @@ public class CategoryServiceImpl implements ICategoryService {
             } else {
                 Category categoryUpdate = category;
                 categoryUpdate.setName(updateCategoryRequest.getCategoryUpdate());
+                categoryUpdate.setUpdatedAt(LocalDateTime.now());
+                categoryUpdate.setDeleted(updateCategoryRequest.isDeleted());
                 categoryRepository.save(categoryUpdate);
                 UpdateCategoryResponse updateCategoryResponse = new UpdateCategoryResponse();
                 updateCategoryResponse.setCategoryID(categoryUpdate.getId());
@@ -93,6 +96,7 @@ public class CategoryServiceImpl implements ICategoryService {
             } else {
                 Category categoryUpdate = category;
                 categoryUpdate.setDeleted(true);
+                categoryUpdate.setUpdatedAt(LocalDateTime.now());
                 categoryRepository.save(categoryUpdate);
                 DeleteCategoryResponse deleteCategoryResponse = new DeleteCategoryResponse();
                 deleteCategoryResponse.setCategoryID(categoryUpdate.getId());

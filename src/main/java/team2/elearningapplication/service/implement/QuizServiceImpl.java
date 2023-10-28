@@ -73,6 +73,7 @@ public class QuizServiceImpl implements IQuizService {
             else {
                 quiz.setName(updateQuizRequest.getQuizName());
                 quiz.setLesson(lessonRespository.findLessonById(updateQuizRequest.getLessonID()).orElse(null));
+                quiz.setDeleted(updateQuizRequest.isDeleted());
                 quizRepository.save(quiz);
                 UpdateQuizResponse updateQuizResponse = new UpdateQuizResponse();
                 updateQuizResponse.setUpdateAt(LocalDateTime.now());
@@ -98,6 +99,7 @@ public class QuizServiceImpl implements IQuizService {
                 return  new ResponseCommon<>(ResponseCode.QUIZ_NOT_EXIST.getCode(),"Quiz not exist",null);
             else {
                 quiz.setDeleted(true);
+                quiz.setUpdatedAt(LocalDateTime.now());
                 quizRepository.save(quiz);
                 DeleteQuizResponse deleteQuizResponse = new DeleteQuizResponse();
                 deleteQuizResponse.setUpdateAt(LocalDateTime.now());

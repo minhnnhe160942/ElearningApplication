@@ -27,4 +27,6 @@ public class UpdateQuestionRequest {
     private EnumQuestionType questionType;
     @NotEmpty
     private List<Answer> answers;
+    @NotNull
+    private boolean deleted;
 }

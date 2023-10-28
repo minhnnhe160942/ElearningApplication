@@ -31,6 +31,7 @@ import team2.elearningapplication.repository.IQuestionRepository;
 import team2.elearningapplication.repository.IQuizRepository;
 import team2.elearningapplication.service.IQuestionService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -93,7 +94,8 @@ public class QuestionServiceImpl implements IQuestionService {
             // Update the question
             questionToUpdate.setQuestionName(updateQuestionRequest.getQuestionName());
             questionToUpdate.setQuestionType(updateQuestionRequest.getQuestionType());
-
+            questionToUpdate.setUpdatedAt(LocalDateTime.now());
+            questionToUpdate.setDeleted(updateQuestionRequest.isDeleted());
             // Save the updated question
             questionRepository.save(questionToUpdate);
             for (Answer answer : updateQuestionRequest.getAnswers()) {
@@ -104,6 +106,7 @@ public class QuestionServiceImpl implements IQuestionService {
                 }
                 answerUpdate.setAnswerContent(answer.getAnswerContent());
                 answerUpdate.setCorrect(answer.isCorrect());
+                answerUpdate.setUpdatedAt(LocalDateTime.now());
                 iAnswerRepository.save(answerUpdate);
             }
 
@@ -129,6 +132,7 @@ public class QuestionServiceImpl implements IQuestionService {
 
             // Set the question as deleted
             questionToDelete.setDeleted(true);
+            questionToDelete.setUpdatedAt(LocalDateTime.now());
 
             // Save the deleted question
             questionRepository.save(questionToDelete);

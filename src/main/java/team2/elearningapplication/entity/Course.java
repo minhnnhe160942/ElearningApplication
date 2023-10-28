@@ -28,7 +28,7 @@ public class Course {
     @Column(name = "description")
     private String description;
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name="category_id",referencedColumnName = "id")
     private Category category;
     @Column(name = "created_at")
     private LocalDateTime createdAt;

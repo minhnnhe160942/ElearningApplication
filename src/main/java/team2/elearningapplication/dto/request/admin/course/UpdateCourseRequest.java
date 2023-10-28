@@ -25,5 +25,6 @@ public class UpdateCourseRequest {
         private String link_thumnail;
         @NotNull
         private int categoryID;
-
+        @NotNull
+        private boolean deleted;
 }

@@ -18,5 +18,7 @@ public class UpdateCategoryRequest {
     private int categoryID;
     @NotBlank
     private String categoryUpdate;
+    @NotNull
+    private boolean deleted;
 
 }

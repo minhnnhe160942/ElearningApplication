@@ -114,10 +114,10 @@ public class AnswerController {
         }
     }
     @GetMapping("/get-answer-by-question-id")
-    public ResponseEntity<ResponseCommon<GetAnswerByQuestionIdResponse>> getAnswerByQuestionId(@ParameterObject GetAnswerByQuestionIdRequest getAnswerByQuestionIdRequest) {
+    public ResponseEntity<ResponseCommon<List<GetAnswerByQuestionIdResponse>>> getAnswerByQuestionId(@ParameterObject GetAnswerByQuestionIdRequest getAnswerByQuestionIdRequest) {
         try {
 
-            ResponseCommon<GetAnswerByQuestionIdResponse> response = answerService.getAnswerByQuestionId(getAnswerByQuestionIdRequest);
+            ResponseCommon<List<GetAnswerByQuestionIdResponse>> response = answerService.getAnswerByQuestionId(getAnswerByQuestionIdRequest);
             if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
                 return ResponseEntity.ok(response);
             } else if (response.getCode() == ResponseCode.FAIL.getCode()) {

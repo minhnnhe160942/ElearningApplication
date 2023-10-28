@@ -22,6 +22,6 @@ public interface IAnswerService {
 
     ResponseCommon<List<FindAllAnswerResponse>> findAllAnswerByDeleted(FindAllAnswerByDeletedRequest findAllAnswerByDeletedRequest);
 
-    ResponseCommon<GetAnswerByQuestionIdResponse> getAnswerByQuestionId(GetAnswerByQuestionIdRequest getAnswerByQuestionIdRequest);
+    ResponseCommon<List<GetAnswerByQuestionIdResponse>> getAnswerByQuestionId(GetAnswerByQuestionIdRequest getAnswerByQuestionIdRequest);
 
 }

@@ -16,6 +16,7 @@ import team2.elearningapplication.repository.IAnswerRepository;
 import team2.elearningapplication.repository.IQuestionRepository;
 import team2.elearningapplication.service.IAnswerService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -77,7 +78,8 @@ public class AnswerServiceImpl implements IAnswerService {
                 answerUpdate.setAnswerContent(answerExist.getAnswerContent());
                 answerUpdate.setCorrect(answerExist.isCorrect());
                 answerUpdate.setQuestionId(answerExist.getQuestionId());
-
+                answerUpdate.setUpdatedAt(LocalDateTime.now());
+                answerUpdate.setDeleted(updateAnswerRequest.isDeleted());
                 // Save the updated answer
                 answerRepository.save(answerUpdate);
 
@@ -111,6 +113,7 @@ public class AnswerServiceImpl implements IAnswerService {
             } else {
                 // Set the "deleted" flag to true and save the answer
                 answerExist.setDeleted(true);
+                answerExist.setUpdatedAt(LocalDateTime.now());
                 answerRepository.save(answerExist);
 
                 // Create a response with details of the deleted answer
@@ -210,12 +213,24 @@ public class AnswerServiceImpl implements IAnswerService {
     }
 
     @Override
-    public ResponseCommon<GetAnswerByQuestionIdResponse> getAnswerByQuestionId(GetAnswerByQuestionIdRequest getAnswerByQuestionIdRequest) {
+    public ResponseCommon<List<GetAnswerByQuestionIdResponse>> getAnswerByQuestionId(GetAnswerByQuestionIdRequest getAnswerByQuestionIdRequest) {
         try {
-            List<Answer> answerList = answerRepository.findAnswerByQuestionId(getAnswerByQuestionIdRequest.getQuestionId());
+            List<Answer> answers = answerRepository.findAnswerByQuestionId(getAnswerByQuestionIdRequest.getQuestionId());
+
+            if (answers.isEmpty()) {
+                log.debug("findAllAnswer: Answer list is empty.");
+                return new ResponseCommon<>(ResponseCode.ANSWER_LIST_IS_EMPTY.getCode(), "Answer list is empty", null);
+            }
+
+            List<GetAnswerByQuestionIdResponse> responseList = new ArrayList<>();
             GetAnswerByQuestionIdResponse getAnswerByQuestionIdResponse = new GetAnswerByQuestionIdResponse();
-            getAnswerByQuestionIdResponse.setAnswerList(answerList);
-            return new ResponseCommon<>(ResponseCode.SUCCESS,getAnswerByQuestionIdResponse);
+            for (int i = 0; i < answers.size(); i++) {
+                getAnswerByQuestionIdResponse.setAnswerId(answers.get(i).getId());
+                getAnswerByQuestionIdResponse.setAnswerContent(answers.get(i).getAnswerContent());
+                responseList.add(getAnswerByQuestionIdResponse);
+            }
+            log.debug("findAllAnswer: Found all answers successfully.");
+            return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Find all answer success", responseList);
         } catch (Exception e) {
             log.error("findAllAnswer: An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all answer fail" + e.getMessage(), null);

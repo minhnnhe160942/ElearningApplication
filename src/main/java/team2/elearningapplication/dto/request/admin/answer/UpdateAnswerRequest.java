@@ -20,4 +20,6 @@ public class UpdateAnswerRequest {
     private String answerContent;
     @NotNull
     private boolean isCorrect;
+    @NotNull
+    private boolean deleted;
 }

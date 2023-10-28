@@ -91,7 +91,8 @@ public class LessonServiceImpl implements ILessonService {
                 updateLesson.setLinkContent(updateLessonRequest.getLinkContent());
                 updateLesson.setDescription(updateLessonRequest.getDescription());
                 LocalDateTime updateAt = LocalDateTime.now();
-                updateLesson.setCreatedAt(updateAt);
+                updateLesson.setUpdatedAt(updateAt);
+                updateLesson.setDeleted(updateLessonRequest.isDeleted());
                 lessonRespository.save(updateLesson);
                 UpdateLessonResponse updateLessonResponse = new UpdateLessonResponse();
                 updateLessonResponse.setLessonID(updateLesson.getId());
@@ -125,6 +126,7 @@ public class LessonServiceImpl implements ILessonService {
             else {
                 Lesson deleteLesson = lesson;
                 deleteLesson.setDeleted(true);
+                deleteLesson.setUpdatedAt(LocalDateTime.now());
                 lessonRespository.save(deleteLesson);
                 DeleteLessonResponse deleteLessonResponse = new DeleteLessonResponse();
                 deleteLessonResponse.setLessonName(deleteLesson.getName());

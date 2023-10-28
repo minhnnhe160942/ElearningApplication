@@ -22,5 +22,7 @@ public class UpdateQuizRequest {
     private int lessonID;
     @NotBlank
     private String lessonName;
+    @NotNull
+    private boolean deleted;
 
 }

@@ -104,6 +104,8 @@ public class CourseServiceImpl implements ICourseService {
                 courseUpdate.setPrice(updateCourseRequest.getPrice());
                 courseUpdate.setLinkThumnail(updateCourseRequest.getLink_thumnail());
                 courseUpdate.setCreatedAt(LocalDateTime.now());
+                courseUpdate.setUpdatedAt(LocalDateTime.now());
+                courseUpdate.setDeleted(updateCourseRequest.isDeleted());
                 courseRepository.save(courseUpdate);
                 UpdateCourseResponse updateCourseResponse = new UpdateCourseResponse();
                 updateCourseResponse.setCourseID(courseUpdate.getId());
@@ -136,6 +138,7 @@ public class CourseServiceImpl implements ICourseService {
             } else {
                 Course courseDelete = courseExist;
                 courseDelete.setDeleted(true);
+                courseDelete.setUpdatedAt(LocalDateTime.now());
                 courseRepository.save(courseDelete);
                 DeleteCourseResponse deleteCourseResponse = new DeleteCourseResponse();
                 deleteCourseResponse.setCourseID(courseDelete.getId());
