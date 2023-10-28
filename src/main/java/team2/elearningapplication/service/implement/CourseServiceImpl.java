@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import team2.elearningapplication.Enum.*;
 import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
-import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
-import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
-import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
+import team2.elearningapplication.dto.request.admin.course.*;
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.request.user.course.CheckEnrollCourseRequest;
 import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
@@ -163,6 +160,29 @@ public class CourseServiceImpl implements ICourseService {
         try {
             // Get all courses with isDeleted is false
             List<Course> listCourse = courseRepository.findAllByIsDeleted(false);
+
+            // if listCourse is empty -> tell the user
+            if (listCourse.isEmpty()) {
+                log.debug("Get all Course failed: Course list is empty");
+                return new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY, null);
+            } // else -> return the list of courses
+            else {
+                FindAllCourseResponse response = new FindAllCourseResponse("Get all success", listCourse);
+                log.debug("Get all Course successful");
+                return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get all Course failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<FindAllCourseResponse> findAllCourseByDeleted(FindCourseByDeletedRequest findCourseByDeletedRequest) {
+        try {
+            // Get all courses with isDeleted is false
+            List<Course> listCourse = courseRepository.findAllByIsDeleted(findCourseByDeletedRequest.isDeleted());
 
             // if listCourse is empty -> tell the user
             if (listCourse.isEmpty()) {

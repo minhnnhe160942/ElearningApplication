@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
-import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
-import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
-import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
+import team2.elearningapplication.dto.request.admin.course.*;
 import team2.elearningapplication.dto.request.user.course.*;
+import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
 import team2.elearningapplication.dto.response.admin.GetTotalRevenueResponse;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
@@ -77,6 +75,20 @@ public class CourseController {
     @GetMapping("/find-all-course")
     public ResponseEntity<ResponseCommon<FindAllCourseResponse>> findAllCourse(){
         ResponseCommon<FindAllCourseResponse> response = courseService.findAllCourse();
+        // if code response equal code success -> return ok
+        if(response.getCode()==ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } //  if code response equals code courseList empty -> tell user
+        else if(response.getCode()==ResponseCode.COURSE_LIST_IS_EMPTY.getCode()){
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.COURSE_LIST_IS_EMPTY.getCode(),"Course list is empty",null));
+        } // else -> return fail
+        else{
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL,null));
+        }
+    }
+    @GetMapping("/find-all-course-by-deleted")
+    public ResponseEntity<ResponseCommon<FindAllCourseResponse>> findAllCourseByDeleted(FindCourseByDeletedRequest findCourseByDeletedRequest){
+        ResponseCommon<FindAllCourseResponse> response = courseService.findAllCourseByDeleted(findCourseByDeletedRequest);
         // if code response equal code success -> return ok
         if(response.getCode()==ResponseCode.SUCCESS.getCode()){
             return ResponseEntity.ok(response);
