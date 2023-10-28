@@ -1,11 +1,15 @@
 package team2.elearningapplication.service.implement;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.config.VnPayConfig;
 import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.common.TransactionStatus;
+import team2.elearningapplication.dto.response.admin.GetTotalRevenueResponse;
+import team2.elearningapplication.entity.Payment;
+import team2.elearningapplication.repository.IPaymentRepository;
 import team2.elearningapplication.service.IPaymentService;
 
 import java.io.UnsupportedEncodingException;
@@ -14,7 +18,10 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 @Service
+@RequiredArgsConstructor
 public class PaymentService implements IPaymentService {
+
+    private final IPaymentRepository paymentRepository;
     @Override
     public  ResponseCommon<PaymentRes> addPayment(double amount) throws UnsupportedEncodingException {
 
@@ -81,6 +88,25 @@ public class PaymentService implements IPaymentService {
         paymentRes.setUrl(paymentUrl);
 
         return new ResponseCommon<>(ResponseCode.SUCCESS, paymentRes);
+    }
+
+    @Override
+    public ResponseCommon<GetTotalRevenueResponse> getTotalRevenue() {
+        try {
+            double total = 0;
+            List<Payment> paymentList = paymentRepository.findAll();
+
+            for (Payment payment : paymentList) {
+                total += payment.getAmount();
+            }
+
+            GetTotalRevenueResponse response = new GetTotalRevenueResponse();
+            response.setTotalRevenue(total);
+            return new ResponseCommon<>(ResponseCode.SUCCESS, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
     }
 
 }

@@ -29,9 +29,6 @@ public class Quiz {
     private Lesson lesson;
     @Column(name = "name")
     private String name;
-    @ManyToOne
-    @JoinColumn
-    private Question question;
     @Column(name="deleted")
     private boolean isDeleted;
     @Column(name="updated_at")

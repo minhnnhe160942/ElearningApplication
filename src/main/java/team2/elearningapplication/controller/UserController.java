@@ -3,7 +3,6 @@ package team2.elearningapplication.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.EnumUserStatus;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
-import team2.elearningapplication.dto.request.user.*;
+import team2.elearningapplication.dto.request.user.authen.*;
 import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
-import team2.elearningapplication.dto.response.admin.quiz.GetQuizByIdResponse;
-import team2.elearningapplication.dto.response.user.*;
+import team2.elearningapplication.dto.response.user.authen.*;
 import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.security.SecurityUtils;
@@ -251,4 +248,5 @@ public class UserController {
             return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS,response.getData()));
         }
     }
+
 }

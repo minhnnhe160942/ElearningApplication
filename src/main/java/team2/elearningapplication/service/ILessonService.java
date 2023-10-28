@@ -6,7 +6,9 @@ import team2.elearningapplication.dto.request.admin.lesson.AddLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.DeleteLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.GetLessonByIdRequest;
 import team2.elearningapplication.dto.request.admin.lesson.UpdateLessonRequest;
+import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
+import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
 import team2.elearningapplication.entity.Lesson;
 
@@ -21,4 +23,6 @@ public interface ILessonService {
     ResponseCommon<GetLessonByIdResponse> getLessonById(GetLessonByIdRequest getLessonByIdRequest);
 
     ResponseCommon<GetLessonPageResponse> getLessonPage(PageRequestDTO pageRequestDTO);
+
+    ResponseCommon<GetLessonByCourseIdResponse> getLessonByCourseId(GetLessonByCourseIdRequest getLessonByCourseIdRequest);
 }

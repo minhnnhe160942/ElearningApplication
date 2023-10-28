@@ -1,6 +1,7 @@
 package team2.elearningapplication.controller;
 
 import lombok.AllArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -13,13 +14,12 @@ import team2.elearningapplication.dto.request.admin.course.AddCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.DeleteCourseRequest;
 import team2.elearningapplication.dto.request.admin.course.GetCourseByIdRequest;
 import team2.elearningapplication.dto.request.admin.course.UpdateCourseRequest;
-import team2.elearningapplication.dto.request.user.course.EnrollCourseRequest;
-import team2.elearningapplication.dto.request.user.course.GetAllCourseByUserRequest;
-import team2.elearningapplication.dto.request.user.course.PaymentConfirmRequest;
-import team2.elearningapplication.dto.request.user.course.SearchCourseByNameAndCategoryRequest;
+import team2.elearningapplication.dto.request.user.course.*;
+import team2.elearningapplication.dto.response.admin.GetTotalRevenueResponse;
 import team2.elearningapplication.dto.response.admin.course.*;
 import team2.elearningapplication.dto.response.user.course.*;
 import team2.elearningapplication.service.ICourseService;
+import team2.elearningapplication.service.IPaymentService;
 
 import javax.validation.Valid;
 
@@ -28,6 +28,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class CourseController {
     private ICourseService courseService;
+    private IPaymentService paymentService;
     private final int TOP_COURSE = 10;
 
     @PostMapping("/add-course")
@@ -194,7 +195,7 @@ public class CourseController {
     }
 
     @GetMapping("/confirm-payment")
-    public ResponseEntity<ResponseCommon<PaymentConfirmResponse>> enrollCourse(PaymentConfirmRequest paymentConfirmRequest){
+    public ResponseEntity<ResponseCommon<PaymentConfirmResponse>> enrollCourse(@ParameterObject PaymentConfirmRequest paymentConfirmRequest){
         ResponseCommon<PaymentConfirmResponse> response = courseService.paymentConfirm(paymentConfirmRequest);
         if(response.getCode() == ResponseCode.ORDER_NOT_EXIST.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.ORDER_NOT_EXIST.getCode(),"Order not exist",null));
@@ -206,4 +207,25 @@ public class CourseController {
             return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Confirm payment success",response.getData()));
         }
     }
+    @PostMapping("/check-enroll")
+    public ResponseEntity<ResponseCommon<CheckEnrollCourseResponse>> checkEnrollCourse(@ParameterObject CheckEnrollCourseRequest checkEnrollCourseRequest) {
+        ResponseCommon<CheckEnrollCourseResponse> response = courseService.isEnrollCourse(checkEnrollCourseRequest);
+        if (response.getCode() == ResponseCode.FAIL.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Check enroll course failed", null));
+        } else {
+            return ResponseEntity.ok().body(response);
+        }
+    }
+
+    @GetMapping("/total-revenue")
+    public ResponseEntity<ResponseCommon<GetTotalRevenueResponse>> getTotalRevenue() {
+        try {
+            ResponseCommon<GetTotalRevenueResponse> getTotalRevenueResponseResponseCommon = paymentService.getTotalRevenue();
+            return ResponseEntity.ok().body(new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Total revenue retrieved successfully", getTotalRevenueResponseResponseCommon.getData()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Failed to retrieve total revenue", null));
+        }
+    }
+
 }

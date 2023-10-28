@@ -34,7 +34,8 @@ public class Question {
     @OneToMany
     @JoinColumn
     private List<Answer> answerList;
-
+    @Column(name="ord_question")
+    private int ordQuestion;
     @Column(name = "quiz_id")
     private int quizID;
     @Column(name = "deleted")

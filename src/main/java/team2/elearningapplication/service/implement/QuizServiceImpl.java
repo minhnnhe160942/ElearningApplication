@@ -10,22 +10,37 @@ import team2.elearningapplication.dto.request.admin.quiz.AddQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.DeleteQuizRequest;
 import team2.elearningapplication.dto.request.admin.quiz.GetQuizByIdRequest;
 import team2.elearningapplication.dto.request.admin.quiz.UpdateQuizRequest;
+import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
+import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
+import team2.elearningapplication.dto.request.user.quiz.ResetQuizRequest;
+import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
 import team2.elearningapplication.dto.response.admin.quiz.*;
-import team2.elearningapplication.entity.Quiz;
-import team2.elearningapplication.repository.ILessonRespository;
-import team2.elearningapplication.repository.IQuizRepository;
+import team2.elearningapplication.dto.response.user.quiz.FinishQuizResponse;
+import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
+import team2.elearningapplication.dto.response.user.quiz.ResetQuizResponse;
+import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
+import team2.elearningapplication.entity.*;
+import team2.elearningapplication.repository.*;
 import team2.elearningapplication.service.ILessonService;
 import team2.elearningapplication.service.IQuizService;
+import team2.elearningapplication.service.email.EmailService;
+import team2.elearningapplication.utils.CommonUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class QuizServiceImpl implements IQuizService {
     private final IQuizRepository quizRepository;
     private final ILessonRespository lessonRespository;
+    private  final IQuestionRepository questionRepository;
+    private final IAnswerRepository answerRepository;
+    private final IUserRepository userRepository;
+    private  final HistoryAnswerRepository historyAnswerRepository;
+    private final EmailService emailService;
+    private final ICourseRepository courseRepository;
+    private static final double BASE_MARK = 0.8;
 
     private final Logger log = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
@@ -143,6 +158,122 @@ public class QuizServiceImpl implements IQuizService {
             e.printStackTrace();
             log.error("Get quiz by id failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get quiz by id failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<StartQuizResponse> startQuiz(StartQuizRequest startQuizRequest) {
+        try {
+            Question question = questionRepository.findQuestionByQuizIDAndAndOrdQuestion(startQuizRequest.getQuizId(),1);
+            int sessionId = CommonUtils.getSessionID();
+            int totalQuestion = questionRepository.countQuestionsByQuizId(startQuizRequest.getQuizId());
+            StartQuizResponse startQuizResponse = new StartQuizResponse();
+            startQuizResponse.setQuestion(question);
+            startQuizResponse.setSessionId(sessionId);
+            startQuizResponse.setTotalQuestion(totalQuestion);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,startQuizResponse);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("start  quiz by id failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"start quiz by id failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<NextQuestionResponse> nextQuestion(NextQuestionRequest nextQuestionRequest) {
+        try {
+            HistoryAnswer historyAnswer = new HistoryAnswer();
+            Question question = questionRepository.findQuestionByQuizIDAndAndOrdQuestion(nextQuestionRequest.getQuizId(), nextQuestionRequest.getOrdQuestion());
+            log.error("next question: " + question.toString());
+            List<Answer> totalAnswer = answerRepository.findAll();
+//            List<Answer> answerList = new ArrayList<>();
+            // handle when multiple choice
+//            List<Integer> answerId = nextQuestionRequest.getAnswerId();
+//            for (int i = 0; i < totalAnswer.size(); i++) {
+//                for (int j = 0; j < answerId.size(); j++) {
+//                    if(totalAnswer.get(i).getId() == answerId.get(j)){
+//                        answerList.add(totalAnswer.get(i));
+//                    }
+//                }
+//            }
+//            for (Answer answer: answerList) {
+//                historyAnswer.setUserAnswerId(answer.getId());
+//                historyAnswerRepository.save(historyAnswer);
+//            }
+            historyAnswer.setUserAnswerId(nextQuestionRequest.getAnswerId());
+            Answer answerCorrect = answerRepository.findCorrectAnswer(nextQuestionRequest.getPreQuestionId());
+            log.error("answer correct" + answerCorrect);
+            historyAnswer.setQuestionId(nextQuestionRequest.getPreQuestionId());
+            historyAnswer.setSessionId(nextQuestionRequest.getSessionId());
+            historyAnswer.setUser(userRepository.findByUsername(nextQuestionRequest.getUsername()).orElse(null));
+            historyAnswerRepository.save(historyAnswer);
+            historyAnswer.setAnswerIdCorrect(answerCorrect.getId());
+            historyAnswerRepository.save(historyAnswer);
+            NextQuestionResponse nextQuestionResponse = new NextQuestionResponse();
+            nextQuestionResponse.setQuestion(question);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,nextQuestionResponse);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("next question failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"next question failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<FinishQuizResponse> finishQuiz(FinishQuizRequest finishQuizRequest) {
+        try {
+            User user = userRepository.findByUsername(finishQuizRequest.getUsername()).orElse(null);
+            Course course = courseRepository.findCourseById(finishQuizRequest.getCourseId()).orElse(null);
+
+            List<HistoryAnswer> listCorrectAnswer = historyAnswerRepository.findMatchingAnswers(finishQuizRequest.getSessionId());
+            List<HistoryAnswer> listIncorrectAnswer = historyAnswerRepository.findNonMatchingAnswers(finishQuizRequest.getSessionId());
+            int totalCorrect = listCorrectAnswer.size();
+            int totalIncorrect = listIncorrectAnswer.size();
+            int totalQuestion = questionRepository.countQuestionsByQuizId(finishQuizRequest.getQuizId());
+            double mark = totalCorrect/totalQuestion;
+            if(mark >= BASE_MARK){
+                log.info("START... Sending email");
+                emailService.sendEmail(setUpMail(user.getEmail(), course.getName()));
+                log.info("END... Email sent success");
+            }
+            FinishQuizResponse finishQuizResponse = new FinishQuizResponse();
+            finishQuizResponse.setTotalCorrect(totalCorrect);
+            finishQuizResponse.setTotalInCorrect(totalIncorrect);
+            finishQuizResponse.setPercent(mark);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,finishQuizResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("finish quiz  failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"finish quiz  failed",null);
+        }
+    }
+
+    private Mail setUpMail(String mailTo, String courseName) {
+        Mail mail = new Mail();
+        mail.setTo(mailTo);
+        mail.setSubject("Congratulations on earning your " + courseName);
+        Map<String, Object> model = new HashMap<>();
+        model.put("course_name", courseName);
+        mail.setPros(model);
+        mail.setTemplate("certificate");
+        return mail;
+    }
+
+    @Override
+    public ResponseCommon<ResetQuizResponse> resetQuiz(ResetQuizRequest resetQuizRequest) {
+        try {
+            int sessionId = resetQuizRequest.getSessionId();
+            String username = resetQuizRequest.getUsername();
+            User user = userRepository.findByUsername(username).orElse(null);
+            historyAnswerRepository.deleteBySessionIdAndUser(sessionId,user);
+            int newSessionId = CommonUtils.getSessionID();
+            ResetQuizResponse resetQuizResponse = new ResetQuizResponse();
+            resetQuizResponse.setNewSessionId(newSessionId);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,resetQuizResponse);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("reset quiz  failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"reset quiz  failed",null);
         }
     }
 }

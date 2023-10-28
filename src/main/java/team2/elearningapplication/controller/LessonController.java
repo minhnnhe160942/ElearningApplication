@@ -1,6 +1,7 @@
 package team2.elearningapplication.controller;
 
 import lombok.AllArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +12,10 @@ import team2.elearningapplication.dto.request.admin.lesson.AddLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.DeleteLessonRequest;
 import team2.elearningapplication.dto.request.admin.lesson.GetLessonByIdRequest;
 import team2.elearningapplication.dto.request.admin.lesson.UpdateLessonRequest;
+import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
 import team2.elearningapplication.dto.response.user.course.PageCourseResponse;
+import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
 import team2.elearningapplication.service.ILessonService;
 
@@ -81,11 +84,11 @@ public class LessonController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Lesson not exist", null));
         } else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get lesson by id fail", null));
-        }
+}
     }
 
     @GetMapping("/page-lesson")
-    public ResponseEntity<ResponseCommon<GetLessonPageResponse>> coursePage(PageRequestDTO pageRequestDTO){
+    public ResponseEntity<ResponseCommon<GetLessonPageResponse>> coursePage(@Valid @RequestBody PageRequestDTO pageRequestDTO){
         ResponseCommon<GetLessonPageResponse> response = lessonService.getLessonPage(pageRequestDTO);
         // if response code quals empty list code -> tell user
         if(response.getCode() == ResponseCode.LESSON_LIST_IS_EMPTY.getCode()){
@@ -96,4 +99,23 @@ public class LessonController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Get lesson page fail",null));
         }
     }
+
+    @GetMapping("/get-lessons-by-course")
+    public ResponseEntity<ResponseCommon<GetLessonByCourseIdResponse>> getLessonsByCourseId(@ParameterObject GetLessonByCourseIdRequest getLessonByCourseIdRequest) {
+        try {
+            ResponseCommon<GetLessonByCourseIdResponse> response = lessonService.getLessonByCourseId(getLessonByCourseIdRequest);
+
+            if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+                return ResponseEntity.ok(response);
+            } else if (response.getCode() == ResponseCode.COURSE_NOT_EXIST.getCode()) {
+                return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Course not exist", null));
+            } else {
+                return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lessons by course id fail", null));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lessons by course id fail", null));
+        }
+    }
+
 }
