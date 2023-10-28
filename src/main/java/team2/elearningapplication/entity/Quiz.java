@@ -33,4 +33,10 @@ public class Quiz {
     private boolean isDeleted;
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
+    @ManyToOne
+    @JoinColumn (name="created_by",referencedColumnName = "id")
+    private User userCreated;
+    @ManyToOne
+    @JoinColumn(name="updated_by",referencedColumnName = "id")
+    private User userUpdated;
 }
