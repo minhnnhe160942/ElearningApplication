@@ -155,7 +155,9 @@ public class AnswerServiceImpl implements IAnswerService {
                         answer.getQuestionId(),
                         answer.getId(),
                         answer.getAnswerContent(),
-                        answer.isCorrect()
+                        answer.isCorrect(),
+                        answer.getUserCreated().getUsername(),
+                        answer.getUserUpdated().getUsername()
                 ));
             }
             log.debug("findAllAnswer: Found all answers successfully.");
@@ -182,6 +184,8 @@ public class AnswerServiceImpl implements IAnswerService {
                 response.setCorrect(answer.isCorrect());
                 response.setQuestionId(answer.getQuestionId());
                 response.setDeleted(answer.isDeleted());
+                response.setCreatedBy(answer.getUserCreated().getUsername());
+                response.setUpdatedBy(answer.getUserUpdated().getUsername());
 
                 log.debug("Get Answer By id successful");
                 return new ResponseCommon<>(ResponseCode.SUCCESS, response);
@@ -208,7 +212,9 @@ public class AnswerServiceImpl implements IAnswerService {
                         answer.getQuestionId(),
                         answer.getId(),
                         answer.getAnswerContent(),
-                        answer.isCorrect()
+                        answer.isCorrect(),
+                        answer.getUserCreated().getUsername(),
+                        answer.getUserUpdated().getUsername()
                 ));
             }
             log.debug("findAllAnswer: Found all answers successfully.");

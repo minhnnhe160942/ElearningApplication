@@ -20,4 +20,8 @@ public class FindAllAnswerResponse {
     private String answerContent;
     @NotNull
     private boolean isCorrect;
+    @NotBlank
+    private String createdBy;
+    @NotBlank
+    private String updatedBy;
 }
