@@ -102,6 +102,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/quiz/finish-quiz",
                 "/api/v1/quiz/reset-quiz",
 
+                "/api/v1/payment/get-payment-user",
+                "/api/v1/payment/get-all-payment",
                 "/api/v1/payment/add-payment",
                 "api/v1/payment/payment-info",
                 "/swagger-ui/**").permitAll();

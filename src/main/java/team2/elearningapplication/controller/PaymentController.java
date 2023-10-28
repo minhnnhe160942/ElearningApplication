@@ -31,4 +31,15 @@ public class PaymentController {
         }
     }
 
+    @GetMapping("/get-all-payment")
+    public ResponseEntity<ResponseCommon<ResponsePayment>> getPaymentByUser() {
+        ResponseCommon<ResponsePayment> response = paymentService.getAllPayment();
+
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get payment failed", null));
+        }
+    }
+
 }

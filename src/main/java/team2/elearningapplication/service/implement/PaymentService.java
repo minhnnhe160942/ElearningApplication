@@ -140,4 +140,27 @@ public class PaymentService implements IPaymentService {
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
+
+    @Override
+    public ResponseCommon<ResponsePayment> getAllPayment() {
+        try {
+            List<Payment> paymentList = paymentRepository.findAll();
+            ResponsePayment responsePayment = new ResponsePayment();
+            List<GetPaymentByUserResponse> getPaymentByUserResponses = paymentList.stream()
+                    .map(payment -> {
+                        GetPaymentByUserResponse response = new GetPaymentByUserResponse();
+                        response.setCreatedAt(payment.getCreated_at());
+                        response.setStatus(String.valueOf(payment.getEnumPaymentProcess()));
+                        response.setAmount(payment.getAmount());
+                        response.setCourseName(payment.getCourse().getName());
+                        return response;
+                    })
+                    .collect(Collectors.toList());
+            responsePayment.setListPayment(getPaymentByUserResponses);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,responsePayment);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
 }

@@ -15,4 +15,6 @@ public interface IPaymentService {
     ResponseCommon<GetTotalRevenueResponse> getTotalRevenue();
 
     ResponseCommon<ResponsePayment> getPaymentByUser(GetPaymentByUserRequest getPaymentByUserRequest);
+
+    ResponseCommon<ResponsePayment> getAllPayment();
 }
