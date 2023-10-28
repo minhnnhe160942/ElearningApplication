@@ -372,7 +372,7 @@ public class CourseServiceImpl implements ICourseService {
                     payment.setUser(order.getUser());
                     payment.setCourse(order.getCourse());
                     payment.setPaymentGateway(EnumPaymentGateway.VN_PAY);
-                    payment.setTransaction_id("vnpay");
+                    payment.setTransaction_id(payment.getTransaction_id());
                     payment.setAmount(order.getAmount());
                     payment.setEnumPaymentProcess(EnumPaymentProcess.SUCCESS);
                     payment.setCreated_at(LocalDateTime.now());
