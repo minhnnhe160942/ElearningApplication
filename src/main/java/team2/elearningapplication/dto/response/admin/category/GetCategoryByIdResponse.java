@@ -17,4 +17,5 @@ public class GetCategoryByIdResponse {
     private String name;
     @NotNull
     private boolean isDeleted;
+
 }
