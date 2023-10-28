@@ -45,12 +45,15 @@ public class QuizServiceImpl implements IQuizService {
     public ResponseCommon<AddQuizResponse> addQuiz(AddQuizRequest addQuizRequest) {
         try {
             Quiz quiz = quizRepository.findQuizByName(addQuizRequest.getQuizName()).orElse(null);
+            User user = userRepository.findByUsername(addQuizRequest.getUsername()).orElse(null);
+
             // if quiz not null -> tell user
             if(!Objects.isNull(quiz)) return new ResponseCommon<>(ResponseCode.QUIZ_EXIST.getCode(),"Quiz already exist",null);
             else {
                 Quiz quizAdd = new Quiz();
                 quizAdd.setLesson(lessonRespository.findLessonById(addQuizRequest.getLessonID()).orElse(null));
                 quizAdd.setName(addQuizRequest.getQuizName());
+                quizAdd.setUserCreated(user);
                 quizRepository.save(quizAdd);
                 AddQuizResponse addQuizResponse = new AddQuizResponse();
                 addQuizResponse.setLessonName(quizAdd.getName());
@@ -68,12 +71,14 @@ public class QuizServiceImpl implements IQuizService {
     public ResponseCommon<UpdateQuizResponse> updateQuiz(UpdateQuizRequest updateQuizRequest) {
         try {
             Quiz quiz = quizRepository.findQuizById(updateQuizRequest.getQuizID()).orElse(null);
+            User user = userRepository.findByUsername(updateQuizRequest.getUsername()).orElse(null);
             // if quiz is null -> tell user
             if(Objects.isNull(quiz)) return  new ResponseCommon<>(ResponseCode.QUIZ_NOT_EXIST.getCode(),"Quiz not exist",null);
             else {
                 quiz.setName(updateQuizRequest.getQuizName());
                 quiz.setLesson(lessonRespository.findLessonById(updateQuizRequest.getLessonID()).orElse(null));
                 quiz.setDeleted(updateQuizRequest.isDeleted());
+                quiz.setUserUpdated(user);
                 quizRepository.save(quiz);
                 UpdateQuizResponse updateQuizResponse = new UpdateQuizResponse();
                 updateQuizResponse.setUpdateAt(LocalDateTime.now());
@@ -94,12 +99,14 @@ public class QuizServiceImpl implements IQuizService {
     public ResponseCommon<DeleteQuizResponse> deleteQuiz(DeleteQuizRequest deleteQuizRequest) {
         try {
             Quiz quiz = quizRepository.findQuizById(deleteQuizRequest.getQuizID()).orElse(null);
+            User user = userRepository.findByUsername(deleteQuizRequest.getUsername()).orElse(null);
             // if quiz is null -> tell user
             if(Objects.isNull(quiz))
                 return  new ResponseCommon<>(ResponseCode.QUIZ_NOT_EXIST.getCode(),"Quiz not exist",null);
             else {
                 quiz.setDeleted(true);
                 quiz.setUpdatedAt(LocalDateTime.now());
+                quiz.setUserUpdated(user);
                 quizRepository.save(quiz);
                 DeleteQuizResponse deleteQuizResponse = new DeleteQuizResponse();
                 deleteQuizResponse.setUpdateAt(LocalDateTime.now());
