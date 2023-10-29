@@ -236,12 +236,13 @@ public class AnswerServiceImpl implements IAnswerService {
             }
 
             List<GetAnswerByQuestionIdResponse> responseList = new ArrayList<>();
-            GetAnswerByQuestionIdResponse getAnswerByQuestionIdResponse = new GetAnswerByQuestionIdResponse();
             for (int i = 0; i < answers.size(); i++) {
+                GetAnswerByQuestionIdResponse getAnswerByQuestionIdResponse = new GetAnswerByQuestionIdResponse();
                 getAnswerByQuestionIdResponse.setAnswerId(answers.get(i).getId());
                 getAnswerByQuestionIdResponse.setAnswerContent(answers.get(i).getAnswerContent());
                 responseList.add(getAnswerByQuestionIdResponse);
             }
+
             log.debug("findAllAnswer: Found all answers successfully.");
             return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Find all answer success", responseList);
         } catch (Exception e) {

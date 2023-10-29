@@ -246,11 +246,23 @@ public class QuizServiceImpl implements IQuizService {
         try {
             User user = userRepository.findByUsername(finishQuizRequest.getUsername()).orElse(null);
             Course course = courseRepository.findCourseById(finishQuizRequest.getCourseId()).orElse(null);
+            List<Integer> answerByUser = finishQuizRequest.getAnswerIdList();
+            List<Integer> answerCorrect = answerRepository.findMatchingAnswerIdsByQuizId(finishQuizRequest.getQuizId());
+            List<Integer> answerByUserCopy = new ArrayList<>(answerByUser);
+            List<Integer> answerCorrectCopy = new ArrayList<>(answerCorrect);
 
-            List<HistoryAnswer> listCorrectAnswer = historyAnswerRepository.findMatchingAnswers(finishQuizRequest.getSessionId());
-            List<HistoryAnswer> listIncorrectAnswer = historyAnswerRepository.findNonMatchingAnswers(finishQuizRequest.getSessionId());
-            int totalCorrect = listCorrectAnswer.size();
-            int totalIncorrect = listIncorrectAnswer.size();
+            answerByUserCopy.retainAll(answerCorrectCopy);
+            int commonCount = answerByUserCopy.size();
+
+            int differentCount = answerByUser.size() + answerCorrect.size() - 2 * commonCount;
+
+//
+//            List<HistoryAnswer> listCorrectAnswer = historyAnswerRepository.findMatchingAnswers(finishQuizRequest.getSessionId());
+//            List<HistoryAnswer> listIncorrectAnswer = historyAnswerRepository.findNonMatchingAnswers(finishQuizRequest.getSessionId());
+//            int totalCorrect = listCorrectAnswer.size();
+//            int totalIncorrect = listIncorrectAnswer.size();
+            int totalCorrect = commonCount;
+            int totalIncorrect = differentCount;
             int totalQuestion = questionRepository.countQuestionsByQuizId(finishQuizRequest.getQuizId());
             double mark = totalCorrect/totalQuestion;
             if(mark >= BASE_MARK){
