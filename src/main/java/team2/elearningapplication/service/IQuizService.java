@@ -23,7 +23,7 @@ public interface IQuizService {
 
     ResponseCommon<StartQuizResponse> startQuiz(StartQuizRequest startQuizRequest);
 
-    ResponseCommon<NextQuestionResponse> nextQuestion(NextQuestionRequest nextQuestionRequest);
+//    ResponseCommon<NextQuestionResponse> nextQuestion(NextQuestionRequest nextQuestionRequest);
 
     ResponseCommon<FinishQuizResponse> finishQuiz(FinishQuizRequest finishQuizRequest);
 
