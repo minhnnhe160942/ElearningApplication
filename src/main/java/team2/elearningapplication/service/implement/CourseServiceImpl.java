@@ -60,6 +60,7 @@ public class CourseServiceImpl implements ICourseService {
             course.setPrice(addCourseRequest.getPrice());
             course.setCreatedAt(LocalDateTime.now());
             Category category = categoryRepository.findCategoryByName(addCourseRequest.getCategory()).orElse(null);
+            System.out.println(category);
             course.setCategory(category);
             course.setUserCreated(user);
 
