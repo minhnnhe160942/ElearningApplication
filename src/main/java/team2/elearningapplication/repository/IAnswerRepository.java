@@ -19,4 +19,9 @@ public interface IAnswerRepository extends JpaRepository<Answer,Integer> {
     @Query(value = "SELECT * FROM Answer WHERE question_id = :preQuestionId AND is_correct = true", nativeQuery = true)
     Answer findCorrectAnswer(@Param("preQuestionId") int preQuestionId);
 
+    @Query(value = "SELECT id FROM answer WHERE quiz_id = :quizId AND is_correct = 1", nativeQuery = true)
+    List<Integer> findMatchingAnswerIdsByQuizId(@Param("quizId") int quizId);
+
+
+
 }

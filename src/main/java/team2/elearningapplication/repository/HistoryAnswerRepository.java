@@ -14,6 +14,7 @@ public interface HistoryAnswerRepository extends JpaRepository<HistoryAnswer,Int
     @Query("SELECT ha FROM HistoryAnswer ha WHERE ha.sessionId = :sessionId AND ha.userAnswerId = ha.answerIdCorrect")
     List<HistoryAnswer> findMatchingAnswers(@Param("sessionId") int sessionId);
 
+
     @Query("SELECT ha FROM HistoryAnswer ha WHERE ha.sessionId = :sessionId AND ha.userAnswerId <> ha.answerIdCorrect")
     List<HistoryAnswer> findNonMatchingAnswers(@Param("sessionId") int sessionId);
 

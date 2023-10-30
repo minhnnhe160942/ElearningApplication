@@ -13,10 +13,13 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class UpdateCategoryRequest {
-
+    @NotBlank
+    private String username;
     @NotNull
     private int categoryID;
     @NotBlank
     private String categoryUpdate;
+    @NotNull
+    private boolean deleted;
 
 }

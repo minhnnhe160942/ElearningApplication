@@ -40,4 +40,10 @@ public class Post {
 
     @Column(name = "deleted")
     private boolean deleted;
+    @ManyToOne
+    @JoinColumn (name="created_by",referencedColumnName = "id")
+    private User userCreated;
+    @ManyToOne
+    @JoinColumn(name="updated_by",referencedColumnName = "id")
+    private User userUpdated;
 }

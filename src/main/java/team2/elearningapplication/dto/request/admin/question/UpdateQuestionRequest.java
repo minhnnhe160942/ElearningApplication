@@ -17,6 +17,8 @@ import java.util.List;
 @Getter
 @Setter
 public class UpdateQuestionRequest {
+    @NotBlank
+    private String username;
     @NotNull
     private int questionID;
     @NotNull
@@ -27,4 +29,6 @@ public class UpdateQuestionRequest {
     private EnumQuestionType questionType;
     @NotEmpty
     private List<Answer> answers;
+    @NotNull
+    private boolean deleted;
 }

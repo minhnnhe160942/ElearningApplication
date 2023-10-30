@@ -83,6 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/answer/find-all-answer",
                 "/api/v1/answer/get-answer-by-id",
                 "/api/v1/answer/find-all-answer-by-deleted",
+                "/api/v1/answer/get-answer-by-question-id",
 
                 "/api/v1/post/add-post",
                 "/api/v1/post/update-post",
@@ -97,6 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/question/get-question-by-id",
                 "/api/v1/question/get-question-page",
                 "/api/v1/question/find-all-question-by-deleted",
+                "/api/v1/question/get-questions-by-quiz-id",
 
                 "/api/v1/quiz/add-quiz",
                 "/api/v1/quiz/update-quiz",

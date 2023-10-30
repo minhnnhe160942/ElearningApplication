@@ -13,22 +13,19 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.question.*;
+import team2.elearningapplication.dto.request.user.question.GetQuestionByQuizIDRequest;
 import team2.elearningapplication.dto.response.admin.question.AddQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.DeleteQuestionResponse;
 import team2.elearningapplication.dto.response.admin.question.GetQuestionByIdResponse;
 import team2.elearningapplication.dto.response.admin.question.UpdateQuestionResponse;
 import team2.elearningapplication.dto.response.user.course.PageCourseResponse;
+import team2.elearningapplication.dto.response.user.question.GetQuestionByQuizIdResponse;
 import team2.elearningapplication.dto.response.user.question.GetQuestionPageResponse;
-import team2.elearningapplication.entity.Answer;
-import team2.elearningapplication.entity.Course;
-import team2.elearningapplication.entity.Question;
-import team2.elearningapplication.entity.Quiz;
-import team2.elearningapplication.repository.IAnswerRepository;
-import team2.elearningapplication.repository.IQuestionDataRepository;
-import team2.elearningapplication.repository.IQuestionRepository;
-import team2.elearningapplication.repository.IQuizRepository;
+import team2.elearningapplication.entity.*;
+import team2.elearningapplication.repository.*;
 import team2.elearningapplication.service.IQuestionService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +37,7 @@ public class QuestionServiceImpl implements IQuestionService {
     private final IQuestionRepository questionRepository;
     private final IQuizRepository iQuizRepository;
     private final IAnswerRepository iAnswerRepository;
+    private final IUserRepository userRepository;
 
 
     private final Logger log = LoggerFactory.getLogger(QuestionServiceImpl.class);
@@ -49,6 +47,7 @@ public class QuestionServiceImpl implements IQuestionService {
         try {
             // Find the question by name to check if it already exists
             Quiz quiz = iQuizRepository.findQuizById(questionData.getQuizID()).orElse(null);
+            User user = userRepository.findByUsername(questionData.getUsername()).orElse(null);
             if (quiz == null) {
                 log.debug("addQuestion: Quiz not exists.");
                 return new ResponseCommon<>(ResponseCode.QUIZ_NOT_EXIST.getCode(), "Quizz not exist", null);
@@ -59,6 +58,7 @@ public class QuestionServiceImpl implements IQuestionService {
             questionAdd.setQuestionName(questionData.getQuestionName());
             questionAdd.setQuestionType(questionData.getQuestionType());
             questionAdd.setQuizID(questionData.getQuizID());
+            questionAdd.setUserCreated(user);
             questionAdd = questionRepository.save(questionAdd);
 
             for (Answer answer : questionData.getListAnswer()) {
@@ -81,7 +81,7 @@ public class QuestionServiceImpl implements IQuestionService {
         try {
             // Find the question to update
             Question questionToUpdate = questionRepository.findQuestionById(updateQuestionRequest.getQuestionID()).orElse(null);
-
+            User user = userRepository.findByUsername(updateQuestionRequest.getUsername()).orElse(null);
             // Check if the question exists
             if (Objects.isNull(questionToUpdate)) {
                 log.debug("updateQuestion: Question not found.");
@@ -91,7 +91,9 @@ public class QuestionServiceImpl implements IQuestionService {
             // Update the question
             questionToUpdate.setQuestionName(updateQuestionRequest.getQuestionName());
             questionToUpdate.setQuestionType(updateQuestionRequest.getQuestionType());
-
+            questionToUpdate.setUpdatedAt(LocalDateTime.now());
+            questionToUpdate.setDeleted(updateQuestionRequest.isDeleted());
+            questionToUpdate.setUserUpdated(user);
             // Save the updated question
             questionRepository.save(questionToUpdate);
             for (Answer answer : updateQuestionRequest.getAnswers()) {
@@ -102,6 +104,7 @@ public class QuestionServiceImpl implements IQuestionService {
                 }
                 answerUpdate.setAnswerContent(answer.getAnswerContent());
                 answerUpdate.setCorrect(answer.isCorrect());
+                answerUpdate.setUpdatedAt(LocalDateTime.now());
                 iAnswerRepository.save(answerUpdate);
             }
 
@@ -118,7 +121,7 @@ public class QuestionServiceImpl implements IQuestionService {
         try {
             // Find the question to delete
             Question questionToDelete = questionRepository.findQuestionById(deleteQuestionRequest.getQuestionID()).orElse(null);
-
+            User user = userRepository.findByUsername(deleteQuestionRequest.getUsername()).orElse(null);
             // Check if the question exists
             if (Objects.isNull(questionToDelete)) {
                 log.debug("deleteQuestion: Question not found.");
@@ -127,6 +130,8 @@ public class QuestionServiceImpl implements IQuestionService {
 
             // Set the question as deleted
             questionToDelete.setDeleted(true);
+            questionToDelete.setUpdatedAt(LocalDateTime.now());
+            questionToDelete.setUserUpdated(user);
 
             // Save the deleted question
             questionRepository.save(questionToDelete);
@@ -237,6 +242,20 @@ public class QuestionServiceImpl implements IQuestionService {
             e.printStackTrace();
             log.error("Get question page An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get question page fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetQuestionByQuizIdResponse> getQuestionByQuizId(GetQuestionByQuizIDRequest getQuestionByQuizIDRequest) {
+        try {
+            List<Question> questions = questionRepository.getQuestionByQuizID(getQuestionByQuizIDRequest.getQuizId());
+            GetQuestionByQuizIdResponse getQuestionByQuizIdResponse = new GetQuestionByQuizIdResponse();
+            getQuestionByQuizIdResponse.setQuestionList(questions);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,getQuestionByQuizIdResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get question by id An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get question by id  fail", null);
         }
     }
 }

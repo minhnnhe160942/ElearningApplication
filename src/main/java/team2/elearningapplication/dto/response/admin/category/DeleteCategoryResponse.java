@@ -22,4 +22,8 @@ public class DeleteCategoryResponse {
     private String categoryName;
     @NotNull
     private boolean isDeleted;
+    @NotBlank
+    private String createdBy;
+    @NotBlank
+    private String updatedBy;
 }

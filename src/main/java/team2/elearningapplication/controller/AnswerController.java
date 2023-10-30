@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.answer.*;
+import team2.elearningapplication.dto.request.user.answer.GetAnswerByQuestionIdRequest;
 import team2.elearningapplication.dto.response.admin.answer.*;
+import team2.elearningapplication.dto.response.user.answer.GetAnswerByQuestionIdResponse;
 import team2.elearningapplication.service.IAnswerService;
 
 import javax.validation.Valid;
@@ -111,4 +113,22 @@ public class AnswerController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all answers failed", null));
         }
     }
+    @GetMapping("/get-answer-by-question-id")
+    public ResponseEntity<ResponseCommon<List<GetAnswerByQuestionIdResponse>>> getAnswerByQuestionId(@ParameterObject GetAnswerByQuestionIdRequest getAnswerByQuestionIdRequest) {
+        try {
+
+            ResponseCommon<List<GetAnswerByQuestionIdResponse>> response = answerService.getAnswerByQuestionId(getAnswerByQuestionIdRequest);
+            if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+                return ResponseEntity.ok(response);
+            } else if (response.getCode() == ResponseCode.FAIL.getCode()) {
+                return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get answer by question ID failed", null));
+            } else {
+                return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.ANSWER_LIST_IS_EMPTY.getCode(), "Answer list is empty", null));
+            }
+        } catch (Exception e) {
+            log.error("getAnswerByQuestionId: An error occurred - " + e.getMessage(), e);
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get answer by question ID failed - " + e.getMessage(), null));
+        }
+    }
+
 }

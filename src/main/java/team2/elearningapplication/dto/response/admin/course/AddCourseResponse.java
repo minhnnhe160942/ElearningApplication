@@ -30,5 +30,7 @@ public class AddCourseResponse {
     private String linkThumail;
     @NotNull
     private LocalDateTime createdAt;
+    @NotBlank
+    private String createdBy;
 
 }

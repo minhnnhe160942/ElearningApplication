@@ -54,4 +54,5 @@ public class User {
     private Integer session_id;
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
+
 }

@@ -7,13 +7,18 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.answer.*;
+import team2.elearningapplication.dto.request.user.answer.GetAnswerByQuestionIdRequest;
 import team2.elearningapplication.dto.response.admin.answer.*;
+import team2.elearningapplication.dto.response.user.answer.GetAnswerByQuestionIdResponse;
 import team2.elearningapplication.entity.Answer;
 import team2.elearningapplication.entity.Question;
+import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.IAnswerRepository;
 import team2.elearningapplication.repository.IQuestionRepository;
+import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.service.IAnswerService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +28,7 @@ import java.util.Objects;
 public class AnswerServiceImpl implements IAnswerService {
     private final IQuestionRepository questionRepository;
     private final IAnswerRepository answerRepository;
+    private final IUserRepository userRepository;
 
     private final Logger log = LoggerFactory.getLogger(AnswerServiceImpl.class);
 
@@ -31,7 +37,7 @@ public class AnswerServiceImpl implements IAnswerService {
         try {
             // Find the question based on its ID
             Question question = questionRepository.findQuestionById(answerData.getQuestionID()).orElse(null);
-
+            User user = userRepository.findByUsername(answerData.getUsername()).orElse(null);
             // Check if the question exists
             if (Objects.isNull(question)) {
                 log.debug("addAnswer: Question not found.");
@@ -42,6 +48,7 @@ public class AnswerServiceImpl implements IAnswerService {
                 answer.setAnswerContent(answerData.getAnswerName());
                 answer.setCorrect(answer.isCorrect());
                 answer.setQuestionId(answer.getQuestionId());
+                answer.setUserCreated(user);
                 answerRepository.save(answer);
 
                 // Create and return a success response
@@ -64,7 +71,7 @@ public class AnswerServiceImpl implements IAnswerService {
         try {
             // Find the answer based on its question ID and answer ID
             Answer answerExist = answerRepository.findAnswerByQuestionIdAndId(updateAnswerRequest.getQuestionID(), updateAnswerRequest.getAnswerID()).orElse(null);
-
+            User user = userRepository.findByUsername(updateAnswerRequest.getUsername()).orElse(null);
             // Check if the answer exists
             if (Objects.isNull(answerExist)) {
                 log.debug("updateAnswer: Answer not found in the question.");
@@ -75,7 +82,9 @@ public class AnswerServiceImpl implements IAnswerService {
                 answerUpdate.setAnswerContent(answerExist.getAnswerContent());
                 answerUpdate.setCorrect(answerExist.isCorrect());
                 answerUpdate.setQuestionId(answerExist.getQuestionId());
-
+                answerUpdate.setUpdatedAt(LocalDateTime.now());
+                answerUpdate.setDeleted(updateAnswerRequest.isDeleted());
+                answerUpdate.setUserCreated(user);
                 // Save the updated answer
                 answerRepository.save(answerUpdate);
 
@@ -101,6 +110,7 @@ public class AnswerServiceImpl implements IAnswerService {
         try {
             // Find the answer based on its question ID and answer ID
             Answer answerExist = answerRepository.findAnswerByQuestionIdAndId(deleteAnswerRequest.getQuestionID(), deleteAnswerRequest.getAnswerID()).orElse(null);
+            User user = userRepository.findByUsername(deleteAnswerRequest.getUsername()).orElse(null);
 
             // Check if the answer exists
             if (Objects.isNull(answerExist)) {
@@ -109,6 +119,8 @@ public class AnswerServiceImpl implements IAnswerService {
             } else {
                 // Set the "deleted" flag to true and save the answer
                 answerExist.setDeleted(true);
+                answerExist.setUpdatedAt(LocalDateTime.now());
+                answerExist.setUserUpdated(user);
                 answerRepository.save(answerExist);
 
                 // Create a response with details of the deleted answer
@@ -143,7 +155,9 @@ public class AnswerServiceImpl implements IAnswerService {
                         answer.getQuestionId(),
                         answer.getId(),
                         answer.getAnswerContent(),
-                        answer.isCorrect()
+                        answer.isCorrect(),
+                        answer.getUserCreated().getUsername(),
+                        answer.getUserUpdated().getUsername()
                 ));
             }
             log.debug("findAllAnswer: Found all answers successfully.");
@@ -170,6 +184,8 @@ public class AnswerServiceImpl implements IAnswerService {
                 response.setCorrect(answer.isCorrect());
                 response.setQuestionId(answer.getQuestionId());
                 response.setDeleted(answer.isDeleted());
+                response.setCreatedBy(answer.getUserCreated().getUsername());
+                response.setUpdatedBy(answer.getUserUpdated().getUsername());
 
                 log.debug("Get Answer By id successful");
                 return new ResponseCommon<>(ResponseCode.SUCCESS, response);
@@ -196,9 +212,37 @@ public class AnswerServiceImpl implements IAnswerService {
                         answer.getQuestionId(),
                         answer.getId(),
                         answer.getAnswerContent(),
-                        answer.isCorrect()
+                        answer.isCorrect(),
+                        answer.getUserCreated().getUsername(),
+                        answer.getUserUpdated().getUsername()
                 ));
             }
+            log.debug("findAllAnswer: Found all answers successfully.");
+            return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Find all answer success", responseList);
+        } catch (Exception e) {
+            log.error("findAllAnswer: An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Find all answer fail" + e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<List<GetAnswerByQuestionIdResponse>> getAnswerByQuestionId(GetAnswerByQuestionIdRequest getAnswerByQuestionIdRequest) {
+        try {
+            List<Answer> answers = answerRepository.findAnswerByQuestionId(getAnswerByQuestionIdRequest.getQuestionId());
+
+            if (answers.isEmpty()) {
+                log.debug("findAllAnswer: Answer list is empty.");
+                return new ResponseCommon<>(ResponseCode.ANSWER_LIST_IS_EMPTY.getCode(), "Answer list is empty", null);
+            }
+
+            List<GetAnswerByQuestionIdResponse> responseList = new ArrayList<>();
+            for (int i = 0; i < answers.size(); i++) {
+                GetAnswerByQuestionIdResponse getAnswerByQuestionIdResponse = new GetAnswerByQuestionIdResponse();
+                getAnswerByQuestionIdResponse.setAnswerId(answers.get(i).getId());
+                getAnswerByQuestionIdResponse.setAnswerContent(answers.get(i).getAnswerContent());
+                responseList.add(getAnswerByQuestionIdResponse);
+            }
+
             log.debug("findAllAnswer: Found all answers successfully.");
             return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Find all answer success", responseList);
         } catch (Exception e) {

@@ -14,6 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 public class AddQuizRequest {
+    @NotBlank
+    private String username;
     @NotNull
     private int lessonID;
     @NotBlank

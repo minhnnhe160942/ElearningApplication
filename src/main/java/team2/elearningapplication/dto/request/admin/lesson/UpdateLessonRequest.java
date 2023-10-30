@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class UpdateLessonRequest {
+    @NotBlank
+    private String username;
 
     @NotNull
     private int lessonID;
@@ -27,5 +29,7 @@ public class UpdateLessonRequest {
     private String linkContent;
     @NotBlank
     private String description;
+    @NotNull
+    private boolean deleted;
 
 }

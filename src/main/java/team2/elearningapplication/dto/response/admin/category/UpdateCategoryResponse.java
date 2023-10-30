@@ -20,4 +20,8 @@ public class UpdateCategoryResponse {
     private int categoryID;
     @NotBlank
     private String categoryName;
+    @NotBlank
+    private String createdBy;
+    @NotBlank
+    private String updatedBy;
 }

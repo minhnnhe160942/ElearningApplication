@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class DeleteCourseRequest {
+    @NotBlank
+    private String username;
     @NotNull
     private int courseID;
 }

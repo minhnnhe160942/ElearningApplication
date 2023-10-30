@@ -22,4 +22,8 @@ public class GetAnswerByIdResponse {
     private int questionId;
     @NotNull
     private boolean isDeleted;
+    @NotBlank
+    private String createdBy;
+    @NotBlank
+    private String updatedBy;
 }

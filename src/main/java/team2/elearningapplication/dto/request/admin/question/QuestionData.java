@@ -18,6 +18,8 @@ import java.util.List;
 @Getter
 @Setter
 public class QuestionData {
+    @NotBlank
+    private String username;
     @NotNull
     private int quizID;
     @NotNull

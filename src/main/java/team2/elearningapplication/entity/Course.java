@@ -28,7 +28,7 @@ public class Course {
     @Column(name = "description")
     private String description;
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name="category_id",referencedColumnName = "id")
     private Category category;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -40,5 +40,11 @@ public class Course {
     private boolean isDeleted;
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
+    @ManyToOne
+    @JoinColumn (name="created_by",referencedColumnName = "id")
+    private User userCreated;
+    @ManyToOne
+    @JoinColumn(name="updated_by",referencedColumnName = "id")
+    private User userUpdated;
 
 }

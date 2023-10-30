@@ -8,9 +8,12 @@ import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.category.*;
 import team2.elearningapplication.dto.response.admin.category.*;
 import team2.elearningapplication.entity.Category;
+import team2.elearningapplication.entity.User;
 import team2.elearningapplication.repository.ICategoryRepository;
+import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.service.ICategoryService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,11 +23,13 @@ import java.util.Objects;
 public class CategoryServiceImpl implements ICategoryService {
 
     private final ICategoryRepository categoryRepository;
+    private final IUserRepository userRepository;
 
     @Override
     public ResponseCommon<AddCategoryResponse> addCategory(AddCategoryRequest addCategoryRequest) {
         try {
             Category category = categoryRepository.findCategoryByName(addCategoryRequest.getName()).orElse(null);
+            User user = userRepository.findByUsername(addCategoryRequest.getUsername()).orElse(null);
             // if category not null -> tell user
             if (!Objects.isNull(category)) {
                 log.debug("Add Category failed: Category already exists");
@@ -36,6 +41,7 @@ public class CategoryServiceImpl implements ICategoryService {
             }
 
             category.setName(addCategoryRequest.getName());
+            category.setUserCreated(user);
             // Save category to the database
             Category savedCategory = categoryRepository.save(category);
 
@@ -61,6 +67,7 @@ public class CategoryServiceImpl implements ICategoryService {
     public ResponseCommon<UpdateCategoryResponse> updateCategory(UpdateCategoryRequest updateCategoryRequest) {
         try {
             Category category = categoryRepository.findCategoryById(updateCategoryRequest.getCategoryID()).orElse(null);
+            User user = userRepository.findByUsername(updateCategoryRequest.getUsername()).orElse(null);
             // if category is null -> tell user
             if (Objects.isNull(category)) {
                 log.debug("Update Category failed: Category does not exist");
@@ -68,6 +75,9 @@ public class CategoryServiceImpl implements ICategoryService {
             } else {
                 Category categoryUpdate = category;
                 categoryUpdate.setName(updateCategoryRequest.getCategoryUpdate());
+                categoryUpdate.setUpdatedAt(LocalDateTime.now());
+                categoryUpdate.setDeleted(updateCategoryRequest.isDeleted());
+                categoryUpdate.setUserUpdated(user);
                 categoryRepository.save(categoryUpdate);
                 UpdateCategoryResponse updateCategoryResponse = new UpdateCategoryResponse();
                 updateCategoryResponse.setCategoryID(categoryUpdate.getId());
@@ -86,6 +96,7 @@ public class CategoryServiceImpl implements ICategoryService {
     public ResponseCommon<DeleteCategoryResponse> deleteCategory(DeleteCategoryRequest deleteCategoryRequest) {
         try {
             Category category = categoryRepository.findCategoryById(deleteCategoryRequest.getCategoryID()).orElse(null);
+            User user = userRepository.findByUsername(deleteCategoryRequest.getUsername()).orElse(null);
             // if category is null -> tell the user
             if (Objects.isNull(category)) {
                 log.debug("Delete Category failed: Category does not exist");
@@ -93,6 +104,8 @@ public class CategoryServiceImpl implements ICategoryService {
             } else {
                 Category categoryUpdate = category;
                 categoryUpdate.setDeleted(true);
+                categoryUpdate.setUpdatedAt(LocalDateTime.now());
+                categoryUpdate.setUserUpdated(user);
                 categoryRepository.save(categoryUpdate);
                 DeleteCategoryResponse deleteCategoryResponse = new DeleteCategoryResponse();
                 deleteCategoryResponse.setCategoryID(categoryUpdate.getId());

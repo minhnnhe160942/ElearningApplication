@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
@@ -12,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class DeleteQuestionRequest {
+    @NotBlank
+    private String username;
     @NotNull
     private int quizID;
     @NotNull

@@ -14,6 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 public class UpdateQuizRequest {
+    @NotBlank
+    private String username;
     @NotNull
     private int quizID;
     @NotBlank
@@ -22,5 +24,7 @@ public class UpdateQuizRequest {
     private int lessonID;
     @NotBlank
     private String lessonName;
+    @NotNull
+    private boolean deleted;
 
 }

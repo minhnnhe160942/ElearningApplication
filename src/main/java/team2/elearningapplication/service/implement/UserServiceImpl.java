@@ -143,6 +143,7 @@ public class UserServiceImpl implements IUserService {
                 updatedUser.setFullName(user.getFullName());
                 updatedUser.setGender(user.getGender());
                 updatedUser.setDate_of_birth(user.getDate_of_birth());
+                updatedUser.setUpdatedAt(LocalDateTime.now());
                 return userRepository.save(updatedUser);
             }
         } catch (Exception e){

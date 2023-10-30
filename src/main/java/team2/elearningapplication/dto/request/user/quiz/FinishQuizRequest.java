@@ -1,9 +1,13 @@
 package team2.elearningapplication.dto.request.user.quiz;
 
 import lombok.Data;
+import team2.elearningapplication.entity.Answer;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+
 @Data
 public class FinishQuizRequest {
     @NotBlank
@@ -14,4 +18,6 @@ public class FinishQuizRequest {
     private int quizId;
     @NotNull
     private int sessionId;
+    @NotEmpty
+    private List<Integer> answerIdList;
 }
