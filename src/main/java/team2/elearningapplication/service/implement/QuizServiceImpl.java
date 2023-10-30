@@ -34,7 +34,6 @@ public class QuizServiceImpl implements IQuizService {
     private  final IQuestionRepository questionRepository;
     private final IAnswerRepository answerRepository;
     private final IUserRepository userRepository;
-    private  final HistoryAnswerRepository historyAnswerRepository;
     private final EmailService emailService;
     private final ICourseRepository courseRepository;
     private final IHistoryQuizRepository historyQuizRepository;
@@ -321,7 +320,7 @@ public class QuizServiceImpl implements IQuizService {
             int sessionId = resetQuizRequest.getSessionId();
             String username = resetQuizRequest.getUsername();
             User user = userRepository.findByUsername(username).orElse(null);
-            historyAnswerRepository.deleteBySessionIdAndUser(sessionId,user);
+//            historyAnswerRepository.deleteBySessionIdAndUser(sessionId,user);
             int newSessionId = CommonUtils.getSessionID();
             ResetQuizResponse resetQuizResponse = new ResetQuizResponse();
             resetQuizResponse.setNewSessionId(newSessionId);
