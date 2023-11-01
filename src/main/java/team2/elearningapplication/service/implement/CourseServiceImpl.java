@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import team2.elearningapplication.Enum.*;
+import team2.elearningapplication.config.VnPayConfig;
 import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.course.*;
@@ -25,9 +26,7 @@ import team2.elearningapplication.repository.*;
 import team2.elearningapplication.service.ICourseService;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -379,6 +378,8 @@ public class CourseServiceImpl implements ICourseService {
             if (paymentResponse.getCode() == ResponseCode.SUCCESS.getCode()) {
                 enrollCourseResponse.setOrderId(order.getId());
                 enrollCourseResponse.setUrlPayment(paymentResponse.getData().getUrl());
+                order.setChecksum(paymentResponse.getData().getVnp_TxnRef());
+                orderRepository.save(order);
                 return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Send url done", enrollCourseResponse);
             } else {
                 log.debug("Enroll course response faile because paymentResponse not success.");
@@ -397,35 +398,56 @@ public class CourseServiceImpl implements ICourseService {
             Order order = orderRepository.getOrderById(paymentConfirmRequest.getOrderId()).orElse(null);
             if(Objects.isNull(order)){
                 return new ResponseCommon<>(ResponseCode.ORDER_NOT_EXIST,null);
+            }
+            String signValue = handleReturnURL(paymentConfirmRequest.getReturUrl());
+            String vnp_SecureHash = getSecureHash(paymentConfirmRequest.getReturUrl());
+            if(vnp_SecureHash.isEmpty()){
+                log.debug("Handle with vnp_secureHash: " + vnp_SecureHash);
+                return new ResponseCommon<>(ResponseCode.FAIL,null);
             } else {
-                // if response code not equal 00
-                if(!paymentConfirmRequest.getResponseCode().equals("00")){
-                    return new ResponseCommon<>(ResponseCode.PAYMENT_FAIL,null);
+                if(signValue != vnp_SecureHash){
+                    return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Param is hacker",null);
                 } else {
-                    Payment payment = new Payment();
-                    HistoryRegisterCourse historyRegisterCourse = new HistoryRegisterCourse();
-                    payment.setUser(order.getUser());
-                    payment.setCourse(order.getCourse());
-                    payment.setPaymentGateway(EnumPaymentGateway.VN_PAY);
-                    payment.setTransaction_id(payment.getTransaction_id());
-                    payment.setAmount(order.getAmount());
-                    payment.setEnumPaymentProcess(EnumPaymentProcess.SUCCESS);
-                    payment.setCreated_at(LocalDateTime.now());
-                    paymentRepository.save(payment);
-                    order.setPayment(payment);
-                    orderRepository.save(order);
-
-                    historyRegisterCourse.setCourse(payment.getCourse());
-                    historyRegisterCourse.setUser(payment.getUser());
-                    historyRegisterCourse.setSttLessonCurrent(1);
-                    historyRegisterCourse.setPayment(payment);
-                    historyRegisterCourse.setProcess(EnumTypeProcessAccount.NOT_READY);
-                    historyRegisterCourse.setCreatedAt(LocalDateTime.now());
-                    historyRegisterCourse.setOrder(order);
-                    historyRegisterCourseRepository.save(historyRegisterCourse);
-                    PaymentConfirmResponse paymentConfirmResponse = new PaymentConfirmResponse();
-                    paymentConfirmResponse.setStatus("Payment done");
-                    return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Accept to join course",paymentConfirmResponse);
+                    if(getVnpTnxRef(paymentConfirmRequest.getReturUrl()) != order.getChecksum()){
+                        return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Order not found",null);
+                    }else {
+                        if(getVnpAmount(paymentConfirmRequest.getReturUrl())!= order.getAmount()){
+                            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Invalid Amount",null);
+                        } else {
+                            if(!order.getEnumTypeProcessPayment().equals(EnumTypeProcessPayment.INPROCESS)){
+                                return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Order already confirm",null);
+                            } else {
+                                if(!getVnpResponseCode(paymentConfirmRequest.getReturUrl()).equals("00")){
+                                    return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"User cancel bill",null);
+                                } else {
+                                    Payment payment = new Payment();
+                                    HistoryRegisterCourse historyRegisterCourse = new HistoryRegisterCourse();
+                                    payment.setUser(order.getUser());
+                                    payment.setCourse(order.getCourse());
+                                    payment.setPaymentGateway(EnumPaymentGateway.VN_PAY);
+                                    payment.setTransaction_id(payment.getTransaction_id());
+                                    payment.setAmount(order.getAmount());
+                                    payment.setEnumPaymentProcess(EnumPaymentProcess.SUCCESS);
+                                    payment.setCreated_at(LocalDateTime.now());
+                                    paymentRepository.save(payment);
+                                    order.setPayment(payment);
+                                    order.setEnumTypeProcessPayment(EnumTypeProcessPayment.DONE);
+                                    orderRepository.save(order);
+                                    historyRegisterCourse.setCourse(payment.getCourse());
+                                    historyRegisterCourse.setUser(payment.getUser());
+                                    historyRegisterCourse.setSttLessonCurrent(1);
+                                    historyRegisterCourse.setPayment(payment);
+                                    historyRegisterCourse.setProcess(EnumTypeProcessAccount.NOT_READY);
+                                    historyRegisterCourse.setCreatedAt(LocalDateTime.now());
+                                    historyRegisterCourse.setOrder(order);
+                                    historyRegisterCourseRepository.save(historyRegisterCourse);
+                                    PaymentConfirmResponse paymentConfirmResponse = new PaymentConfirmResponse();
+                                    paymentConfirmResponse.setStatus("Payment done");
+                                    return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Confirm success",null);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         } catch (Exception e){
@@ -433,6 +455,83 @@ public class CourseServiceImpl implements ICourseService {
             log.debug("Enroll Course failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
+    }
+
+    private String getVnpResponseCode(String returUrl) {
+        String[] params = returUrl.split("&");
+        for (String param : params) {
+            String[] keyValue = param.split("=");
+            if (keyValue.length == 2 && "vnp_ResponseCode".equals(keyValue[0])) {
+                return keyValue[1];
+            }
+        }
+        return null;
+    }
+
+    private double getVnpAmount(String returUrl) {
+        String[] params = returUrl.split("&");
+        for (String param : params) {
+            String[] keyValue = param.split("=");
+            if (keyValue.length == 2 && "vnp_Amount".equals(keyValue[0])) {
+                return Double.parseDouble(keyValue[1]);
+            }
+        }
+        return -1;
+    }
+
+    private String getVnpTnxRef(String returUrl) {
+        String[] params = returUrl.split("&");
+        for (String param : params) {
+            String[] keyValue = param.split("=");
+            if (keyValue.length == 2 && "vnp_TxnRef".equals(keyValue[0])) {
+                return keyValue[1];
+            }
+        }
+        return null;
+    }
+
+    private String getSecureHash(String returUrl) {
+        String[] params = returUrl.split("&");
+        for (String param : params) {
+            String[] keyValue = param.split("=");
+            if (keyValue.length == 2 && "vnp_SecureHash".equals(keyValue[0])) {
+                return keyValue[1];
+            }
+        }
+        return null;
+    }
+
+    private String handleReturnURL(String returUrl) {
+        String queryString = returUrl.replace("http://localhost:3000/paymentResult?", "");
+
+        String[] queryParams = queryString.split("&");
+
+        Map<String, String> paramMap = new HashMap<>();
+
+        for (String param : queryParams) {
+            String[] keyValue = param.split("=");
+            if (keyValue.length == 2) {
+                String key = keyValue[0];
+                String value = keyValue[1];
+                paramMap.put(key, value);
+            }
+        }
+        paramMap.remove("vnp_SecureHash");
+
+        Map<String, String> sortedParamMap = new TreeMap<>(paramMap);
+
+        StringBuilder reconstructedQueryString = new StringBuilder();
+        for (String key : sortedParamMap.keySet()) {
+            reconstructedQueryString.append(key);
+            reconstructedQueryString.append("=");
+            reconstructedQueryString.append(sortedParamMap.get(key));
+            reconstructedQueryString.append("&");
+        }
+        reconstructedQueryString.deleteCharAt(reconstructedQueryString.length() - 1);
+
+        String hashValue = VnPayConfig.hashAllFields(sortedParamMap);
+
+        return hashValue;
     }
 
     @Override

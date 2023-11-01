@@ -7,11 +7,9 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class PaymentConfirmRequest {
+    @NotBlank
+    private String returUrl;
     @NotNull
     private int orderId;
-    @NotBlank
-    private String transactionId;
-    @NotBlank
-    private String responseCode;
 
 }

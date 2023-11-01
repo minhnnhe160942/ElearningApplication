@@ -206,8 +206,8 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/confirm-payment")
-    public ResponseEntity<ResponseCommon<PaymentConfirmResponse>> enrollCourse(@ParameterObject PaymentConfirmRequest paymentConfirmRequest){
+    @PostMapping("/confirm-payment")
+    public ResponseEntity<ResponseCommon<PaymentConfirmResponse>> enrollCourse(@Valid @RequestBody PaymentConfirmRequest paymentConfirmRequest){
         ResponseCommon<PaymentConfirmResponse> response = courseService.paymentConfirm(paymentConfirmRequest);
         if(response.getCode() == ResponseCode.ORDER_NOT_EXIST.getCode()){
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.ORDER_NOT_EXIST.getCode(),"Order not exist",null));
