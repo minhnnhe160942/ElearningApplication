@@ -94,6 +94,7 @@ public class PaymentService implements IPaymentService {
         paymentRes.setStatus("Done");
         paymentRes.setMessage("Successfully");
         paymentRes.setUrl(paymentUrl);
+        paymentRes.setVnp_TxnRef(vnp_TxnRef);
 
         return new ResponseCommon<>(ResponseCode.SUCCESS, paymentRes);
     }

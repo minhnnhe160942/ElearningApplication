@@ -77,11 +77,11 @@ public class VnPayConfig {
     }
 
     public static String hmacSHA512(final String key, final String data) {
-        try {
+        if (key == null || data == null) {
+            throw new NullPointerException();
+        }
 
-            if (key == null || data == null) {
-                throw new NullPointerException();
-            }
+        try {
             final Mac hmac512 = Mac.getInstance("HmacSHA512");
             byte[] hmacKeyBytes = key.getBytes();
             final SecretKeySpec secretKey = new SecretKeySpec(hmacKeyBytes, "HmacSHA512");
@@ -93,11 +93,13 @@ public class VnPayConfig {
                 sb.append(String.format("%02x", b & 0xff));
             }
             return sb.toString();
-
         } catch (Exception ex) {
-            return "";
+
+            ex.printStackTrace(); // Example of logging the exception.
+            throw new RuntimeException("An error occurred during HMACSHA512 calculation.", ex);
         }
     }
+
 
     public static String getIpAddress(HttpServletRequest request) {
         String ipAdress;

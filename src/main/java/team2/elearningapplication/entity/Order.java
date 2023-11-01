@@ -34,4 +34,6 @@ public class Order {
     private LocalDateTime created_at;
     @Column(name="deleted")
     private boolean isDeleted;
+    @Column(name = "checksum")
+    private String checksum;
 }

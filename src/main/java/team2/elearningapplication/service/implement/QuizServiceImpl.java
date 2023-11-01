@@ -264,9 +264,7 @@ public class QuizServiceImpl implements IQuizService {
 //            int totalIncorrect = listIncorrectAnswer.size();
             HistoryQuiz historyQuiz = new HistoryQuiz();
             int totalCorrect = 0;
-            //int totalQuestion = questionRepository.countQuestionsByQuizId(finishQuizRequest.getQuizId());
-            int totalQuestion = answerByUser.size();
-            System.out.println(totalQuestion);
+            int totalQuestion = questionRepository.countQuestionsByQuizId(finishQuizRequest.getQuizId());
             int totalIncorrect = totalQuestion - totalCorrect;
             for (int i = 0; i < answerByUser.size(); i++) {
                 boolean isCorrect = answerRepository.checkIsCorrect(answerByUser.get(i));
@@ -287,11 +285,11 @@ public class QuizServiceImpl implements IQuizService {
                     historyQuizRepository.save(historyQuiz);
                 }
             }
-            double mark = (double)totalCorrect/totalQuestion;
-            if(mark >= BASE_MARK){
+            double mark = (double) totalCorrect / totalQuestion;
+            if (mark >= BASE_MARK) {
                 log.info("START... Sending email");
                 emailService.sendEmail(setUpMail(user.getEmail(), course.getName()));
-                log.info("END... Email sent success");
+                log.info("END... Email sent successfully");
             }
             FinishQuizResponse finishQuizResponse = new FinishQuizResponse();
             finishQuizResponse.setTotalCorrect(totalCorrect);
