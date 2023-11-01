@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "blog")
@@ -25,5 +26,9 @@ public class Blog {
     private String content;
     @Column(name="link_thumnail")
     private String linkThumnail;
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
 
 }
