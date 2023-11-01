@@ -399,16 +399,16 @@ public class CourseServiceImpl implements ICourseService {
             if(Objects.isNull(order)){
                 return new ResponseCommon<>(ResponseCode.ORDER_NOT_EXIST,null);
             }
-            String signValue = handleReturnURL(paymentConfirmRequest.getReturUrl());
+            String signValue = generateAndHashQueryString(paymentConfirmRequest);
             System.out.println(signValue);
-            String vnp_SecureHash = getSecureHash(paymentConfirmRequest.getReturUrl());
+            String vnp_SecureHash = paymentConfirmRequest.getVnp_SecureHash();
             System.out.println(vnp_SecureHash);
             String checksum = order.getChecksum();
-            String vnp_TnxRef = getVnpTnxRef(paymentConfirmRequest.getReturUrl());
+            String vnp_TnxRef = paymentConfirmRequest.getVnp_TxnRef();
             System.out.println(checksum);
             System.out.println(vnp_TnxRef);
             double amountDB = order.getAmount();
-            double amountReturn = getVnpAmount(paymentConfirmRequest.getReturUrl());
+            double amountReturn = Double.parseDouble(paymentConfirmRequest.getVnp_Amount());
             System.out.println("amount in db: "+amountDB);
             System.out.println("amount return: " +amountReturn);
             if(vnp_SecureHash.isEmpty()){
@@ -432,8 +432,8 @@ public class CourseServiceImpl implements ICourseService {
                             if(!order.getEnumTypeProcessPayment().equals(EnumTypeProcessPayment.INPROCESS)){
                                 return new ResponseCommon<>(ResponseCode.ORDER_ALREADY_CONFIRM.getCode(),"Order already confirm",null);
                             } else {
-                                log.debug("response code: " +getVnpResponseCode(paymentConfirmRequest.getReturUrl()) );
-                                if(!getVnpResponseCode(paymentConfirmRequest.getReturUrl()).equals("00")){
+                                log.debug("response code: " +paymentConfirmRequest.getVnp_ResponseCode() );
+                                if(!paymentConfirmRequest.getVnp_ResponseCode().equals("00")){
                                     return new ResponseCommon<>(ResponseCode.USER_CANCEL_BILL.getCode(),"User cancel bill",null);
                                 } else {
                                     Payment payment = new Payment();
@@ -473,91 +473,23 @@ public class CourseServiceImpl implements ICourseService {
         }
     }
 
-    private String getVnpResponseCode(String returUrl) {
-        String[] params = returUrl.split("&");
-        for (String param : params) {
-            String[] keyValue = param.split("=");
-            if (keyValue.length == 2 && "vnp_ResponseCode".equals(keyValue[0])) {
-                return keyValue[1];
-            }
-        }
-        return null;
-    }
+    public String generateAndHashQueryString(PaymentConfirmRequest paymentConfirmRequest) {
+        Map<String, String> fields = new HashMap<>();
+        fields.put("vnp_Amount", paymentConfirmRequest.getVnp_Amount());
+        fields.put("vnp_BankCode", paymentConfirmRequest.getVnp_BankCode());
+        fields.put("vnp_BankTranNo", paymentConfirmRequest.getVnp_BankTranNo());
+        fields.put("vnp_CardType", paymentConfirmRequest.getVnp_CardType());
+        fields.put("vnp_OrderInfo", paymentConfirmRequest.getVnp_OrderInfo());
+        fields.put("vnp_PayDate", paymentConfirmRequest.getVnp_PayDate());
+        fields.put("vnp_ResponseCode", paymentConfirmRequest.getVnp_ResponseCode());
+        fields.put("vnp_TmnCode", paymentConfirmRequest.getVnp_TmnCode());
+        fields.put("vnp_TransactionNo", paymentConfirmRequest.getVnp_TransactionNo());
+        fields.put("vnp_TransactionStatus", paymentConfirmRequest.getVnp_TransactionStatus());
+        fields.put("vnp_TxnRef", paymentConfirmRequest.getVnp_TxnRef());
 
-    private double getVnpAmount(String returUrl) {
-        try {
-            // Chia URL thành các tham số dựa trên dấu "&"
-            String[] params = returUrl.split("&");
-            for (String param : params) {
-                // Chia mỗi tham số thành cặp key-value dựa trên dấu "="
-                String[] keyValue = param.split("=");
-                if (keyValue.length == 2 && "vnp_Amount".equals(keyValue[0])) {
-                    // Nếu key là "vnp_Amount", trả về giá trị double tương ứng
-                    return Double.parseDouble(keyValue[1]);
-                }
-            }
-        } catch (NumberFormatException e) {
-            // Xử lý ngoại lệ nếu có lỗi chuyển đổi sang double
-            e.printStackTrace();
-        }
-        // Trả về một giá trị mặc định (hoặc -1 nếu bạn muốn)
-        return -1;
-    }
+        String queryString = VnPayConfig.hashAllFields(fields);
 
-
-    private String getVnpTnxRef(String returUrl) {
-        String[] params = returUrl.split("&");
-        for (String param : params) {
-            String[] keyValue = param.split("=");
-            if (keyValue.length == 2 && "vnp_TxnRef".equals(keyValue[0])) {
-                return keyValue[1];
-            }
-        }
-        return null;
-    }
-
-    private String getSecureHash(String returUrl) {
-        String[] params = returUrl.split("&");
-        for (String param : params) {
-            String[] keyValue = param.split("=");
-            if (keyValue.length == 2 && "vnp_SecureHash".equals(keyValue[0])) {
-                return keyValue[1];
-            }
-        }
-        return null;
-    }
-
-    private String handleReturnURL(String returUrl) {
-        String queryString = returUrl.replace("http://localhost:3000/paymentResult?", "");
-
-        String[] queryParams = queryString.split("&");
-
-        Map<String, String> paramMap = new HashMap<>();
-
-        for (String param : queryParams) {
-            String[] keyValue = param.split("=");
-            if (keyValue.length == 2) {
-                String key = keyValue[0];
-                String value = keyValue[1];
-                paramMap.put(key, value);
-            }
-        }
-        paramMap.remove("vnp_SecureHash");
-
-        Map<String, String> sortedParamMap = new TreeMap<>(paramMap);
-
-        StringBuilder reconstructedQueryString = new StringBuilder();
-        for (String key : sortedParamMap.keySet()) {
-            reconstructedQueryString.append(key);
-            reconstructedQueryString.append("=");
-            reconstructedQueryString.append(sortedParamMap.get(key));
-            reconstructedQueryString.append("&");
-        }
-        reconstructedQueryString.deleteCharAt(reconstructedQueryString.length() - 1);
-
-        String hashValue = VnPayConfig.hashAllFields(sortedParamMap);
-
-        return hashValue;
+        return queryString;
     }
 
     @Override
