@@ -400,25 +400,41 @@ public class CourseServiceImpl implements ICourseService {
                 return new ResponseCommon<>(ResponseCode.ORDER_NOT_EXIST,null);
             }
             String signValue = handleReturnURL(paymentConfirmRequest.getReturUrl());
+            System.out.println(signValue);
             String vnp_SecureHash = getSecureHash(paymentConfirmRequest.getReturUrl());
+            System.out.println(vnp_SecureHash);
+            String checksum = order.getChecksum();
+            String vnp_TnxRef = getVnpTnxRef(paymentConfirmRequest.getReturUrl());
+            System.out.println(checksum);
+            System.out.println(vnp_TnxRef);
+            double amountDB = order.getAmount();
+            double amountReturn = getVnpAmount(paymentConfirmRequest.getReturUrl());
+            System.out.println("amount in db: "+amountDB);
+            System.out.println("amount return: " +amountReturn);
             if(vnp_SecureHash.isEmpty()){
                 log.debug("Handle with vnp_secureHash: " + vnp_SecureHash);
                 return new ResponseCommon<>(ResponseCode.FAIL,null);
             } else {
-                if(signValue != vnp_SecureHash){
-                    return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Param is hacker",null);
+                log.debug("secure hash " + vnp_SecureHash);
+                if(!signValue.equals(vnp_SecureHash)){
+                    return new ResponseCommon<>(ResponseCode.CHANGE_PARAM.getCode(),"Param is hacker",null);
                 } else {
-                    if(getVnpTnxRef(paymentConfirmRequest.getReturUrl()) != order.getChecksum()){
-                        return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Order not found",null);
+                    log.debug("vnp txref: " + vnp_TnxRef);
+                    if(!vnp_TnxRef.equals(checksum)){
+                        return new ResponseCommon<>(ResponseCode.ORDER_NOT_FOUND.getCode(),"Order not found",null);
                     }else {
-                        if(getVnpAmount(paymentConfirmRequest.getReturUrl())!= order.getAmount()){
-                            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Invalid Amount",null);
+                        log.debug("amount: " + amountReturn );
+                        // test
+                        if(amountReturn == order.getAmount()){
+                            return new ResponseCommon<>(ResponseCode.INVALID_AMOUNT.getCode(),"Invalid Amount",null);
                         } else {
+                            log.debug("status order: " + order.getEnumTypeProcessPayment() );
                             if(!order.getEnumTypeProcessPayment().equals(EnumTypeProcessPayment.INPROCESS)){
-                                return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Order already confirm",null);
+                                return new ResponseCommon<>(ResponseCode.ORDER_ALREADY_CONFIRM.getCode(),"Order already confirm",null);
                             } else {
+                                log.debug("response code: " +getVnpResponseCode(paymentConfirmRequest.getReturUrl()) );
                                 if(!getVnpResponseCode(paymentConfirmRequest.getReturUrl()).equals("00")){
-                                    return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"User cancel bill",null);
+                                    return new ResponseCommon<>(ResponseCode.USER_CANCEL_BILL.getCode(),"User cancel bill",null);
                                 } else {
                                     Payment payment = new Payment();
                                     HistoryRegisterCourse historyRegisterCourse = new HistoryRegisterCourse();
@@ -469,15 +485,25 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     private double getVnpAmount(String returUrl) {
-        String[] params = returUrl.split("&");
-        for (String param : params) {
-            String[] keyValue = param.split("=");
-            if (keyValue.length == 2 && "vnp_Amount".equals(keyValue[0])) {
-                return Double.parseDouble(keyValue[1]);
+        try {
+            // Chia URL thành các tham số dựa trên dấu "&"
+            String[] params = returUrl.split("&");
+            for (String param : params) {
+                // Chia mỗi tham số thành cặp key-value dựa trên dấu "="
+                String[] keyValue = param.split("=");
+                if (keyValue.length == 2 && "vnp_Amount".equals(keyValue[0])) {
+                    // Nếu key là "vnp_Amount", trả về giá trị double tương ứng
+                    return Double.parseDouble(keyValue[1]);
+                }
             }
+        } catch (NumberFormatException e) {
+            // Xử lý ngoại lệ nếu có lỗi chuyển đổi sang double
+            e.printStackTrace();
         }
+        // Trả về một giá trị mặc định (hoặc -1 nếu bạn muốn)
         return -1;
     }
+
 
     private String getVnpTnxRef(String returUrl) {
         String[] params = returUrl.split("&");
