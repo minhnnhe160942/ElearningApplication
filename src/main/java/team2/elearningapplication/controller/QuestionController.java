@@ -93,7 +93,7 @@ public class QuestionController {
 
     @GetMapping("/find-all-question-by-deleted")
     public ResponseEntity<ResponseCommon<List<Question>>> findAllQuestionByDeleted(FindQuestionByDeletedRequest findQuestionByDeletedRequest) {
-        ResponseCommon<List<Question>> response = questionService.findAllQuestion();
+        ResponseCommon<List<Question>> response = questionService.findAllQuestionByDeleted(findQuestionByDeletedRequest);
         if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
             log.debug("findAllQuestion: Found all questions successfully.");
             return ResponseEntity.ok(response);
