@@ -47,7 +47,7 @@ public class PaymentService implements IPaymentService {
         vnp_Params.put("vnp_IpAddr","127.0.0.1");
         vnp_Params.put("vnp_CurrCode", "VND");
         vnp_Params.put("vnp_Locale", "vn");
-        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
+        vnp_Params.put("vnp_OrderInfo", "Payment" + vnp_TxnRef);
         vnp_Params.put("vnp_OrderType","other");
         vnp_Params.put("vnp_ReturnUrl", VnPayConfig.vnp_ReturnUrl);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
