@@ -10,4 +10,9 @@ class ElearningSwp391ApplicationTests {
     void contextLoads() {
     }
 
+    @Test
+    void testLoginService(){
+
+    }
+
 }

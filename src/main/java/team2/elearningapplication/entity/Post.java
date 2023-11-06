@@ -29,8 +29,8 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JoinColumn(name = "lesson_id")
-    private int lessonId;
+    @JoinColumn(name="course_id")
+    private int courseId;
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;

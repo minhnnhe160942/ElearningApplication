@@ -19,7 +19,7 @@ public class GetPostByIdResponse {
     @NotNull
     private User user;
     @NotNull
-    private int lessonId;
+    private int courseId;
     @NotBlank
     private String content;
     @NotNull
