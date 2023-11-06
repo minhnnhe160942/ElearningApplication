@@ -18,7 +18,7 @@ public class UpdatePostResponse {
     @NotNull
     private String email;
     @NotNull
-    private int lessonID;
+    private int courseId;
     @NotBlank
     private String content;
     @NotNull

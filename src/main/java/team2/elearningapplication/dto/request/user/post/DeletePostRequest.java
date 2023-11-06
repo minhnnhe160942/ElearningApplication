@@ -14,8 +14,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class DeletePostRequest {
     @NotBlank
-    private String email;
+    private String username;
     @NotNull
-    private int lessonID;
+    private int courseId;
 
 }

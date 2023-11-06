@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IPostRepository extends JpaRepository<Post,Integer> {
-    Optional<Post> findPostByUserAndAndLessonId(User user,int lessonID);
+
+    Optional<Post> findPostByUserAndCourseId(User user, int courseId);
 
     List<Post> findPostByDeleted(boolean isDeleted);
 

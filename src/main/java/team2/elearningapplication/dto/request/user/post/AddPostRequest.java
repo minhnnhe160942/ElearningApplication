@@ -14,9 +14,9 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class AddPostRequest {
     @NotBlank
-    private String email;
+    private String username;
     @NotNull
-    private int lessonID;
+    private int courseId;
     @NotBlank
     private String content;
 }
