@@ -19,4 +19,6 @@ public class UpdatePostRequest {
     private int courseId;
     @NotBlank
     private String content;
+    @NotNull
+    private int postId;
 }
