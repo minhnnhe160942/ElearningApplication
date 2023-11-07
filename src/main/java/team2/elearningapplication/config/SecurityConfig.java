@@ -91,6 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/post/delete-post",
                 "/api/v1/post/find-all-post",
                 "/api/v1/post/get-post-by-id",
+                "/api/v1/post/get-post-by-course-id",
 
                 "/api/v1/question/add-question",
                 "/api/v1/question/update-question",
@@ -116,6 +117,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/payment/get-all-payment",
                 "/api/v1/payment/add-payment",
                 "api/v1/payment/payment-info",
+
+                "/api/v1/blog/add-blog",
+                "/api/v1/blog/update-blog",
+                "/api/v1/blog/delete-blog",
+                "/api/v1/blog/find-all-blog",
+                "/api/v1/blog/get-blog-by-id",
                 "/swagger-ui/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
