@@ -10,11 +10,13 @@ import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.lesson.*;
 import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
+import team2.elearningapplication.dto.request.user.lesson.GetTrackingCourseRequest;
 import team2.elearningapplication.dto.request.user.lesson.LessonCompletedRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
 import team2.elearningapplication.dto.response.user.course.PageCourseResponse;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
+import team2.elearningapplication.dto.response.user.lesson.GetTrackingCourse;
 import team2.elearningapplication.dto.response.user.lesson.LessonCompletedResponse;
 import team2.elearningapplication.service.ILessonService;
 
@@ -129,7 +131,7 @@ public class LessonController {
     }
 
     @PostMapping("/complete-lesson")
-    public ResponseEntity<LessonCompletedResponse> completeLesson(@RequestBody LessonCompletedRequest completeLessonRequest) {
+    public ResponseEntity<LessonCompletedResponse> completeLesson(@Valid @RequestBody LessonCompletedRequest completeLessonRequest) {
         try {
             ResponseCommon<LessonCompletedResponse> response = lessonService.completeLesson(completeLessonRequest);
 
@@ -141,6 +143,22 @@ public class LessonController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(new LessonCompletedResponse());
+        }
+    }
+
+    @GetMapping("/get-tracking-course")
+    public ResponseEntity<GetTrackingCourse> getTrackingCourse(@ParameterObject GetTrackingCourseRequest getTrackingCourseRequest) {
+        try {
+            ResponseCommon<GetTrackingCourse> response = lessonService.trackingCourse(getTrackingCourseRequest);
+
+            if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+                return ResponseEntity.ok(response.getData());
+            } else {
+                return ResponseEntity.badRequest().body(new GetTrackingCourse());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new GetTrackingCourse());
         }
     }
 }

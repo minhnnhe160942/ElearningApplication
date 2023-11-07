@@ -12,10 +12,12 @@ import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.lesson.*;
 import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
+import team2.elearningapplication.dto.request.user.lesson.GetTrackingCourseRequest;
 import team2.elearningapplication.dto.request.user.lesson.LessonCompletedRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
+import team2.elearningapplication.dto.response.user.lesson.GetTrackingCourse;
 import team2.elearningapplication.dto.response.user.lesson.LessonCompletedResponse;
 import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.ICourseRepository;
@@ -289,7 +291,7 @@ public class LessonServiceImpl implements ILessonService {
             // Lấy thông tin người dùng và bài học từ cơ sở dữ liệu
             Lesson lesson = lessonRespository.findById(completeLessonRequest.getLessonId()).orElse(null);
             User user = userRepository.findByUsername(completeLessonRequest.getUsername()).orElse(null);
-
+            Course course = courseRepository.findCourseById(lesson.getCourse().getId()).orElse(null);
             // Kiểm tra xem bài học đã hoàn thành chưa
             LessonCompleted checkLesson = lessonCompletedRespository.findLessonsByUserAndLesson(user, lesson).orElse(null);
             if (checkLesson != null) {
@@ -302,13 +304,32 @@ public class LessonServiceImpl implements ILessonService {
             completed.setDone(true);
             completed.setUser(user);
             completed.setLesson(lesson);
+            completed.setCourse(course);
             lessonCompletedRespository.save(completed);
             response.setDone(true);
             response.setMessage("Done make lesson completed2");
             return new ResponseCommon<>(ResponseCode.SUCCESS,response);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("Get lesson by course id An error occurred - " + e.getMessage(), e);
+            log.error("make lesson completed An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lesson by course id fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetTrackingCourse> trackingCourse(GetTrackingCourseRequest getTrackingCourseRequest) {
+        try {
+            User user = userRepository.findByUsername(getTrackingCourseRequest.getUsername()).orElse(null);
+            int totalLesson = lessonRespository.countLessonsByCourseId(getTrackingCourseRequest.getCourseId());
+            List<LessonCompleted> lessonCompleted = lessonCompletedRespository.findCompletedLessonsByUserAndCourse(user.getUsername(), getTrackingCourseRequest.getCourseId());
+            int totalCompleted = lessonCompleted.size();
+            GetTrackingCourse getTrackingCourse = new GetTrackingCourse();
+            getTrackingCourse.setLessonCompleted(totalCompleted);
+            getTrackingCourse.setTotalLesson(totalLesson);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,getTrackingCourse);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("tracking course An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lesson by course id fail", null);
         }
     }

@@ -22,6 +22,9 @@ public class LessonCompleted {
     @JoinColumn
     private Lesson lesson;
 
+    @ManyToOne
+    @JoinColumn
+    private Course course;
 
     @Column(name="isDone")
     private boolean isDone;
