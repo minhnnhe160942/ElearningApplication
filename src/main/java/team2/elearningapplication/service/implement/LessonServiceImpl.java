@@ -12,21 +12,19 @@ import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.lesson.*;
 import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
+import team2.elearningapplication.dto.request.user.lesson.LessonCompletedRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
 import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
-import team2.elearningapplication.dto.response.user.question.GetQuestionPageResponse;
-import team2.elearningapplication.entity.Course;
-import team2.elearningapplication.entity.Lesson;
-import team2.elearningapplication.entity.Question;
-import team2.elearningapplication.entity.User;
+import team2.elearningapplication.dto.response.user.lesson.LessonCompletedResponse;
+import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.ICourseRepository;
+import team2.elearningapplication.repository.ILessonCompletedRepository;
 import team2.elearningapplication.repository.ILessonRespository;
 import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.service.ILessonService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,12 +35,13 @@ public class LessonServiceImpl implements ILessonService {
     private final ILessonRespository lessonRespository;
     private final ICourseRepository courseRepository;
     private final IUserRepository userRepository;
+    private final ILessonCompletedRepository lessonCompletedRespository;
 
     @Override
     public ResponseCommon<AddLessonResponse> addLesson(AddLessonRequest addLessonRequest) {
         try {
             Lesson lesson = lessonRespository.findLessonByOrdNumberAndCourse(addLessonRequest.getOrdNumber(), addLessonRequest.getCourseID()).orElse(null);
-            User user =  userRepository.findByUsername(addLessonRequest.getUsername()).orElse(null);
+            User user = userRepository.findByUsername(addLessonRequest.getUsername()).orElse(null);
             // if lesson not null -> lesson exists -> tell the user
             if (!Objects.isNull(lesson)) {
                 log.debug("Add Lesson failed: Lesson already exists");
@@ -208,11 +207,10 @@ public class LessonServiceImpl implements ILessonService {
         try {
             Lesson lesson = lessonRespository.findLessonById(getLessonByIdRequest.getId()).orElse(null);
             // If lesson not exist -> tell user
-            if ( Objects.isNull(lesson) ) {
+            if (Objects.isNull(lesson)) {
                 log.debug("Get Lesson by id failed: Lesson list not exist");
                 return new ResponseCommon<>(ResponseCode.LESSON_NOT_EXIST, null);
-            }
-            else {
+            } else {
                 GetLessonByIdResponse response = new GetLessonByIdResponse();
 
                 response.setId(lesson.getId());
@@ -267,8 +265,8 @@ public class LessonServiceImpl implements ILessonService {
     public ResponseCommon<GetLessonByCourseIdResponse> getLessonByCourseId(GetLessonByCourseIdRequest getLessonByCourseIdRequest) {
         try {
             Course course = courseRepository.findCourseById(getLessonByCourseIdRequest.getCourseId()).orElse(null);
-            if(Objects.isNull(course)){
-                return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST,null);
+            if (Objects.isNull(course)) {
+                return new ResponseCommon<>(ResponseCode.COURSE_NOT_EXIST, null);
             } else {
                 List<Lesson> lessonList = lessonRespository.findAllByCourse(course);
                 GetLessonByCourseIdResponse response = new GetLessonByCourseIdResponse();
@@ -276,7 +274,39 @@ public class LessonServiceImpl implements ILessonService {
                 return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Get lesson by course id success", response);
 
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Get lesson by course id An error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lesson by course id fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<LessonCompletedResponse> completeLesson(LessonCompletedRequest completeLessonRequest) {
+        try {
+            LessonCompletedResponse response = new LessonCompletedResponse();
+
+            // Lấy thông tin người dùng và bài học từ cơ sở dữ liệu
+            Lesson lesson = lessonRespository.findById(completeLessonRequest.getLessonId()).orElse(null);
+            User user = userRepository.findByUsername(completeLessonRequest.getUsername()).orElse(null);
+
+            // Kiểm tra xem bài học đã hoàn thành chưa
+            LessonCompleted checkLesson = lessonCompletedRespository.findLessonsByUserAndLesson(user, lesson).orElse(null);
+            if (checkLesson != null) {
+                response.setDone(true);
+                response.setMessage("Lesson is done after");
+                return new ResponseCommon<>(ResponseCode.FAIL, response);
+            }
+
+            LessonCompleted completed = new LessonCompleted();
+            completed.setDone(true);
+            completed.setUser(user);
+            completed.setLesson(lesson);
+            lessonCompletedRespository.save(completed);
+            response.setDone(true);
+            response.setMessage("Done make lesson completed2");
+            return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+        } catch (Exception e) {
             e.printStackTrace();
             log.error("Get lesson by course id An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lesson by course id fail", null);
