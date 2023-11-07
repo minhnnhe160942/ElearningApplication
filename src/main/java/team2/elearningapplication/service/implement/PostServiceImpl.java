@@ -91,7 +91,8 @@ public class PostServiceImpl implements IPostService {
     public ResponseCommon<DeletePostResponse> deletePost(DeletePostRequest deletePostRequest) {
         try {
             User user = userRepository.findByUsername(deletePostRequest.getUsername()).orElse(null);
-            Post post = postRepository.findPostByUserAndCourseId(user, deletePostRequest.getCourseId()).orElse(null);
+//            Post post = postRepository.findPostByUserAndCourseId(user, deletePostRequest.getCourseId()).orElse(null);
+            Post post = postRepository.findById(deletePostRequest.getPostId()).orElse(null);
             // if post not exist -> tell user
             if (Objects.isNull(post)) {
                 log.debug("Delete Post failed: Post does not exist");
