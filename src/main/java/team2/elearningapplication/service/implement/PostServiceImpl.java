@@ -170,15 +170,9 @@ public class PostServiceImpl implements IPostService {
     @Override
     public ResponseCommon<GetPostByCourseIdResponse> getPostByCourseId(GetPostByCourseIdRequest getPostByCourseIdRequest) {
         try {
-            Post post = postRepository.findPostByCourseId(getPostByCourseIdRequest.getCourseId()).orElse(null);
             GetPostByCourseIdResponse response = new GetPostByCourseIdResponse();
-
-            response.setId(post.getId());
-            response.setContent(post.getContent());
-            response.setUser(post.getUser());
-            response.setCourseId(post.getCourseId());
-            response.setCreatedAt(post.getCreatedAt());
-            response.setDeleted(post.isDeleted());
+            List<Post> postList = postRepository.findPostByCourseId(getPostByCourseIdRequest.getCourseId());
+            response.setPostList(postList);
             return new ResponseCommon<>(ResponseCode.SUCCESS,response);
         }catch (Exception e) {
             e.printStackTrace();
