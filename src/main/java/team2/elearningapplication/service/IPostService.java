@@ -1,10 +1,7 @@
 package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.user.post.AddPostRequest;
-import team2.elearningapplication.dto.request.user.post.DeletePostRequest;
-import team2.elearningapplication.dto.request.user.post.GetPostByIdRequest;
-import team2.elearningapplication.dto.request.user.post.UpdatePostRequest;
+import team2.elearningapplication.dto.request.user.post.*;
 import team2.elearningapplication.dto.response.user.post.*;
 
 public interface IPostService {
@@ -12,7 +9,9 @@ public interface IPostService {
     ResponseCommon<UpdatePostResponse> updatePost(UpdatePostRequest updatePostRequest);
     ResponseCommon<DeletePostResponse> deletePost(DeletePostRequest deletePostRequest);
 
-    ResponseCommon<FindAllPostResponse> findAllPost();
+    ResponseCommon<FindAllPostResponse> findAllPost(GetPostByDeleted getPostByDeleted);
 
     ResponseCommon<GetPostByIdResponse> getPostById(GetPostByIdRequest getPostByIdRequest);
+
+    ResponseCommon<GetPostByCourseIdResponse> getPostByCourseId(GetPostByCourseIdRequest getPostByCourseIdRequest);
 }

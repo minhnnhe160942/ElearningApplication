@@ -34,9 +34,9 @@ public class QuizServiceImpl implements IQuizService {
     private  final IQuestionRepository questionRepository;
     private final IAnswerRepository answerRepository;
     private final IUserRepository userRepository;
-    private  final HistoryAnswerRepository historyAnswerRepository;
     private final EmailService emailService;
     private final ICourseRepository courseRepository;
+    private final IHistoryQuizRepository historyQuizRepository;
     private static final double BASE_MARK = 0.8;
 
     private final Logger log = LoggerFactory.getLogger(QuestionServiceImpl.class);
@@ -201,45 +201,45 @@ public class QuizServiceImpl implements IQuizService {
         }
     }
 
-    @Override
-    public ResponseCommon<NextQuestionResponse> nextQuestion(NextQuestionRequest nextQuestionRequest) {
-        try {
-            HistoryAnswer historyAnswer = new HistoryAnswer();
-            Question question = questionRepository.findQuestionByQuizIDAndAndOrdQuestion(nextQuestionRequest.getQuizId(), nextQuestionRequest.getOrdQuestion());
-            log.error("next question: " + question.toString());
-            List<Answer> totalAnswer = answerRepository.findAll();
-//            List<Answer> answerList = new ArrayList<>();
-            // handle when multiple choice
-//            List<Integer> answerId = nextQuestionRequest.getAnswerId();
-//            for (int i = 0; i < totalAnswer.size(); i++) {
-//                for (int j = 0; j < answerId.size(); j++) {
-//                    if(totalAnswer.get(i).getId() == answerId.get(j)){
-//                        answerList.add(totalAnswer.get(i));
-//                    }
-//                }
-//            }
-//            for (Answer answer: answerList) {
-//                historyAnswer.setUserAnswerId(answer.getId());
-//                historyAnswerRepository.save(historyAnswer);
-//            }
-            historyAnswer.setUserAnswerId(nextQuestionRequest.getAnswerId());
-            Answer answerCorrect = answerRepository.findCorrectAnswer(nextQuestionRequest.getPreQuestionId());
-            log.error("answer correct" + answerCorrect);
-            historyAnswer.setQuestionId(nextQuestionRequest.getPreQuestionId());
-            historyAnswer.setSessionId(nextQuestionRequest.getSessionId());
-            historyAnswer.setUser(userRepository.findByUsername(nextQuestionRequest.getUsername()).orElse(null));
-            historyAnswerRepository.save(historyAnswer);
-            historyAnswer.setAnswerIdCorrect(answerCorrect.getId());
-            historyAnswerRepository.save(historyAnswer);
-            NextQuestionResponse nextQuestionResponse = new NextQuestionResponse();
-            nextQuestionResponse.setQuestion(question);
-            return new ResponseCommon<>(ResponseCode.SUCCESS,nextQuestionResponse);
-        }catch (Exception e) {
-            e.printStackTrace();
-            log.error("next question failed");
-            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"next question failed",null);
-        }
-    }
+//    @Override
+//    public ResponseCommon<NextQuestionResponse> nextQuestion(NextQuestionRequest nextQuestionRequest) {
+//        try {
+//            HistoryAnswer historyAnswer = new HistoryAnswer();
+//            Question question = questionRepository.findQuestionByQuizIDAndAndOrdQuestion(nextQuestionRequest.getQuizId(), nextQuestionRequest.getOrdQuestion());
+//            log.error("next question: " + question.toString());
+//            List<Answer> totalAnswer = answerRepository.findAll();
+////            List<Answer> answerList = new ArrayList<>();
+//            // handle when multiple choice
+////            List<Integer> answerId = nextQuestionRequest.getAnswerId();
+////            for (int i = 0; i < totalAnswer.size(); i++) {
+////                for (int j = 0; j < answerId.size(); j++) {
+////                    if(totalAnswer.get(i).getId() == answerId.get(j)){
+////                        answerList.add(totalAnswer.get(i));
+////                    }
+////                }
+////            }
+////            for (Answer answer: answerList) {
+////                historyAnswer.setUserAnswerId(answer.getId());
+////                historyAnswerRepository.save(historyAnswer);
+////            }
+////            historyAnswer.setUserAnswerId(nextQuestionRequest.getAnswerId());
+//            Answer answerCorrect = answerRepository.findCorrectAnswer(nextQuestionRequest.getPreQuestionId());
+//            log.error("answer correct" + answerCorrect);
+////            historyAnswer.setQuestionId(nextQuestionRequest.getPreQuestionId());
+//            historyAnswer.setSessionId(nextQuestionRequest.getSessionId());
+//            historyAnswer.setUser(userRepository.findByUsername(nextQuestionRequest.getUsername()).orElse(null));
+//            historyAnswerRepository.save(historyAnswer);
+////            historyAnswer.setAnswerIdCorrect(answerCorrect.getId());
+//            historyAnswerRepository.save(historyAnswer);
+//            NextQuestionResponse nextQuestionResponse = new NextQuestionResponse();
+//            nextQuestionResponse.setQuestion(question);
+//            return new ResponseCommon<>(ResponseCode.SUCCESS,nextQuestionResponse);
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//            log.error("next question failed");
+//            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"next question failed",null);
+//        }
+//    }
 
     @Override
     public ResponseCommon<FinishQuizResponse> finishQuiz(FinishQuizRequest finishQuizRequest) {
@@ -247,28 +247,49 @@ public class QuizServiceImpl implements IQuizService {
             User user = userRepository.findByUsername(finishQuizRequest.getUsername()).orElse(null);
             Course course = courseRepository.findCourseById(finishQuizRequest.getCourseId()).orElse(null);
             List<Integer> answerByUser = finishQuizRequest.getAnswerIdList();
-            List<Integer> answerCorrect = answerRepository.findMatchingAnswerIdsByQuizId(finishQuizRequest.getQuizId());
-            List<Integer> answerByUserCopy = new ArrayList<>(answerByUser);
-            List<Integer> answerCorrectCopy = new ArrayList<>(answerCorrect);
-
-            answerByUserCopy.retainAll(answerCorrectCopy);
-            int commonCount = answerByUserCopy.size();
-
-            int differentCount = answerByUser.size() + answerCorrect.size() - 2 * commonCount;
-
-//
+//            List<Integer> answerCorrect = answerRepository.findMatchingAnswerIdsByQuizId(finishQuizRequest.getQuizId());
+//            System.out.println(answerCorrect);
+//            List<Integer> answerByUserCopy = new ArrayList<>(answerByUser);
+//            List<Integer> answerCorrectCopy = new ArrayList<>(answerCorrect);
+//            answerByUserCopy.retainAll(answerCorrectCopy);
+//            int commonCount = answerByUserCopy.size();
+//            System.out.println(commonCount);
+//            int differentCount = answerByUser.size() + answerCorrect.size() - 2 * commonCount;
+//            System.out.println(differentCount);
+//            int totalCorrect = commonCount;
+//            int totalIncorrect = differentCount;
 //            List<HistoryAnswer> listCorrectAnswer = historyAnswerRepository.findMatchingAnswers(finishQuizRequest.getSessionId());
 //            List<HistoryAnswer> listIncorrectAnswer = historyAnswerRepository.findNonMatchingAnswers(finishQuizRequest.getSessionId());
 //            int totalCorrect = listCorrectAnswer.size();
 //            int totalIncorrect = listIncorrectAnswer.size();
-            int totalCorrect = commonCount;
-            int totalIncorrect = differentCount;
+            HistoryQuiz historyQuiz = new HistoryQuiz();
+            int totalCorrect = 0;
             int totalQuestion = questionRepository.countQuestionsByQuizId(finishQuizRequest.getQuizId());
-            double mark = totalCorrect/totalQuestion;
-            if(mark >= BASE_MARK){
+            int totalIncorrect = totalQuestion - totalCorrect;
+            for (int i = 0; i < answerByUser.size(); i++) {
+                boolean isCorrect = answerRepository.checkIsCorrect(answerByUser.get(i));
+                log.debug("isCorrect: " + isCorrect);
+                if(isCorrect){
+                    totalCorrect++;
+                    historyQuiz.setUser(user);
+                    historyQuiz.setSessionId(finishQuizRequest.getSessionId());
+                    historyQuiz.setAnswerId(answerByUser.get(i));
+                    historyQuiz.setCorrect(isCorrect);
+                    historyQuizRepository.save(historyQuiz);
+                } else {
+                    totalIncorrect++;
+                    historyQuiz.setUser(user);
+                    historyQuiz.setSessionId(finishQuizRequest.getSessionId());
+                    historyQuiz.setAnswerId(answerByUser.get(i));
+                    historyQuiz.setCorrect(isCorrect);
+                    historyQuizRepository.save(historyQuiz);
+                }
+            }
+            double mark = (double) totalCorrect / totalQuestion;
+            if (mark >= BASE_MARK) {
                 log.info("START... Sending email");
                 emailService.sendEmail(setUpMail(user.getEmail(), course.getName()));
-                log.info("END... Email sent success");
+                log.info("END... Email sent successfully");
             }
             FinishQuizResponse finishQuizResponse = new FinishQuizResponse();
             finishQuizResponse.setTotalCorrect(totalCorrect);
@@ -299,7 +320,7 @@ public class QuizServiceImpl implements IQuizService {
             int sessionId = resetQuizRequest.getSessionId();
             String username = resetQuizRequest.getUsername();
             User user = userRepository.findByUsername(username).orElse(null);
-            historyAnswerRepository.deleteBySessionIdAndUser(sessionId,user);
+//            historyAnswerRepository.deleteBySessionIdAndUser(sessionId,user);
             int newSessionId = CommonUtils.getSessionID();
             ResetQuizResponse resetQuizResponse = new ResetQuizResponse();
             resetQuizResponse.setNewSessionId(newSessionId);

@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.user.post.AddPostRequest;
-import team2.elearningapplication.dto.request.user.post.DeletePostRequest;
-import team2.elearningapplication.dto.request.user.post.GetPostByIdRequest;
-import team2.elearningapplication.dto.request.user.post.UpdatePostRequest;
+import team2.elearningapplication.dto.request.user.post.*;
 import team2.elearningapplication.dto.response.user.post.*;
 import team2.elearningapplication.service.IPostService;
 
@@ -58,8 +55,8 @@ public class PostController {
     }
 
     @GetMapping("/find-all-post")
-    public ResponseEntity<ResponseCommon<FindAllPostResponse>> findAllPost() {
-        ResponseCommon<FindAllPostResponse> response = postService.findAllPost();
+    public ResponseEntity<ResponseCommon<FindAllPostResponse>> findAllPost(GetPostByDeleted getPostByDeleted) {
+        ResponseCommon<FindAllPostResponse> response = postService.findAllPost(getPostByDeleted);
         if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
             return ResponseEntity.ok(response);
         } else if (response.getCode() == ResponseCode.POST_LIST_IS_EMPTY.getCode()) {
@@ -80,4 +77,19 @@ public class PostController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by id failed", null));
         }
     }
+
+    @GetMapping("/get-post-by-course-id")
+    public ResponseEntity<ResponseCommon<GetPostByCourseIdResponse>> getPostById(GetPostByCourseIdRequest request) {
+        ResponseCommon<GetPostByCourseIdResponse> response = postService.getPostByCourseId(request);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.POST_NOT_EXIST.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Post not exist", null));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by id failed", null));
+        }
+    }
+
+
+
 }

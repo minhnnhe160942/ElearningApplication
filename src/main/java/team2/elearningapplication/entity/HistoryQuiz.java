@@ -1,31 +1,26 @@
 package team2.elearningapplication.entity;
 
-import javax.persistence.*;
-
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.persistence.*;
+
 @Entity
-@Table(name = "history_answer")
+@Table(name = "history_quiz")
 @Accessors(chain = true)
 @Data
-public class HistoryAnswer {
-
+public class HistoryQuiz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-    @Column(name = "question_id")
-    private int questionId;
-    @Column(name = "user_answer_id")
-    private int userAnswerId;
-    @Column(name = "answer_id_correct")
-    private int answerIdCorrect;
     @Column(name="sessionId")
     private int sessionId;
+    @Column(name="answerId_user")
+    private int answerId;
+    @Column(name="answer_is_correct")
+    private boolean isCorrect;
 
 }

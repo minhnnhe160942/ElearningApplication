@@ -78,23 +78,23 @@ public class AnswerServiceImpl implements IAnswerService {
                 return new ResponseCommon<>(ResponseCode.ANSWER_NOT_EXIST.getCode(), "Answer not exist in question", null);
             } else {
                 // Create an updated answer with the same content and properties
-                Answer answerUpdate = new Answer();
-                answerUpdate.setAnswerContent(answerExist.getAnswerContent());
-                answerUpdate.setCorrect(answerExist.isCorrect());
-                answerUpdate.setQuestionId(answerExist.getQuestionId());
-                answerUpdate.setUpdatedAt(LocalDateTime.now());
-                answerUpdate.setDeleted(updateAnswerRequest.isDeleted());
-                answerUpdate.setUserCreated(user);
+                answerExist.setAnswerContent(answerExist.getAnswerContent());
+                answerExist.setCorrect(answerExist.isCorrect());
+                answerExist.setQuestionId(answerExist.getQuestionId());
+                answerExist.setUpdatedAt(LocalDateTime.now());
+                answerExist.setDeleted(updateAnswerRequest.isDeleted());
+                answerExist.setUserUpdated(user);
                 // Save the updated answer
-                answerRepository.save(answerUpdate);
+                answerRepository.save(answerExist);
 
                 // Create and return a success response
                 UpdateAnswerResponse updateAnswerResponse = new UpdateAnswerResponse();
-                updateAnswerResponse.setAnswerContent(answerUpdate.getAnswerContent());
-                updateAnswerResponse.setAnswerID(answerUpdate.getId());
-                updateAnswerResponse.setCorrect(answerUpdate.isCorrect());
-                updateAnswerResponse.setQuestionID(answerUpdate.getQuestionId());
-
+                updateAnswerResponse.setAnswerContent(answerExist.getAnswerContent());
+                updateAnswerResponse.setAnswerID(answerExist.getId());
+                updateAnswerResponse.setCorrect(answerExist.isCorrect());
+                updateAnswerResponse.setQuestionID(answerExist.getQuestionId());
+                updateAnswerResponse.setUpdatedBy(answerExist.getUserUpdated().getUsername());
+                updateAnswerResponse.setCreatedBy(answerExist.getUserCreated().getUsername());
                 log.debug("updateAnswer: Answer updated successfully.");
                 return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Update answer success", updateAnswerResponse);
             }

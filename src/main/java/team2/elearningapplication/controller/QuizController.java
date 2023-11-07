@@ -136,21 +136,21 @@ public class QuizController {
         }
     }
 
-    @PostMapping("/next-question")
-    public ResponseEntity<ResponseCommon<NextQuestionResponse>> nextQuestion(@Valid @RequestBody NextQuestionRequest nextQuestionRequest) {
-        ResponseCommon<NextQuestionResponse> response = quizService.nextQuestion(nextQuestionRequest);
-
-        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
-            log.debug("Next question retrieved successfully.");
-            return ResponseEntity.ok(response);
-        } else if (response.getCode() == ResponseCode.FAIL.getCode()) {
-            log.error("Next question retrieval failed");
-            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Next question retrieval failed", null));
-        } else {
-            log.error("Next question retrieval failed");
-            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Next question retrieval failed", null));
-        }
-    }
+//    @PostMapping("/next-question")
+//    public ResponseEntity<ResponseCommon<NextQuestionResponse>> nextQuestion(@Valid @RequestBody NextQuestionRequest nextQuestionRequest) {
+//        ResponseCommon<NextQuestionResponse> response = quizService.nextQuestion(nextQuestionRequest);
+//
+//        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+//            log.debug("Next question retrieved successfully.");
+//            return ResponseEntity.ok(response);
+//        } else if (response.getCode() == ResponseCode.FAIL.getCode()) {
+//            log.error("Next question retrieval failed");
+//            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Next question retrieval failed", null));
+//        } else {
+//            log.error("Next question retrieval failed");
+//            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Next question retrieval failed", null));
+//        }
+//    }
 
     @PostMapping("/finish-quiz")
     public ResponseEntity<ResponseCommon<FinishQuizResponse>> finishQuiz(@Valid @RequestBody FinishQuizRequest finishQuizRequest) {

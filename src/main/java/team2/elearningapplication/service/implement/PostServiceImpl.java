@@ -6,10 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;  // Thêm import
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.request.user.post.AddPostRequest;
-import team2.elearningapplication.dto.request.user.post.DeletePostRequest;
-import team2.elearningapplication.dto.request.user.post.GetPostByIdRequest;
-import team2.elearningapplication.dto.request.user.post.UpdatePostRequest;
+import team2.elearningapplication.dto.request.user.post.*;
 import team2.elearningapplication.dto.response.user.post.*;
 import team2.elearningapplication.entity.Post;
 import team2.elearningapplication.entity.User;
@@ -46,8 +43,8 @@ public class PostServiceImpl implements IPostService {
                 return new ResponseCommon<>(ResponseCode.POST_CONTENT_IS_EMPTY, null);
             } else {
                 Post postAdd = new Post();
-                postAdd.setUser(userRepository.findByEmail(addPostRequest.getEmail()).orElse(null));
-                postAdd.setLessonId(addPostRequest.getLessonID());
+                postAdd.setUser(userRepository.findByUsername(addPostRequest.getUsername()).orElse(null));
+                postAdd.setCourseId(addPostRequest.getCourseId());
                 postAdd.setContent(addPostRequest.getContent());
                 postAdd.setCreatedAt(LocalDateTime.now());
                 postRepository.save(postAdd);
@@ -65,8 +62,8 @@ public class PostServiceImpl implements IPostService {
     @Override
     public ResponseCommon<UpdatePostResponse> updatePost(UpdatePostRequest updatePostRequest) {
         try {
-            User user = userRepository.findByEmail(updatePostRequest.getEmail()).orElse(null);
-            Post post = postRepository.findPostByUserAndAndLessonId(user, updatePostRequest.getLessonID()).orElse(null);
+            User user = userRepository.findByUsername(updatePostRequest.getUsername()).orElse(null);
+            Post post = postRepository.findPostByUserAndCourseId(user, updatePostRequest.getCourseId()).orElse(null);
             // if post not exist -> tell user
             if (Objects.isNull(post)) {
                 log.debug("Update Post failed: Post does not exist");
@@ -79,7 +76,7 @@ public class PostServiceImpl implements IPostService {
                 updatePostResponse.setUpdateAt(LocalDateTime.now());
                 updatePostResponse.setEmail(post.getUser().getEmail());
                 updatePostResponse.setPostID(post.getId());
-                updatePostResponse.setLessonID(post.getLessonId());
+                updatePostResponse.setCourseId((post.getCourseId()));
                 log.debug("Update Post successful");
                 return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Update post success", updatePostResponse);
             }
@@ -93,8 +90,8 @@ public class PostServiceImpl implements IPostService {
     @Override
     public ResponseCommon<DeletePostResponse> deletePost(DeletePostRequest deletePostRequest) {
         try {
-            User user = userRepository.findByEmail(deletePostRequest.getEmail()).orElse(null);
-            Post post = postRepository.findPostByUserAndAndLessonId(user, deletePostRequest.getLessonID()).orElse(null);
+            User user = userRepository.findByUsername(deletePostRequest.getUsername()).orElse(null);
+            Post post = postRepository.findPostByUserAndCourseId(user, deletePostRequest.getCourseId()).orElse(null);
             // if post not exist -> tell user
             if (Objects.isNull(post)) {
                 log.debug("Delete Post failed: Post does not exist");
@@ -107,7 +104,7 @@ public class PostServiceImpl implements IPostService {
                 deletePostResponse.setUpdateAt(LocalDateTime.now());
                 deletePostResponse.setEmail(post.getUser().getEmail());
                 deletePostResponse.setPostID(post.getId());
-                deletePostResponse.setLessonID(post.getLessonId());
+                deletePostResponse.setCourseId(deletePostResponse.getCourseId());
                 log.debug("Delete Post successful");
                 return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Delete post success", deletePostResponse);
             }
@@ -119,9 +116,9 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public ResponseCommon<FindAllPostResponse> findAllPost() {
+    public ResponseCommon<FindAllPostResponse> findAllPost(GetPostByDeleted getPostByDeleted) {
         try {
-            List<Post> listPost = postRepository.findPostByDeleted(false);
+            List<Post> listPost = postRepository.findPostByDeleted(getPostByDeleted.isDeleted());
             // if listPost is empty -> tell user
             if (listPost.isEmpty()) {
                 log.debug("Get all Post failed: Post list is empty");
@@ -154,7 +151,7 @@ public class PostServiceImpl implements IPostService {
                 response.setId(post.getId());
                 response.setContent(post.getContent());
                 response.setUser(post.getUser());
-                response.setLessonId(post.getLessonId());
+                response.setCourseId(post.getCourseId());
                 response.setCreatedAt(post.getCreatedAt());
                 response.setDeleted(post.isDeleted());
 
@@ -167,6 +164,20 @@ public class PostServiceImpl implements IPostService {
             e.printStackTrace();
             log.debug("Get post by id failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by id failed", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetPostByCourseIdResponse> getPostByCourseId(GetPostByCourseIdRequest getPostByCourseIdRequest) {
+        try {
+            GetPostByCourseIdResponse response = new GetPostByCourseIdResponse();
+            List<Post> postList = postRepository.findPostByCourseIdAndDeleted(getPostByCourseIdRequest.getCourseId(),getPostByCourseIdRequest.isDeleted());
+            response.setPostList(postList);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get post by course id failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by course id failed", null);
         }
     }
 }
