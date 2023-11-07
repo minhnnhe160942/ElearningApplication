@@ -171,7 +171,7 @@ public class PostServiceImpl implements IPostService {
     public ResponseCommon<GetPostByCourseIdResponse> getPostByCourseId(GetPostByCourseIdRequest getPostByCourseIdRequest) {
         try {
             GetPostByCourseIdResponse response = new GetPostByCourseIdResponse();
-            List<Post> postList = postRepository.findPostByCourseId(getPostByCourseIdRequest.getCourseId());
+            List<Post> postList = postRepository.findPostByCourseIdAndDeleted(getPostByCourseIdRequest.getCourseId(),getPostByCourseIdRequest.isDeleted());
             response.setPostList(postList);
             return new ResponseCommon<>(ResponseCode.SUCCESS,response);
         }catch (Exception e) {

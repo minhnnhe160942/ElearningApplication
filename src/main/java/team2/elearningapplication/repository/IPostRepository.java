@@ -11,7 +11,7 @@ public interface IPostRepository extends JpaRepository<Post,Integer> {
 
     Optional<Post> findPostByUserAndCourseId(User user, int courseId);
 
-    List<Post> findPostByCourseId(int courseId);
+    List<Post> findPostByCourseIdAndDeleted(int courseId,boolean deleted);
 
     List<Post> findPostByDeleted(boolean isDeleted);
 
