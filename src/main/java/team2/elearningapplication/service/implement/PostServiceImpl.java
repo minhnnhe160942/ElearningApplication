@@ -166,4 +166,24 @@ public class PostServiceImpl implements IPostService {
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by id failed", null);
         }
     }
+
+    @Override
+    public ResponseCommon<GetPostByCourseIdResponse> getPostByCourseId(GetPostByCourseIdRequest getPostByCourseIdRequest) {
+        try {
+            Post post = postRepository.findPostByCourseId(getPostByCourseIdRequest.getCourseId()).orElse(null);
+            GetPostByCourseIdResponse response = new GetPostByCourseIdResponse();
+
+            response.setId(post.getId());
+            response.setContent(post.getContent());
+            response.setUser(post.getUser());
+            response.setCourseId(post.getCourseId());
+            response.setCreatedAt(post.getCreatedAt());
+            response.setDeleted(post.isDeleted());
+            return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Get post by course id failed: " + e.getMessage());
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by course id failed", null);
+        }
+    }
 }

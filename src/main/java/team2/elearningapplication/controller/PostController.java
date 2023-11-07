@@ -77,4 +77,19 @@ public class PostController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by id failed", null));
         }
     }
+
+    @GetMapping("/get-post-by-course-id")
+    public ResponseEntity<ResponseCommon<GetPostByCourseIdResponse>> getPostById(GetPostByCourseIdRequest request) {
+        ResponseCommon<GetPostByCourseIdResponse> response = postService.getPostByCourseId(request);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else if (response.getCode() == ResponseCode.POST_NOT_EXIST.getCode()) {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Post not exist", null));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get post by id failed", null));
+        }
+    }
+
+
+
 }

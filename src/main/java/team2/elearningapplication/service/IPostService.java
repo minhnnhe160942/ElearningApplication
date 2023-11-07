@@ -12,4 +12,6 @@ public interface IPostService {
     ResponseCommon<FindAllPostResponse> findAllPost(GetPostByDeleted getPostByDeleted);
 
     ResponseCommon<GetPostByIdResponse> getPostById(GetPostByIdRequest getPostByIdRequest);
+
+    ResponseCommon<GetPostByCourseIdResponse> getPostByCourseId(GetPostByCourseIdRequest getPostByCourseIdRequest);
 }
