@@ -9,7 +9,7 @@ import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.quiz.*;
 import team2.elearningapplication.dto.request.user.quiz.*;
 import team2.elearningapplication.dto.response.admin.quiz.*;
-import team2.elearningapplication.dto.response.user.answer.AnswerCorrectDTO;
+import team2.elearningapplication.dto.response.user.answer.AnswerTakeQuizResponse;
 import team2.elearningapplication.dto.response.user.quiz.*;
 import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.*;
@@ -345,22 +345,39 @@ public class QuizServiceImpl implements IQuizService {
     @Override
     public ResponseCommon<GetCorrectAnswerBySessionId> getAnswerCorrectBySessionId(GetAnswerCorrectBySessionIdRequest getAnswerCorrectBySessionIdRequest) {
         try {
-            List<AnswerCorrectDTO> answerListCorrect = new ArrayList<>();
+            List<AnswerTakeQuizResponse> answerListCorrect = new ArrayList<>();
+            List<AnswerTakeQuizResponse> answerListInCorrect = new ArrayList<>();
             List<Answer> answerLists = new ArrayList<>();
-            List<Integer> listAnswerId = historyQuizRepository.findAnswerIdsBySessionIdAndCorrect(getAnswerCorrectBySessionIdRequest.getSessionId());
-            for (int i = 0; i < listAnswerId.size(); i++) {
-                answerLists.add(answerRepository.findAnswerById(listAnswerId.get(i)).orElse(null));
+            List<Answer> answerListsIncorrect = new ArrayList<>();
+            List<Integer> listAnswerIdCorrect = historyQuizRepository.findAnswerIdsBySessionIdAndCorrect(getAnswerCorrectBySessionIdRequest.getSessionId());
+            List<Integer> listAnswerIdIncorrect = historyQuizRepository.findAnswerIdsBySessionIdAndInCorrect(getAnswerCorrectBySessionIdRequest.getSessionId());
+            for (int i = 0; i < listAnswerIdCorrect.size(); i++) {
+                answerLists.add(answerRepository.findAnswerById(listAnswerIdCorrect.get(i)).orElse(null));
             }
+            for (int i = 0; i < listAnswerIdIncorrect.size(); i++) {
+                answerListsIncorrect.add(answerRepository.findAnswerById(listAnswerIdIncorrect.get(i)).orElse(null));
+            }
+
             for (Answer answer : answerLists) {
-                AnswerCorrectDTO answerDTO = new AnswerCorrectDTO();
+                AnswerTakeQuizResponse answerDTO = new AnswerTakeQuizResponse();
                 answerDTO.setId(answer.getId());
                 answerDTO.setAnswerContent(answer.getAnswerContent());
                 answerDTO.setCorrect(answerDTO.isCorrect());
                 answerDTO.setQuestionId(answer.getQuestionId());
                 answerListCorrect.add(answerDTO);
             }
+            for (Answer answer : answerListsIncorrect) {
+                AnswerTakeQuizResponse answerDTO = new AnswerTakeQuizResponse();
+                answerDTO.setId(answer.getId());
+                answerDTO.setAnswerContent(answer.getAnswerContent());
+                answerDTO.setCorrect(answerDTO.isCorrect());
+                answerDTO.setQuestionId(answer.getQuestionId());
+                answerListInCorrect.add(answerDTO);
+            }
+
             GetCorrectAnswerBySessionId response = new GetCorrectAnswerBySessionId();
-            response.setAnswerList(answerListCorrect);
+            response.setAnswerListCorrect(answerListCorrect);
+            response.setAnswerListIncorrect(answerListInCorrect);
             return new ResponseCommon<>(ResponseCode.SUCCESS,response);
         }catch (Exception e) {
             e.printStackTrace();

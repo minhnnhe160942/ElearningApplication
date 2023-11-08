@@ -19,9 +19,8 @@ public class Order {
     @ManyToOne
     @JoinColumn(name="user_id",referencedColumnName = "id")
     private User user;
-    @OneToOne
-    @JoinColumn
-    private Payment payment;
+    @Column(name="payment_id")
+    private int paymentId;
     @OneToOne
     @JoinColumn(name="course_id",referencedColumnName = "id")
     private Course course;
