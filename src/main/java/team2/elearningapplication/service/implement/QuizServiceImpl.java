@@ -7,15 +7,9 @@ import org.springframework.stereotype.Service;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.quiz.*;
-import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
-import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
-import team2.elearningapplication.dto.request.user.quiz.ResetQuizRequest;
-import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
+import team2.elearningapplication.dto.request.user.quiz.*;
 import team2.elearningapplication.dto.response.admin.quiz.*;
-import team2.elearningapplication.dto.response.user.quiz.FinishQuizResponse;
-import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
-import team2.elearningapplication.dto.response.user.quiz.ResetQuizResponse;
-import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
+import team2.elearningapplication.dto.response.user.quiz.*;
 import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.*;
 import team2.elearningapplication.service.ILessonService;
@@ -275,6 +269,7 @@ public class QuizServiceImpl implements IQuizService {
                     historyQuiz.setSessionId(finishQuizRequest.getSessionId());
                     historyQuiz.setAnswerId(answerByUser.get(i));
                     historyQuiz.setCorrect(isCorrect);
+                    historyQuiz.setCreatedAt(LocalDateTime.now());
                     historyQuizRepository.save(historyQuiz);
                 } else {
                     totalIncorrect++;
@@ -282,6 +277,7 @@ public class QuizServiceImpl implements IQuizService {
                     historyQuiz.setSessionId(finishQuizRequest.getSessionId());
                     historyQuiz.setAnswerId(answerByUser.get(i));
                     historyQuiz.setCorrect(isCorrect);
+                    historyQuiz.setCreatedAt(LocalDateTime.now());
                     historyQuizRepository.save(historyQuiz);
                 }
             }
@@ -329,6 +325,32 @@ public class QuizServiceImpl implements IQuizService {
             e.printStackTrace();
             log.error("reset quiz  failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"reset quiz  failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetAllSessionQuizByUserResponse> getAllSessionQuiz(GetAllSessionQuizByUserRequest getAllSessionQuizByUserRequest) {
+        try {
+            List<HistoryQuizUser> historyQuizUsers = new ArrayList<>();
+
+            User user = userRepository.findByUsername(getAllSessionQuizByUserRequest.getUsername()).orElse(null);
+            List<Integer> listSessionId = historyQuizRepository.findDistinctSessionIdsByUser(user);
+
+            for (int i = 0; i < listSessionId.size(); i++) {
+                historyQuizUsers.add(new HistoryQuizUser(
+                        listSessionId.get(i),
+                        historyQuizRepository.countCorrectAnswersBySessionId(listSessionId.get(i)),
+                        historyQuizRepository.countIncorrectAnswersBySessionId(listSessionId.get(i)),
+                        historyQuizRepository.findLatestCreatedAtBySessionId(listSessionId.get(i))
+                ));
+            }
+            GetAllSessionQuizByUserResponse response = new GetAllSessionQuizByUserResponse();
+            response.setListQuiz(historyQuizUsers);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("get all session quiz  failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"get all session quiz  failed",null);
         }
     }
 }

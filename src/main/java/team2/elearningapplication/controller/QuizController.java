@@ -10,15 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.quiz.*;
-import team2.elearningapplication.dto.request.user.quiz.FinishQuizRequest;
-import team2.elearningapplication.dto.request.user.quiz.NextQuestionRequest;
-import team2.elearningapplication.dto.request.user.quiz.ResetQuizRequest;
-import team2.elearningapplication.dto.request.user.quiz.StartQuizRequest;
+import team2.elearningapplication.dto.request.user.quiz.*;
 import team2.elearningapplication.dto.response.admin.quiz.*;
-import team2.elearningapplication.dto.response.user.quiz.FinishQuizResponse;
-import team2.elearningapplication.dto.response.user.quiz.NextQuestionResponse;
-import team2.elearningapplication.dto.response.user.quiz.ResetQuizResponse;
-import team2.elearningapplication.dto.response.user.quiz.StartQuizResponse;
+import team2.elearningapplication.dto.response.user.quiz.*;
 import team2.elearningapplication.service.IQuizService;
 
 import javax.validation.Valid;
@@ -175,5 +169,15 @@ public class QuizController {
         }
     }
 
-
+    @GetMapping("/get-all-session-quiz")
+    public ResponseEntity<ResponseCommon<GetAllSessionQuizByUserResponse>> getAllSessionQuiz(
+            @ParameterObject GetAllSessionQuizByUserRequest getAllSessionQuizByUserRequest
+    ) {
+        ResponseCommon<GetAllSessionQuizByUserResponse> response = quizService.getAllSessionQuiz(getAllSessionQuizByUserRequest);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Get all session quiz failed", null));
+        }
+    }
 }
