@@ -2,13 +2,11 @@ package team2.elearningapplication.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import team2.elearningapplication.Enum.*;
 import team2.elearningapplication.config.VnPayConfig;
 import team2.elearningapplication.dto.common.PaymentRes;
@@ -24,6 +22,7 @@ import team2.elearningapplication.dto.response.user.course.*;
 import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.*;
 import team2.elearningapplication.service.ICourseService;
+import team2.elearningapplication.service.email.EmailService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -39,6 +38,8 @@ public class CourseServiceImpl implements ICourseService {
     private final PaymentService paymentService;
     private final IPaymentRepository paymentRepository;
     private final IHistoryResgisterCourseRepository historyRegisterCourseRepository;
+    private final EmailService emailService;
+
     @Override
     public ResponseCommon<AddCourseResponse> addCourse(AddCourseRequest addCourseRequest) {
         try {
@@ -444,6 +445,7 @@ public class CourseServiceImpl implements ICourseService {
                                     payment.setTransaction_id(payment.getTransaction_id());
                                     payment.setAmount(order.getAmount());
                                     payment.setEnumPaymentProcess(EnumPaymentProcess.SUCCESS);
+                                    payment.setTransaction_id(order.getChecksum());
                                     payment.setCreated_at(LocalDateTime.now());
                                     paymentRepository.save(payment);
                                     order.setPayment(payment);
@@ -459,7 +461,15 @@ public class CourseServiceImpl implements ICourseService {
                                     historyRegisterCourseRepository.save(historyRegisterCourse);
                                     PaymentConfirmResponse paymentConfirmResponse = new PaymentConfirmResponse();
                                     paymentConfirmResponse.setStatus("Payment done");
-
+                                    String mailTo = payment.getUser().getEmail();
+                                    String fullname = payment.getUser().getFullName();
+                                    String coursename = payment.getCourse().getName();
+                                    double amount = payment.getAmount();
+                                    String transaction_id = payment.getTransaction_id();
+                                    LocalDateTime createdAt = payment.getCreated_at();
+                                    log.info("START... Sending email");
+                                    emailService.sendEmail(setUpMailPayment(mailTo,fullname,coursename,amount,transaction_id,createdAt));
+                                    log.info("END... Email sent success");
                                     return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Confirm success",null);
                                 }
                             }
@@ -473,7 +483,21 @@ public class CourseServiceImpl implements ICourseService {
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
-
+    private Mail setUpMailPayment(String mailTo, String fullname, String courseName, double amount, String transactionId,LocalDateTime createdAt){
+        Mail mail = new Mail();
+        mail.setFrom("elearningapplicationsystem@gmail.com");
+        mail.setTo(mailTo);
+        mail.setSubject("Information Your Payment Elearning Application");
+        Map<String, Object> model = new HashMap<>();
+        model.put("fullname",fullname);
+        model.put("coursename",courseName);
+        model.put("amount",amount);
+        model.put("transaction_id",transactionId);
+        model.put("created_at",createdAt);
+        mail.setPros(model);
+        mail.setTemplate("payment");
+        return mail;
+    }
     public String generateAndHashQueryString(PaymentConfirmRequest paymentConfirmRequest) {
         Map<String, String> fields = new HashMap<>();
         fields.put("vnp_Amount", paymentConfirmRequest.getVnp_Amount());
