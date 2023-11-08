@@ -241,38 +241,33 @@ public class QuizServiceImpl implements IQuizService {
             User user = userRepository.findByUsername(finishQuizRequest.getUsername()).orElse(null);
             Course course = courseRepository.findCourseById(finishQuizRequest.getCourseId()).orElse(null);
             List<Integer> answerByUser = finishQuizRequest.getAnswerIdList();
-//            List<Integer> answerCorrect = answerRepository.findMatchingAnswerIdsByQuizId(finishQuizRequest.getQuizId());
-//            System.out.println(answerCorrect);
-//            List<Integer> answerByUserCopy = new ArrayList<>(answerByUser);
-//            List<Integer> answerCorrectCopy = new ArrayList<>(answerCorrect);
-//            answerByUserCopy.retainAll(answerCorrectCopy);
-//            int commonCount = answerByUserCopy.size();
-//            System.out.println(commonCount);
-//            int differentCount = answerByUser.size() + answerCorrect.size() - 2 * commonCount;
-//            System.out.println(differentCount);
-//            int totalCorrect = commonCount;
-//            int totalIncorrect = differentCount;
-//            List<HistoryAnswer> listCorrectAnswer = historyAnswerRepository.findMatchingAnswers(finishQuizRequest.getSessionId());
-//            List<HistoryAnswer> listIncorrectAnswer = historyAnswerRepository.findNonMatchingAnswers(finishQuizRequest.getSessionId());
-//            int totalCorrect = listCorrectAnswer.size();
-//            int totalIncorrect = listIncorrectAnswer.size();
-            HistoryQuiz historyQuiz = new HistoryQuiz();
-            historyQuiz.setUser(user);
-            historyQuiz.setSessionId(finishQuizRequest.getSessionId());
-            historyQuiz.setCreatedAt(LocalDateTime.now());
-            historyQuiz.setQuiz(quizRepository.findQuizById(finishQuizRequest.getQuizId()).orElse(null));
-
             int totalCorrect = 0;
-            int totalQuestion = questionRepository.countQuestionsByQuizId(finishQuizRequest.getQuizId());
             int totalIncorrect = 0;
+            int totalQuestion = questionRepository.countQuestionsByQuizId(finishQuizRequest.getQuizId());
             for (int i = 0; i < answerByUser.size(); i++) {
                 boolean isCorrect = answerRepository.checkIsCorrect(answerByUser.get(i));
+                HistoryQuiz historyQuiz = new HistoryQuiz();
+
                 log.debug("isCorrect: " + isCorrect);
-                if (isCorrect) totalCorrect ++;
-                else totalIncorrect ++;
-                historyQuiz.setAnswerId(answerByUser.get(i));
-                historyQuiz.setCorrect(isCorrect);
-                historyQuizRepository.save(historyQuiz);
+                if(isCorrect){
+                    totalCorrect++;
+                    historyQuiz.setUser(user);
+                    historyQuiz.setSessionId(finishQuizRequest.getSessionId());
+                    historyQuiz.setAnswerId(answerByUser.get(i));
+                    historyQuiz.setCorrect(isCorrect);
+                    historyQuiz.setCreatedAt(LocalDateTime.now());
+                    historyQuiz.setQuiz(quizRepository.findQuizById(finishQuizRequest.getQuizId()).orElse(null));
+                    historyQuizRepository.save(historyQuiz);
+                } else {
+                    totalIncorrect++;
+                    historyQuiz.setUser(user);
+                    historyQuiz.setSessionId(finishQuizRequest.getSessionId());
+                    historyQuiz.setAnswerId(answerByUser.get(i));
+                    historyQuiz.setCorrect(isCorrect);
+                    historyQuiz.setCreatedAt(LocalDateTime.now());
+                    historyQuiz.setQuiz(quizRepository.findQuizById(finishQuizRequest.getQuizId()).orElse(null));
+                    historyQuizRepository.save(historyQuiz);
+                }
             }
             double mark = (double) totalCorrect / totalQuestion;
             if (mark >= BASE_MARK) {
