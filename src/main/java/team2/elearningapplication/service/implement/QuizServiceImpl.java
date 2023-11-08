@@ -270,6 +270,7 @@ public class QuizServiceImpl implements IQuizService {
                     historyQuiz.setAnswerId(answerByUser.get(i));
                     historyQuiz.setCorrect(isCorrect);
                     historyQuiz.setCreatedAt(LocalDateTime.now());
+                    historyQuiz.setQuiz(quizRepository.findQuizById(finishQuizRequest.getQuizId()).orElse(null));
                     historyQuizRepository.save(historyQuiz);
                 } else {
                     totalIncorrect++;
@@ -278,6 +279,7 @@ public class QuizServiceImpl implements IQuizService {
                     historyQuiz.setAnswerId(answerByUser.get(i));
                     historyQuiz.setCorrect(isCorrect);
                     historyQuiz.setCreatedAt(LocalDateTime.now());
+                    historyQuiz.setQuiz(quizRepository.findQuizById(finishQuizRequest.getQuizId()).orElse(null));
                     historyQuizRepository.save(historyQuiz);
                 }
             }
@@ -332,9 +334,9 @@ public class QuizServiceImpl implements IQuizService {
     public ResponseCommon<GetAllSessionQuizByUserResponse> getAllSessionQuiz(GetAllSessionQuizByUserRequest getAllSessionQuizByUserRequest) {
         try {
             List<HistoryQuizUser> historyQuizUsers = new ArrayList<>();
-
+            Quiz quiz = quizRepository.findQuizById(getAllSessionQuizByUserRequest.getQuizId()).orElse(null);
             User user = userRepository.findByUsername(getAllSessionQuizByUserRequest.getUsername()).orElse(null);
-            List<Integer> listSessionId = historyQuizRepository.findDistinctSessionIdsByUser(user);
+            List<Integer> listSessionId = historyQuizRepository.findDistinctSessionIdsByUserAndQuiz(user,quiz);
 
             for (int i = 0; i < listSessionId.size(); i++) {
                 historyQuizUsers.add(new HistoryQuizUser(
