@@ -12,7 +12,6 @@ import team2.elearningapplication.dto.response.admin.quiz.*;
 import team2.elearningapplication.dto.response.user.quiz.*;
 import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.*;
-import team2.elearningapplication.service.ILessonService;
 import team2.elearningapplication.service.IQuizService;
 import team2.elearningapplication.service.email.EmailService;
 import team2.elearningapplication.utils.CommonUtils;
@@ -351,6 +350,24 @@ public class QuizServiceImpl implements IQuizService {
             e.printStackTrace();
             log.error("get all session quiz  failed");
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"get all session quiz  failed",null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetCorrectAnswerBySessionId> getAnswerCorrectBySessionId(GetAnswerCorrectBySessionIdRequest getAnswerCorrectBySessionIdRequest) {
+        try {
+            List<Answer> answerListCorrect = new ArrayList<>();
+            List<Integer> listAnswerId = historyQuizRepository.findAnswerIdsBySessionIdAndCorrect(getAnswerCorrectBySessionIdRequest.getSessionId());
+            for (int i = 0; i < listAnswerId.size(); i++) {
+                answerListCorrect.add(answerRepository.findAnswerById(listAnswerId.get(i)).orElse(null));
+            }
+            GetCorrectAnswerBySessionId response = new GetCorrectAnswerBySessionId();
+            response.setAnswerList(answerListCorrect);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("get correct answer by  session quiz  failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"get correct answer  session quiz  failed",null);
         }
     }
 }

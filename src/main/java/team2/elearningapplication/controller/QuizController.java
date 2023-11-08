@@ -13,6 +13,7 @@ import team2.elearningapplication.dto.request.admin.quiz.*;
 import team2.elearningapplication.dto.request.user.quiz.*;
 import team2.elearningapplication.dto.response.admin.quiz.*;
 import team2.elearningapplication.dto.response.user.quiz.*;
+import team2.elearningapplication.service.IAnswerService;
 import team2.elearningapplication.service.IQuizService;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class QuizController {
     private final IQuizService quizService;
+
     private final Logger log = LoggerFactory.getLogger(QuizController.class);
 
     @PostMapping("/add-quiz")
@@ -178,6 +180,21 @@ public class QuizController {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Get all session quiz failed", null));
+        }
+    }
+
+    @GetMapping("/get-correct-answers-by-session")
+    public ResponseEntity<ResponseCommon<GetCorrectAnswerBySessionId>> getCorrectAnswersBySession(
+            @RequestParam("sessionId") int sessionId
+    ) {
+        GetAnswerCorrectBySessionIdRequest request = new GetAnswerCorrectBySessionIdRequest();
+        request.setSessionId(sessionId);
+
+        ResponseCommon<GetCorrectAnswerBySessionId> response = quizService.getAnswerCorrectBySessionId(request);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Get correct answers by session failed", null));
         }
     }
 }

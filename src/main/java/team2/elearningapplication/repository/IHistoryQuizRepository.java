@@ -21,4 +21,7 @@ public interface IHistoryQuizRepository extends JpaRepository<HistoryQuiz, Integ
 
     @Query("SELECT MAX(hq.createdAt) FROM HistoryQuiz hq WHERE hq.sessionId = :sessionId")
     LocalDateTime findLatestCreatedAtBySessionId(@Param("sessionId") int sessionId);
+
+    @Query("SELECT hq.answerId FROM HistoryQuiz hq WHERE hq.sessionId = :sessionId AND hq.isCorrect = TRUE")
+    List<Integer> findAnswerIdsBySessionIdAndCorrect(@Param("sessionId") int sessionId);
 }

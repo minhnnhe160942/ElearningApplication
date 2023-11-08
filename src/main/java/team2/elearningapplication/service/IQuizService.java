@@ -24,4 +24,6 @@ public interface IQuizService {
     ResponseCommon<ResetQuizResponse> resetQuiz(ResetQuizRequest resetQuizRequest);
 
     ResponseCommon<GetAllSessionQuizByUserResponse> getAllSessionQuiz(GetAllSessionQuizByUserRequest getAllSessionQuizByUserRequest);
+
+    ResponseCommon<GetCorrectAnswerBySessionId> getAnswerCorrectBySessionId(GetAnswerCorrectBySessionIdRequest getAnswerCorrectBySessionIdRequest);
 }
