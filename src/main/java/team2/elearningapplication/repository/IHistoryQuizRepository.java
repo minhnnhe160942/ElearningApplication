@@ -26,4 +26,7 @@ public interface IHistoryQuizRepository extends JpaRepository<HistoryQuiz, Integ
 
     @Query("SELECT hq.answerId FROM HistoryQuiz hq WHERE hq.sessionId = :sessionId AND hq.isCorrect = TRUE")
     List<Integer> findAnswerIdsBySessionIdAndCorrect(@Param("sessionId") int sessionId);
+
+    @Query("SELECT hq.answerId FROM HistoryQuiz hq WHERE hq.sessionId = :sessionId AND hq.isCorrect = FALSE")
+    List<Integer> findAnswerIdsBySessionIdAndInCorrect(@Param("sessionId") int sessionId);
 }

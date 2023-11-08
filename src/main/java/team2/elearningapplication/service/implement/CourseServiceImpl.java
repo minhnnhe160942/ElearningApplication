@@ -442,13 +442,12 @@ public class CourseServiceImpl implements ICourseService {
                                     payment.setUser(order.getUser());
                                     payment.setCourse(order.getCourse());
                                     payment.setPaymentGateway(EnumPaymentGateway.VN_PAY);
-                                    payment.setTransaction_id(payment.getTransaction_id());
                                     payment.setAmount(order.getAmount());
                                     payment.setEnumPaymentProcess(EnumPaymentProcess.SUCCESS);
                                     payment.setTransaction_id(order.getChecksum());
                                     payment.setCreated_at(LocalDateTime.now());
                                     paymentRepository.save(payment);
-                                    order.setPayment(payment);
+                                    order.setPaymentId(payment.getId());
                                     order.setEnumTypeProcessPayment(EnumTypeProcessPayment.DONE);
                                     orderRepository.save(order);
                                     historyRegisterCourse.setCourse(payment.getCourse());
