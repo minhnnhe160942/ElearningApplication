@@ -20,6 +20,7 @@ public interface ICourseRepository extends JpaRepository<Course, Integer> {
 
     Page<Course> findAllByIsDeleted(boolean isDeleted, Pageable pageable);
 
+
     @Query(value = "SELECT c.id, c.name, c.description, c.category_id, c.created_at, c.price, c.link_thumnail " +
             "FROM course c " +
             "JOIN history_register_course hrc ON c.id = hrc.course_id " +

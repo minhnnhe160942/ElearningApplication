@@ -17,5 +17,7 @@ public class DeletePostRequest {
     private String username;
     @NotNull
     private int courseId;
+    @NotNull
+    private int postId;
 
 }

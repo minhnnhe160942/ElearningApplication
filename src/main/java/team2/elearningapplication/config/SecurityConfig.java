@@ -76,6 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/lesson/page-lesson",
                 "/api/v1/lesson/get-lessons-by-course",
                 "/api/v1/lesson/find-all-lesson-by-deleted",
+                "/api/v1/lesson/complete-lesson",
+                "/api/v1/lesson/get-tracking-course",
 
 
                 "/api/v1/answer/add-answer",
@@ -111,6 +113,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/quiz/finish-quiz",
                 "/api/v1/quiz/reset-quiz",
                 "/api/v1/quiz/find-all-quiz-by-deleted",
+                "/api/v1/quiz/get-all-session-quiz",
+                "/api/v1/quiz/get-correct-answers-by-session",
 
                 "/api/v1/payment/get-payment-user",
                 "/api/v1/payment/get-all-payment",

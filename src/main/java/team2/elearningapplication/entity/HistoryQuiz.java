@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "history_quiz")
@@ -22,5 +23,7 @@ public class HistoryQuiz {
     private int answerId;
     @Column(name="answer_is_correct")
     private boolean isCorrect;
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
 
 }

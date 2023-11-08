@@ -63,7 +63,8 @@ public class PostServiceImpl implements IPostService {
     public ResponseCommon<UpdatePostResponse> updatePost(UpdatePostRequest updatePostRequest) {
         try {
             User user = userRepository.findByUsername(updatePostRequest.getUsername()).orElse(null);
-            Post post = postRepository.findPostByUserAndCourseId(user, updatePostRequest.getCourseId()).orElse(null);
+//            Post post = postRepository.findPostByUserAndCourseId(user, updatePostRequest.getCourseId()).orElse(null);
+            Post post = postRepository.findById(updatePostRequest.getPostId()).orElse(null);
             // if post not exist -> tell user
             if (Objects.isNull(post)) {
                 log.debug("Update Post failed: Post does not exist");
@@ -91,7 +92,8 @@ public class PostServiceImpl implements IPostService {
     public ResponseCommon<DeletePostResponse> deletePost(DeletePostRequest deletePostRequest) {
         try {
             User user = userRepository.findByUsername(deletePostRequest.getUsername()).orElse(null);
-            Post post = postRepository.findPostByUserAndCourseId(user, deletePostRequest.getCourseId()).orElse(null);
+//            Post post = postRepository.findPostByUserAndCourseId(user, deletePostRequest.getCourseId()).orElse(null);
+            Post post = postRepository.findById(deletePostRequest.getPostId()).orElse(null);
             // if post not exist -> tell user
             if (Objects.isNull(post)) {
                 log.debug("Delete Post failed: Post does not exist");
