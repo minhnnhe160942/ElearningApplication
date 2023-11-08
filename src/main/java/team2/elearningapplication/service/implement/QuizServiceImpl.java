@@ -9,6 +9,7 @@ import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.quiz.*;
 import team2.elearningapplication.dto.request.user.quiz.*;
 import team2.elearningapplication.dto.response.admin.quiz.*;
+import team2.elearningapplication.dto.response.user.answer.AnswerCorrectDTO;
 import team2.elearningapplication.dto.response.user.quiz.*;
 import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.*;
@@ -356,10 +357,19 @@ public class QuizServiceImpl implements IQuizService {
     @Override
     public ResponseCommon<GetCorrectAnswerBySessionId> getAnswerCorrectBySessionId(GetAnswerCorrectBySessionIdRequest getAnswerCorrectBySessionIdRequest) {
         try {
-            List<Answer> answerListCorrect = new ArrayList<>();
+            List<AnswerCorrectDTO> answerListCorrect = new ArrayList<>();
+            List<Answer> answerLists = new ArrayList<>();
             List<Integer> listAnswerId = historyQuizRepository.findAnswerIdsBySessionIdAndCorrect(getAnswerCorrectBySessionIdRequest.getSessionId());
             for (int i = 0; i < listAnswerId.size(); i++) {
-                answerListCorrect.add(answerRepository.findAnswerById(listAnswerId.get(i)).orElse(null));
+                answerLists.add(answerRepository.findAnswerById(listAnswerId.get(i)).orElse(null));
+            }
+            for (Answer answer : answerLists) {
+                AnswerCorrectDTO answerDTO = new AnswerCorrectDTO();
+                answerDTO.setId(answer.getId());
+                answerDTO.setAnswerContent(answer.getAnswerContent());
+                answerDTO.setCorrect(answerDTO.isCorrect());
+                answerDTO.setQuestionId(answer.getQuestionId());
+                answerListCorrect.add(answerDTO);
             }
             GetCorrectAnswerBySessionId response = new GetCorrectAnswerBySessionId();
             response.setAnswerList(answerListCorrect);
