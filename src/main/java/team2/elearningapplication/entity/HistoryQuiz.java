@@ -25,5 +25,7 @@ public class HistoryQuiz {
     private boolean isCorrect;
     @Column(name="created_at")
     private LocalDateTime createdAt;
-
+    @ManyToOne
+    @JoinColumn
+    private Quiz quiz;
 }

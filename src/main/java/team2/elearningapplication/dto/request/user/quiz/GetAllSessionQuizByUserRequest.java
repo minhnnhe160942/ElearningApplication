@@ -9,5 +9,7 @@ import javax.validation.constraints.NotNull;
 public class GetAllSessionQuizByUserRequest {
     @NotBlank
     private String username;
+    @NotNull
+    private int quizId;
 
 }

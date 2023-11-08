@@ -257,29 +257,22 @@ public class QuizServiceImpl implements IQuizService {
 //            int totalCorrect = listCorrectAnswer.size();
 //            int totalIncorrect = listIncorrectAnswer.size();
             HistoryQuiz historyQuiz = new HistoryQuiz();
+            historyQuiz.setUser(user);
+            historyQuiz.setSessionId(finishQuizRequest.getSessionId());
+            historyQuiz.setCreatedAt(LocalDateTime.now());
+            historyQuiz.setQuiz(quizRepository.findQuizById(finishQuizRequest.getQuizId()).orElse(null));
+
             int totalCorrect = 0;
             int totalQuestion = questionRepository.countQuestionsByQuizId(finishQuizRequest.getQuizId());
-            int totalIncorrect = totalQuestion - totalCorrect;
+            int totalIncorrect = 0;
             for (int i = 0; i < answerByUser.size(); i++) {
                 boolean isCorrect = answerRepository.checkIsCorrect(answerByUser.get(i));
                 log.debug("isCorrect: " + isCorrect);
-                if(isCorrect){
-                    totalCorrect++;
-                    historyQuiz.setUser(user);
-                    historyQuiz.setSessionId(finishQuizRequest.getSessionId());
-                    historyQuiz.setAnswerId(answerByUser.get(i));
-                    historyQuiz.setCorrect(isCorrect);
-                    historyQuiz.setCreatedAt(LocalDateTime.now());
-                    historyQuizRepository.save(historyQuiz);
-                } else {
-                    totalIncorrect++;
-                    historyQuiz.setUser(user);
-                    historyQuiz.setSessionId(finishQuizRequest.getSessionId());
-                    historyQuiz.setAnswerId(answerByUser.get(i));
-                    historyQuiz.setCorrect(isCorrect);
-                    historyQuiz.setCreatedAt(LocalDateTime.now());
-                    historyQuizRepository.save(historyQuiz);
-                }
+                if (isCorrect) totalCorrect ++;
+                else totalIncorrect ++;
+                historyQuiz.setAnswerId(answerByUser.get(i));
+                historyQuiz.setCorrect(isCorrect);
+                historyQuizRepository.save(historyQuiz);
             }
             double mark = (double) totalCorrect / totalQuestion;
             if (mark >= BASE_MARK) {
@@ -332,9 +325,9 @@ public class QuizServiceImpl implements IQuizService {
     public ResponseCommon<GetAllSessionQuizByUserResponse> getAllSessionQuiz(GetAllSessionQuizByUserRequest getAllSessionQuizByUserRequest) {
         try {
             List<HistoryQuizUser> historyQuizUsers = new ArrayList<>();
-
+            Quiz quiz = quizRepository.findQuizById(getAllSessionQuizByUserRequest.getQuizId()).orElse(null);
             User user = userRepository.findByUsername(getAllSessionQuizByUserRequest.getUsername()).orElse(null);
-            List<Integer> listSessionId = historyQuizRepository.findDistinctSessionIdsByUser(user);
+            List<Integer> listSessionId = historyQuizRepository.findDistinctSessionIdsByUserAndQuiz(user,quiz);
 
             for (int i = 0; i < listSessionId.size(); i++) {
                 historyQuizUsers.add(new HistoryQuizUser(
