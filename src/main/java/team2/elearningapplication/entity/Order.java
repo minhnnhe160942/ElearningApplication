@@ -20,7 +20,7 @@ public class Order {
     @JoinColumn(name="user_id",referencedColumnName = "id")
     private User user;
     @OneToOne
-    @JoinColumn
+    @JoinColumn(name="payment",referencedColumnName = "id")
     private Payment payment;
     @OneToOne
     @JoinColumn(name="course_id",referencedColumnName = "id")

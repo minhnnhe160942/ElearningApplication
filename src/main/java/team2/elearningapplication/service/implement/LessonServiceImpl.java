@@ -12,13 +12,11 @@ import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.lesson.*;
 import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
+import team2.elearningapplication.dto.request.user.lesson.GetLessonCompletedByCourseRequest;
 import team2.elearningapplication.dto.request.user.lesson.GetTrackingCourseRequest;
 import team2.elearningapplication.dto.request.user.lesson.LessonCompletedRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
-import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
-import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
-import team2.elearningapplication.dto.response.user.lesson.GetTrackingCourse;
-import team2.elearningapplication.dto.response.user.lesson.LessonCompletedResponse;
+import team2.elearningapplication.dto.response.user.lesson.*;
 import team2.elearningapplication.entity.*;
 import team2.elearningapplication.repository.ICourseRepository;
 import team2.elearningapplication.repository.ILessonCompletedRepository;
@@ -27,6 +25,7 @@ import team2.elearningapplication.repository.IUserRepository;
 import team2.elearningapplication.service.ILessonService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -331,6 +330,26 @@ public class LessonServiceImpl implements ILessonService {
             e.printStackTrace();
             log.error("tracking course An error occurred - " + e.getMessage(), e);
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get lesson by course id fail", null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetLessonCompletedByCourseResponse> lessonCompleted(GetLessonCompletedByCourseRequest getLessonCompletedByCourseRequest) {
+        try {
+            User user = userRepository.findByUsername(getLessonCompletedByCourseRequest.getUsername()).orElse(null);
+            Course course = courseRepository.findCourseById(getLessonCompletedByCourseRequest.getCourseId()).orElse(null);
+            List<LessonCompleted> lessonCompleted = lessonCompletedRespository.findCompletedLessonsByUserAndCourse(user.getUsername(), course.getId());
+            List<Integer> listLessonId = new ArrayList<>();
+            for (int i = 0; i < lessonCompleted.size(); i++) {
+                listLessonId.add(lessonCompleted.get(i).getId());
+            }
+            GetLessonCompletedByCourseResponse response = new GetLessonCompletedByCourseResponse();
+            response.setListLessonId(listLessonId);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("get lesson completed by course error occurred - " + e.getMessage(), e);
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(), "get lesson completed by course fail", null);
         }
     }
 }
