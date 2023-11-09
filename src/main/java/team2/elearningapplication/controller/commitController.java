@@ -1,5 +1,141 @@
 package team2.elearningapplication.controller;
 
+
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/v1/lesson")
+@AllArgsConstructor
+public class commitController {
+    private final IQuestionService questionService;
+
+    public QuestionController(IQuestionService questionService) {
+        this.questionService = questionService;
+    }
+
+    @PostMapping("/api/question/add")
+    public ResponseEntity<AddQuestionResponse> addQuestion(@RequestBody AddQuestionRequest request) {
+        ResponseCommon<AddQuestionResponse> responseCommon = questionService.addQuestion(request);
+
+        if (responseCommon.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(responseCommon.getData());
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    private final IQuestionService questionService;
+
+    public QuestionController(IQuestionService questionService) {
+        this.questionService = questionService;
+    }
+
+    @PostMapping("/api/question/add")
+    public ResponseEntity<AddQuestionResponse> addQuestion(@RequestBody AddQuestionRequest request) {
+        ResponseCommon<AddQuestionResponse> responseCommon = questionService.addQuestion(request);
+
+        if (responseCommon.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(responseCommon.getData());
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    private final IQuestionService questionService;
+
+    public QuestionController(IQuestionService questionService) {
+        this.questionService = questionService;
+    }
+
+    @PostMapping("/api/question/add")
+    public ResponseEntity<AddQuestionResponse> addQuestion(@RequestBody AddQuestionRequest request) {
+        ResponseCommon<AddQuestionResponse> responseCommon = questionService.addQuestion(request);
+
+        if (responseCommon.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(responseCommon.getData());
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    private final IQuestionService questionService;
+
+    public QuestionController(IQuestionService questionService) {
+        this.questionService = questionService;
+    }
+
+    @PostMapping("/api/question/add")
+    public ResponseEntity<AddQuestionResponse> addQuestion(@RequestBody AddQuestionRequest request) {
+        ResponseCommon<AddQuestionResponse> responseCommon = questionService.addQuestion(request);
+
+        if (responseCommon.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(responseCommon.getData());
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/api/question/add")
+    public ResponseEntity<AddQuestionResponse> addQuestion(@RequestBody AddQuestionRequest request) {
+        ResponseCommon<AddQuestionResponse> responseCommon = questionService.addQuestion(request);
+
+        if (responseCommon.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(responseCommon.getData());
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            @PostMapping("/api/question/add")
+            public ResponseEntity<AddQuestionResponse> addQuestion(@RequestBody AddQuestionRequest request) {
+                ResponseCommon<AddQuestionResponse> responseCommon = questionService.addQuestion(request);
+
+                if (responseCommon.getCode() == ResponseCode.SUCCESS.getCode()) {
+                    return ResponseEntity.ok(responseCommon.getData());
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+                            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                        }
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+}
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -1089,431 +1225,6 @@ public class commitController {
                     }
                 }
 
-                @PostMapping("/delete-course")
-                public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
-                    ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }@PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-
-                @PostMapping("/update-course")
-                public ResponseEntity<ResponseCommon<UpdateCourseResponse>> updateCouse(@Valid @RequestBody UpdateCourseRequest updateCourseRequest){
-                    ResponseCommon<UpdateCourseResponse> response = courseService.updateCourse(updateCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update course fail",null));
-                    }
-                }
-
-                @PostMapping("/delete-course")
-                public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
-                    ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-
-                @PostMapping("/update-course")
-                public ResponseEntity<ResponseCommon<UpdateCourseResponse>> updateCouse(@Valid @RequestBody UpdateCourseRequest updateCourseRequest){
-                    ResponseCommon<UpdateCourseResponse> response = courseService.updateCourse(updateCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update course fail",null));
-                    }
-                }
-
-                @PostMapping("/delete-course")
-                public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
-                    ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }@PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-
-                @PostMapping("/update-course")
-                public ResponseEntity<ResponseCommon<UpdateCourseResponse>> updateCouse(@Valid @RequestBody UpdateCourseRequest updateCourseRequest){
-                    ResponseCommon<UpdateCourseResponse> response = courseService.updateCourse(updateCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update course fail",null));
-                    }
-                }
-
-                @PostMapping("/delete-course")
-                public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
-                    ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-
-                @PostMapping("/update-course")
-                public ResponseEntity<ResponseCommon<UpdateCourseResponse>> updateCouse(@Valid @RequestBody UpdateCourseRequest updateCourseRequest){
-                    ResponseCommon<UpdateCourseResponse> response = courseService.updateCourse(updateCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update course fail",null));
-                    }
-                }
-
-                @PostMapping("/delete-course")
-                public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
-                    ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-
-                @PostMapping("/update-course")
-                public ResponseEntity<ResponseCommon<UpdateCourseResponse>> updateCouse(@Valid @RequestBody UpdateCourseRequest updateCourseRequest){
-                    ResponseCommon<UpdateCourseResponse> response = courseService.updateCourse(updateCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update course fail",null));
-                    }
-                }
-
-                @PostMapping("/delete-course")
-                public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
-                    ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-
-                @PostMapping("/update-course")
-                public ResponseEntity<ResponseCommon<UpdateCourseResponse>> updateCouse(@Valid @RequestBody UpdateCourseRequest updateCourseRequest){
-                    ResponseCommon<UpdateCourseResponse> response = courseService.updateCourse(updateCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Update course fail",null));
-                    }
-                }
-
-                @PostMapping("/delete-course")
-                public ResponseEntity<ResponseCommon<DeleteCourseResponse>> updateCouse(@Valid @RequestBody DeleteCourseRequest deleteCourseRequest){
-                    ResponseCommon<DeleteCourseResponse> response = courseService.deleteCourse(deleteCourseRequest);
-                    // if code of response equal code success -> return ok
-                    if(response.getCode()==ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } // if code equal course not exist -> tell error
-                    else if (response.getCode()==ResponseCode.COURSE_NOT_EXIST.getCode()) {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(),"Course not exist",null));
-                    } // else -> return fail  update
-                    else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Delete course fail",null));
-                    }
-                }
-                @PostMapping("/add-course")
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                    // if code of response equal code SUCCESS  -> return ok
-                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                        return ResponseEntity.ok(response);
-                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                    } else {
-                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                    }
-                }
-                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                            @PostMapping("/add-course")
-                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                                // if code of response equal code SUCCESS  -> return ok
-                                if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                                    return ResponseEntity.ok(response);
-                                } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                                    return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                                } else {
-                                    return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                                }
-                            }
-                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                        @PostMapping("/add-course")
-                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                            ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                                            // if code of response equal code SUCCESS  -> return ok
-                                            if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                                                return ResponseEntity.ok(response);
-                                            } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                                                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                                            } else {
-                                                return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                                            }
-                                        }
-                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                @PostMapping("/add-course")
-                                                                                                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                    ResponseCommon<AddCourseResponse> response = courseService.addCourse(addCourseRequest);
-                                                                                                                    // if code of response equal code SUCCESS  -> return ok
-                                                                                                                    if(response.getCode() == ResponseCode.SUCCESS.getCode()){
-                                                                                                                        return ResponseEntity.ok(response);
-                                                                                                                    } else if(response.getCode() == ResponseCode.COURSE_EXIST.getCode()) {
-                                                                                                                        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(response.getCode(),"Course already exsit",null));
-                                                                                                                    } else {
-                                                                                                                        return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"Add course fail",null));
-                                                                                                                    }
-                                                                                                                }
-                                                                                                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                                            public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                                                public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                                                    public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
-                                                                                                                                                                        public ResponseEntity<ResponseCommon<AddCourseResponse>> addCourse(@Valid @RequestBody AddCourseRequest addCourseRequest){
 
 
 
-
-            }
