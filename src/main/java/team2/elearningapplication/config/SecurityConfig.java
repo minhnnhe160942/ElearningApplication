@@ -78,6 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/lesson/find-all-lesson-by-deleted",
                 "/api/v1/lesson/complete-lesson",
                 "/api/v1/lesson/get-tracking-course",
+                "/api/v1/lesson/get-lesson-completed-by-course",
 
 
                 "/api/v1/answer/add-answer",

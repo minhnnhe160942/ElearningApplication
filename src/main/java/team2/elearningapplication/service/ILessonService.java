@@ -4,13 +4,11 @@ import team2.elearningapplication.dto.common.PageRequestDTO;
 import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.lesson.*;
 import team2.elearningapplication.dto.request.user.lesson.GetLessonByCourseIdRequest;
+import team2.elearningapplication.dto.request.user.lesson.GetLessonCompletedByCourseRequest;
 import team2.elearningapplication.dto.request.user.lesson.GetTrackingCourseRequest;
 import team2.elearningapplication.dto.request.user.lesson.LessonCompletedRequest;
 import team2.elearningapplication.dto.response.admin.lesson.*;
-import team2.elearningapplication.dto.response.user.lesson.GetLessonByCourseIdResponse;
-import team2.elearningapplication.dto.response.user.lesson.GetLessonPageResponse;
-import team2.elearningapplication.dto.response.user.lesson.GetTrackingCourse;
-import team2.elearningapplication.dto.response.user.lesson.LessonCompletedResponse;
+import team2.elearningapplication.dto.response.user.lesson.*;
 import team2.elearningapplication.entity.Lesson;
 
 import java.util.List;
@@ -30,4 +28,6 @@ public interface ILessonService {
     ResponseCommon<LessonCompletedResponse> completeLesson(LessonCompletedRequest completeLessonRequest);
 
     ResponseCommon<GetTrackingCourse> trackingCourse(GetTrackingCourseRequest getTrackingCourseRequest);
+
+    ResponseCommon<GetLessonCompletedByCourseResponse> lessonCompleted(GetLessonCompletedByCourseRequest getLessonCompletedByCourseRequest);
 }

@@ -272,7 +272,7 @@ public class QuizServiceImpl implements IQuizService {
             double mark = (double) totalCorrect / totalQuestion;
             if (mark >= BASE_MARK) {
                 log.info("START... Sending email");
-                emailService.sendEmail(setUpMail(user.getEmail(), course.getName()));
+                emailService.sendEmail(setUpMail(user.getEmail(), user.getFullName(), course.getName(), LocalDateTime.now()));
                 log.info("END... Email sent successfully");
             }
             FinishQuizResponse finishQuizResponse = new FinishQuizResponse();
@@ -287,12 +287,15 @@ public class QuizServiceImpl implements IQuizService {
         }
     }
 
-    private Mail setUpMail(String mailTo, String courseName) {
+    private Mail setUpMail(String mailTo, String fullname, String courseName, LocalDateTime createdAt){
         Mail mail = new Mail();
+        mail.setFrom("elearningapplicationsystem@gmail.com");
         mail.setTo(mailTo);
-        mail.setSubject("Congratulations on earning your " + courseName);
+        mail.setSubject("This Certificate Is Proudly Presented To");
         Map<String, Object> model = new HashMap<>();
-        model.put("course_name", courseName);
+        model.put("fullname",fullname);
+        model.put("course_name",courseName);
+        model.put("complete_time",createdAt);
         mail.setPros(model);
         mail.setTemplate("certificate");
         return mail;

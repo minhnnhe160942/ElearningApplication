@@ -48,7 +48,7 @@ public class BlogController {
         }
     }
 
-    @PutMapping("/delete-blog")
+    @DeleteMapping ("/delete-blog")
     public ResponseEntity<ResponseCommon<DeleteBlogResponse>> deleteBlog(@Valid @RequestBody DeleteBlogRequest deleteBlogRequest){
         ResponseCommon<DeleteBlogResponse> response = blogService.deleteBlog(deleteBlogRequest);
         if(response.getCode() == ResponseCode.SUCCESS.getCode()){

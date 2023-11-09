@@ -397,8 +397,8 @@ public class CourseServiceImpl implements ICourseService {
     public ResponseCommon<PaymentConfirmResponse> paymentConfirm(PaymentConfirmRequest paymentConfirmRequest) {
         try {
             Order order = orderRepository.getOrderById(paymentConfirmRequest.getOrderId()).orElse(null);
-            if(Objects.isNull(order)){
-                return new ResponseCommon<>(ResponseCode.ORDER_NOT_EXIST,null);
+            if (Objects.isNull(order)) {
+                return new ResponseCommon<>(ResponseCode.ORDER_NOT_EXIST, null);
             }
             String signValue = generateAndHashQueryString(paymentConfirmRequest);
             System.out.println(signValue);
@@ -410,78 +410,70 @@ public class CourseServiceImpl implements ICourseService {
             System.out.println(vnp_TnxRef);
             double amountDB = order.getAmount();
             double amountReturn = Double.parseDouble(paymentConfirmRequest.getVnp_Amount());
-            System.out.println("amount in db: "+amountDB);
-            System.out.println("amount return: " +amountReturn);
-            if(vnp_SecureHash.isEmpty()){
+            System.out.println("amount in db: " + amountDB);
+            System.out.println("amount return: " + amountReturn);
+
+            if (vnp_SecureHash.isEmpty()) {
                 log.debug("Handle with vnp_secureHash: " + vnp_SecureHash);
-                return new ResponseCommon<>(ResponseCode.FAIL,null);
-            } else {
-                log.debug("secure hash " + vnp_SecureHash);
-                if(!signValue.equals(vnp_SecureHash)){
-                    return new ResponseCommon<>(ResponseCode.CHANGE_PARAM.getCode(),"Param is hacker",null);
-                } else {
-                    log.debug("vnp txref: " + vnp_TnxRef);
-                    if(!vnp_TnxRef.equals(checksum)){
-                        return new ResponseCommon<>(ResponseCode.ORDER_NOT_FOUND.getCode(),"Order not found",null);
-                    }else {
-                        log.debug("amount: " + amountReturn );
-                        // test
-                        if(amountReturn == order.getAmount()){
-                            return new ResponseCommon<>(ResponseCode.INVALID_AMOUNT.getCode(),"Invalid Amount",null);
-                        } else {
-                            log.debug("status order: " + order.getEnumTypeProcessPayment() );
-                            if(!order.getEnumTypeProcessPayment().equals(EnumTypeProcessPayment.INPROCESS)){
-                                return new ResponseCommon<>(ResponseCode.ORDER_ALREADY_CONFIRM.getCode(),"Order already confirm",null);
-                            } else {
-                                log.debug("response code: " +paymentConfirmRequest.getVnp_ResponseCode() );
-                                if(!paymentConfirmRequest.getVnp_ResponseCode().equals("00")){
-                                    return new ResponseCommon<>(ResponseCode.USER_CANCEL_BILL.getCode(),"User cancel bill",null);
-                                } else {
-                                    Payment payment = new Payment();
-                                    HistoryRegisterCourse historyRegisterCourse = new HistoryRegisterCourse();
-                                    payment.setUser(order.getUser());
-                                    payment.setCourse(order.getCourse());
-                                    payment.setPaymentGateway(EnumPaymentGateway.VN_PAY);
-                                    payment.setAmount(order.getAmount());
-                                    payment.setEnumPaymentProcess(EnumPaymentProcess.SUCCESS);
-                                    payment.setTransaction_id(order.getChecksum());
-                                    payment.setCreated_at(LocalDateTime.now());
-                                    paymentRepository.save(payment);
-                                    order.setPayment(payment);
-                                    order.setEnumTypeProcessPayment(EnumTypeProcessPayment.DONE);
-                                    orderRepository.save(order);
-                                    historyRegisterCourse.setCourse(payment.getCourse());
-                                    historyRegisterCourse.setUser(payment.getUser());
-                                    historyRegisterCourse.setSttLessonCurrent(1);
-                                    historyRegisterCourse.setPayment(payment);
-                                    historyRegisterCourse.setProcess(EnumTypeProcessAccount.NOT_READY);
-                                    historyRegisterCourse.setCreatedAt(LocalDateTime.now());
-                                    historyRegisterCourse.setOrder(order);
-                                    historyRegisterCourseRepository.save(historyRegisterCourse);
-                                    PaymentConfirmResponse paymentConfirmResponse = new PaymentConfirmResponse();
-                                    paymentConfirmResponse.setStatus("Payment done");
-                                    String mailTo = payment.getUser().getEmail();
-                                    String fullname = payment.getUser().getFullName();
-                                    String coursename = payment.getCourse().getName();
-                                    double amount = payment.getAmount();
-                                    String transaction_id = payment.getTransaction_id();
-                                    LocalDateTime createdAt = payment.getCreated_at();
-                                    log.info("START... Sending email");
-                                    emailService.sendEmail(setUpMailPayment(mailTo,fullname,coursename,amount,transaction_id,createdAt));
-                                    log.info("END... Email sent success");
-                                    return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Confirm success",null);
-                                }
-                            }
-                        }
-                    }
-                }
+                return new ResponseCommon<>(ResponseCode.FAIL, null);
+            } else if (!signValue.equals(vnp_SecureHash)) {
+                return new ResponseCommon<>(ResponseCode.CHANGE_PARAM.getCode(), "Param is hacker", null);
+            } else if (!vnp_TnxRef.equals(checksum)) {
+                return new ResponseCommon<>(ResponseCode.ORDER_NOT_FOUND.getCode(), "Order not found", null);
+            } else if (amountReturn == amountDB) {
+                return new ResponseCommon<>(ResponseCode.INVALID_AMOUNT.getCode(), "Invalid Amount", null);
+            } else if (!order.getEnumTypeProcessPayment().equals(EnumTypeProcessPayment.INPROCESS)) {
+                return new ResponseCommon<>(ResponseCode.ORDER_ALREADY_CONFIRM.getCode(), "Order already confirm", null);
+            } else if (!paymentConfirmRequest.getVnp_ResponseCode().equals("00")) {
+                return new ResponseCommon<>(ResponseCode.USER_CANCEL_BILL.getCode(), "User cancel bill", null);
             }
-        } catch (Exception e){
+
+            // Create the payment only once
+            Payment payment = new Payment();
+            payment.setUser(order.getUser());
+            payment.setCourse(order.getCourse());
+            payment.setPaymentGateway(EnumPaymentGateway.VN_PAY);
+            payment.setAmount(amountReturn);
+            payment.setEnumPaymentProcess(EnumPaymentProcess.SUCCESS);
+            payment.setTransaction_id(order.getChecksum());
+            payment.setCreated_at(LocalDateTime.now());
+            paymentRepository.save(payment);
+            // Update order
+            order.setPayment(payment);
+            order.setEnumTypeProcessPayment(EnumTypeProcessPayment.DONE);
+            orderRepository.save(order);
+
+            // Create historyRegisterCourse here if needed
+            HistoryRegisterCourse historyRegisterCourse = new HistoryRegisterCourse();
+            historyRegisterCourse.setCourse(payment.getCourse());
+            historyRegisterCourse.setUser(payment.getUser());
+            historyRegisterCourse.setSttLessonCurrent(1);
+            historyRegisterCourse.setPayment(payment);
+            historyRegisterCourse.setProcess(EnumTypeProcessAccount.NOT_READY);
+            historyRegisterCourse.setCreatedAt(LocalDateTime.now());
+            historyRegisterCourse.setOrder(order);
+            historyRegisterCourseRepository.save(historyRegisterCourse);
+
+            // Send the email
+            log.info("START... Sending email");
+            emailService.sendEmail(setUpMailPayment(
+                    payment.getUser().getEmail(),
+                    payment.getUser().getFullName(),
+                    payment.getCourse().getName(),
+                    payment.getAmount(),
+                    payment.getTransaction_id(),
+                    payment.getCreated_at()
+            ));
+            log.info("END... Email sent success");
+
+            return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(), "Confirm success", null);
+        } catch (Exception e) {
             e.printStackTrace();
             log.debug("Enroll Course failed: " + e.getMessage());
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }
     }
+
     private Mail setUpMailPayment(String mailTo, String fullname, String courseName, double amount, String transactionId,LocalDateTime createdAt){
         Mail mail = new Mail();
         mail.setFrom("elearningapplicationsystem@gmail.com");
