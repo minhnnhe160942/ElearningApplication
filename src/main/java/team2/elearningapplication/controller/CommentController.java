@@ -40,5 +40,31 @@ public class CommentController {
         else {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"System error",null));
         }
+    }@PostMapping("/add-category")
+    public ResponseEntity<ResponseCommon<AddCategoryResponse>> addCategory(@Valid @RequestBody AddCategoryRequest addCategoryRequest){
+        ResponseCommon<AddCategoryResponse> response = categoryService.addCategory(addCategoryRequest);
+        // if code response equals code Success -> return ok
+        if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code response equals code category exist -> return error
+        else if(response.getCode() == ResponseCode.CATEGORY_EXIST.getCode()){
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(ResponseCode.CATEGORY_EXIST.getCode(),"Category already exist",null));
+        } // else return fail
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"System error",null));
+        }
+    }@PostMapping("/add-category")
+    public ResponseEntity<ResponseCommon<AddCategoryResponse>> addCategory(@Valid @RequestBody AddCategoryRequest addCategoryRequest){
+        ResponseCommon<AddCategoryResponse> response = categoryService.addCategory(addCategoryRequest);
+        // if code response equals code Success -> return ok
+        if(response.getCode() == ResponseCode.SUCCESS.getCode()){
+            return ResponseEntity.ok(response);
+        } // if code response equals code category exist -> return error
+        else if(response.getCode() == ResponseCode.CATEGORY_EXIST.getCode()){
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseCommon<>(ResponseCode.CATEGORY_EXIST.getCode(),"Category already exist",null));
+        } // else return fail
+        else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(),"System error",null));
+        }
     }
 }
