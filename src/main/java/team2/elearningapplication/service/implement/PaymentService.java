@@ -6,9 +6,10 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.config.VnPayConfig;
 import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.common.TransactionStatus;
+import team2.elearningapplication.dto.request.admin.payment.GetPaymentStaticRequest;
 import team2.elearningapplication.dto.request.user.payment.GetPaymentByUserRequest;
-import team2.elearningapplication.dto.response.admin.GetTotalRevenueResponse;
+import team2.elearningapplication.dto.response.admin.payment.GetPaymentStaticResponse;
+import team2.elearningapplication.dto.response.admin.payment.GetTotalRevenueResponse;
 import team2.elearningapplication.dto.response.user.payment.GetPaymentByUserResponse;
 import team2.elearningapplication.dto.response.user.payment.ResponsePayment;
 import team2.elearningapplication.entity.Payment;
@@ -160,6 +161,33 @@ public class PaymentService implements IPaymentService {
             responsePayment.setListPayment(getPaymentByUserResponses);
             return new ResponseCommon<>(ResponseCode.SUCCESS,responsePayment);
         } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetPaymentStaticResponse> getPaymentStatic(GetPaymentStaticRequest getPaymentStaticRequest) {
+        try {
+            double total = 0;
+            List<Payment> paymentList = new ArrayList<>();
+            Integer month = getPaymentStaticRequest.getMonth();
+            Integer year = getPaymentStaticRequest.getYear();
+            if(month==null && year != null){
+                paymentList = paymentRepository.findByYear(year);
+                for (int i = 0; i < paymentList.size(); i++) {
+                    total += paymentList.get(i).getAmount();
+                }
+            } else if(month!=null && year !=null){
+                paymentList = paymentRepository.findByMonthAndYear(month,year);
+                for (int i = 0; i < paymentList.size(); i++) {
+                    total += paymentList.get(i).getAmount();
+                }
+            }
+            GetPaymentStaticResponse response = new GetPaymentStaticResponse();
+            response.setRevenue(total);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+        }catch (Exception e) {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }

@@ -1,4 +1,4 @@
-package team2.elearningapplication.dto.response.admin;
+package team2.elearningapplication.dto.response.admin.payment;
 
 import lombok.Data;
 import team2.elearningapplication.entity.User;

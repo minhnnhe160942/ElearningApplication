@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.admin.payment.GetPaymentStaticRequest;
 import team2.elearningapplication.dto.request.user.payment.GetPaymentByUserRequest;
+import team2.elearningapplication.dto.response.admin.payment.GetPaymentStaticResponse;
 import team2.elearningapplication.dto.response.user.payment.GetPaymentByUserResponse;
 import team2.elearningapplication.dto.response.user.payment.ResponsePayment;
 import team2.elearningapplication.service.IPaymentService;
@@ -41,5 +43,17 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get payment failed", null));
         }
     }
+
+    @GetMapping("/get-all-payment")
+    public ResponseEntity<ResponseCommon<GetPaymentStaticResponse>> getPaymentStatic(@ParameterObject  GetPaymentStaticRequest getPaymentStaticRequest) {
+        ResponseCommon<GetPaymentStaticResponse> response = paymentService.getPaymentStatic(getPaymentStaticRequest);
+
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get payment static fail", null));
+        }
+    }
+
 
 }
