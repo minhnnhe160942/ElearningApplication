@@ -26,5 +26,7 @@ public class UpdateQuizRequest {
     private String lessonName;
     @NotNull
     private boolean deleted;
+    @NotNull
+    private boolean isFinalQuiz;
 
 }

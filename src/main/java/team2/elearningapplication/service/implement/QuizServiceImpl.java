@@ -48,6 +48,7 @@ public class QuizServiceImpl implements IQuizService {
                 quizAdd.setLesson(lessonRespository.findLessonById(addQuizRequest.getLessonID()).orElse(null));
                 quizAdd.setName(addQuizRequest.getQuizName());
                 quizAdd.setUserCreated(user);
+                quizAdd.setFinalQuiz(addQuizRequest.isFinalQuiz());
                 quizRepository.save(quizAdd);
                 AddQuizResponse addQuizResponse = new AddQuizResponse();
                 addQuizResponse.setLessonName(quizAdd.getName());
@@ -73,6 +74,7 @@ public class QuizServiceImpl implements IQuizService {
                 quiz.setLesson(lessonRespository.findLessonById(updateQuizRequest.getLessonID()).orElse(null));
                 quiz.setDeleted(updateQuizRequest.isDeleted());
                 quiz.setUserUpdated(user);
+                quiz.setFinalQuiz(updateQuizRequest.isFinalQuiz());
                 quizRepository.save(quiz);
                 UpdateQuizResponse updateQuizResponse = new UpdateQuizResponse();
                 updateQuizResponse.setUpdateAt(LocalDateTime.now());
@@ -270,7 +272,7 @@ public class QuizServiceImpl implements IQuizService {
                 }
             }
             double mark = (double) totalCorrect / totalQuestion;
-            if (mark >= BASE_MARK) {
+            if (mark >= BASE_MARK && quizRepository.findQuizById(finishQuizRequest.getQuizId()).orElse(null).isFinalQuiz()) {
                 log.info("START... Sending email");
                 emailService.sendEmail(setUpMail(user.getEmail(), course.getName()));
                 log.info("END... Email sent successfully");

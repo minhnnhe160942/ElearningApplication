@@ -39,4 +39,6 @@ public class Quiz {
     @ManyToOne
     @JoinColumn(name="updated_by",referencedColumnName = "id")
     private User userUpdated;
+    @Column(name="final_quiz")
+    private boolean isFinalQuiz;
 }
