@@ -44,7 +44,7 @@ public class PaymentController {
         }
     }
 
-    @GetMapping("/get-all-payment")
+    @GetMapping("/get-payment-by-month-year")
     public ResponseEntity<ResponseCommon<GetPaymentStaticResponse>> getPaymentStatic(@ParameterObject  GetPaymentStaticRequest getPaymentStaticRequest) {
         ResponseCommon<GetPaymentStaticResponse> response = paymentService.getPaymentStatic(getPaymentStaticRequest);
 
