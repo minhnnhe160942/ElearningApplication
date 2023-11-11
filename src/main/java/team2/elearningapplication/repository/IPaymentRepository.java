@@ -16,4 +16,19 @@ public interface IPaymentRepository extends JpaRepository<Payment,Integer> {
 
     @Query("SELECT p FROM Payment p WHERE MONTH(p.created_at) = :month AND YEAR(p.created_at) = :year")
     List<Payment> findByMonthAndYear(@Param("month") Integer month, @Param("year") Integer year);
+
+    @Query("SELECT p FROM Payment p WHERE " +
+            "(:month IS NULL OR (MONTH(p.created_at) = :month AND YEAR(p.created_at) = :year)) " +
+            "AND (:courseId IS NULL OR p.course.id = :courseId)")
+    List<Payment> findByCourseIdAndMonthAndYear(
+            @Param("courseId") int courseId,
+            @Param("month") Integer month,
+            @Param("year") Integer year);
+
+    @Query("SELECT p FROM Payment p WHERE " +
+            "(:courseId IS NULL OR p.course.id = :courseId) " +
+            "AND (:year IS NULL OR YEAR(p.created_at) = :year)")
+    List<Payment> findByCourseIdAndYear(
+            @Param("courseId") int courseId,
+            @Param("year") Integer year);
 }

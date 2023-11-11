@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.admin.payment.GetPaymentByCourseRequest;
 import team2.elearningapplication.dto.request.admin.payment.GetPaymentStaticRequest;
 import team2.elearningapplication.dto.request.user.payment.GetPaymentByUserRequest;
+import team2.elearningapplication.dto.response.admin.payment.GetPaymentByCourseResponse;
 import team2.elearningapplication.dto.response.admin.payment.GetPaymentStaticResponse;
 import team2.elearningapplication.dto.response.user.payment.GetPaymentByUserResponse;
 import team2.elearningapplication.dto.response.user.payment.ResponsePayment;
@@ -55,5 +57,13 @@ public class PaymentController {
         }
     }
 
-
+    @GetMapping("/get-payment-by-course")
+    public ResponseEntity<ResponseCommon<GetPaymentByCourseResponse>> getPaymentStatic(@ParameterObject GetPaymentByCourseRequest getPaymentByCourseRequest) {
+        ResponseCommon<GetPaymentByCourseResponse> response = paymentService.getPaymentByCourse(getPaymentByCourseRequest);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(ResponseCode.FAIL.getCode(), "Get payment static fail", null));
+        }
+    }
 }

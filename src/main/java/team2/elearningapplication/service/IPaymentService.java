@@ -2,8 +2,10 @@ package team2.elearningapplication.service;
 
 import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
+import team2.elearningapplication.dto.request.admin.payment.GetPaymentByCourseRequest;
 import team2.elearningapplication.dto.request.admin.payment.GetPaymentStaticRequest;
 import team2.elearningapplication.dto.request.user.payment.GetPaymentByUserRequest;
+import team2.elearningapplication.dto.response.admin.payment.GetPaymentByCourseResponse;
 import team2.elearningapplication.dto.response.admin.payment.GetPaymentStaticResponse;
 import team2.elearningapplication.dto.response.admin.payment.GetTotalRevenueResponse;
 import team2.elearningapplication.dto.response.user.payment.ResponsePayment;
@@ -20,4 +22,6 @@ public interface IPaymentService {
     ResponseCommon<ResponsePayment> getAllPayment();
 
     ResponseCommon<GetPaymentStaticResponse> getPaymentStatic(GetPaymentStaticRequest getPaymentStaticRequest);
+
+    ResponseCommon<GetPaymentByCourseResponse> getPaymentByCourse(GetPaymentByCourseRequest getPaymentByCourseRequest);
 }

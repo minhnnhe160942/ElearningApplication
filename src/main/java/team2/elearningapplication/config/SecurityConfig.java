@@ -121,6 +121,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/payment/get-all-payment",
                 "/api/v1/payment/add-payment",
                 "api/v1/payment/payment-info",
+                "api/v1/payment/get-payment-by-month-year",
+                "api/v1/payment/get-payment-by-course",
                 "/swagger-ui/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
