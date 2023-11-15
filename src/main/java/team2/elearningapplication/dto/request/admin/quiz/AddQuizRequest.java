@@ -20,6 +20,6 @@ public class AddQuizRequest {
     private int lessonID;
     @NotBlank
     private String quizName;
-    @NotBlank
+    @NotNull
     private boolean isFinalQuiz;
 }

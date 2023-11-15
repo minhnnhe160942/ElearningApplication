@@ -210,20 +210,23 @@ public class PaymentService implements IPaymentService {
             int courseId = getPaymentByCourseRequest.getCourseId();
             Integer month = getPaymentByCourseRequest.getMonth();
             Integer year = getPaymentByCourseRequest.getYear();
-
+            List<Double> revenueForMonth = new ArrayList<>(Arrays.asList(new Double[12]));
+            Collections.fill(revenueForMonth, 0.0);
             if(month == null && year != null){
                 paymentList = paymentRepository.findByCourseIdAndYear(courseId,year);
-                for (int i = 0; i < paymentList.size(); i++) {
-                    total += paymentList.get(i).getAmount();
+                for (Payment payment : paymentList) {
+                    int monthIndex = payment.getCreated_at().getMonthValue() - 1;
+                    revenueForMonth.set(monthIndex, revenueForMonth.get(monthIndex) + payment.getAmount());
                 }
             } else if(month != null && year != null){
                 paymentList = paymentRepository.findByCourseIdAndMonthAndYear(courseId,month,year);
-                for (int i = 0; i < paymentList.size(); i++) {
-                    total += paymentList.get(i).getAmount();
+                for (Payment payment : paymentList) {
+                    int monthIndex = payment.getCreated_at().getMonthValue() - 1;
+                    revenueForMonth.set(monthIndex, revenueForMonth.get(monthIndex) + payment.getAmount());
                 }
             }
             GetPaymentByCourseResponse response = new GetPaymentByCourseResponse();
-            response.setRevenue(total);
+            response.setRevenueForMonth(revenueForMonth);
             return new ResponseCommon<>(ResponseCode.SUCCESS,response);
         }catch (Exception e) {
             e.printStackTrace();

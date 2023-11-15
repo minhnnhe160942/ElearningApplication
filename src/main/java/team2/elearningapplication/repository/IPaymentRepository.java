@@ -7,6 +7,7 @@ import team2.elearningapplication.entity.Payment;
 import team2.elearningapplication.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IPaymentRepository extends JpaRepository<Payment,Integer> {
     List<Payment> findPaymentByUser(User user);
@@ -31,4 +32,7 @@ public interface IPaymentRepository extends JpaRepository<Payment,Integer> {
     List<Payment> findByCourseIdAndYear(
             @Param("courseId") int courseId,
             @Param("year") Integer year);
+
+    Optional<Payment> findByUser_IdAndCourse_Id(int userId, int courseId);
+
 }
