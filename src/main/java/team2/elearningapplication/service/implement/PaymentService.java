@@ -6,9 +6,12 @@ import team2.elearningapplication.Enum.ResponseCode;
 import team2.elearningapplication.config.VnPayConfig;
 import team2.elearningapplication.dto.common.PaymentRes;
 import team2.elearningapplication.dto.common.ResponseCommon;
-import team2.elearningapplication.dto.common.TransactionStatus;
+import team2.elearningapplication.dto.request.admin.payment.GetPaymentByCourseRequest;
+import team2.elearningapplication.dto.request.admin.payment.GetPaymentStaticRequest;
 import team2.elearningapplication.dto.request.user.payment.GetPaymentByUserRequest;
-import team2.elearningapplication.dto.response.admin.GetTotalRevenueResponse;
+import team2.elearningapplication.dto.response.admin.payment.GetPaymentByCourseResponse;
+import team2.elearningapplication.dto.response.admin.payment.GetPaymentStaticResponse;
+import team2.elearningapplication.dto.response.admin.payment.GetTotalRevenueResponse;
 import team2.elearningapplication.dto.response.user.payment.GetPaymentByUserResponse;
 import team2.elearningapplication.dto.response.user.payment.ResponsePayment;
 import team2.elearningapplication.entity.Payment;
@@ -154,12 +157,75 @@ public class PaymentService implements IPaymentService {
                         response.setStatus(String.valueOf(payment.getEnumPaymentProcess()));
                         response.setAmount(payment.getAmount());
                         response.setCourseName(payment.getCourse().getName());
+                        response.setUsername(payment.getUser().getUsername());
                         return response;
                     })
                     .collect(Collectors.toList());
             responsePayment.setListPayment(getPaymentByUserResponses);
             return new ResponseCommon<>(ResponseCode.SUCCESS,responsePayment);
         } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetPaymentStaticResponse> getPaymentStatic(GetPaymentStaticRequest getPaymentStaticRequest) {
+        try {
+            double total = 0;
+            List<Payment> paymentList = new ArrayList<>();
+            Integer month = getPaymentStaticRequest.getMonth();
+            Integer year = getPaymentStaticRequest.getYear();
+            List<Double> revenueForMonth = new ArrayList<>(Arrays.asList(new Double[12]));
+            Collections.fill(revenueForMonth, 0.0);
+
+            if (month == null && year != null) {
+                paymentList = paymentRepository.findByYear(year);
+                for (Payment payment : paymentList) {
+                    int monthIndex = payment.getCreated_at().getMonthValue() - 1;
+                    revenueForMonth.set(monthIndex, revenueForMonth.get(monthIndex) + payment.getAmount());
+                }
+            } else if (month != null && year != null) {
+                paymentList = paymentRepository.findByMonthAndYear(month, year);
+                for (Payment payment : paymentList) {
+                    int monthIndex = payment.getCreated_at().getMonthValue() - 1;
+                    revenueForMonth.set(monthIndex, revenueForMonth.get(monthIndex) + payment.getAmount());
+                }
+            }
+
+            GetPaymentStaticResponse response = new GetPaymentStaticResponse();
+            response.setRevenueForMonth(revenueForMonth);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCommon<>(ResponseCode.FAIL, null);
+        }
+    }
+
+    @Override
+    public ResponseCommon<GetPaymentByCourseResponse> getPaymentByCourse(GetPaymentByCourseRequest getPaymentByCourseRequest) {
+        try {
+            double total = 0;
+            List<Payment> paymentList = new ArrayList<>();
+            int courseId = getPaymentByCourseRequest.getCourseId();
+            Integer month = getPaymentByCourseRequest.getMonth();
+            Integer year = getPaymentByCourseRequest.getYear();
+
+            if(month == null && year != null){
+                paymentList = paymentRepository.findByCourseIdAndYear(courseId,year);
+                for (int i = 0; i < paymentList.size(); i++) {
+                    total += paymentList.get(i).getAmount();
+                }
+            } else if(month != null && year != null){
+                paymentList = paymentRepository.findByCourseIdAndMonthAndYear(courseId,month,year);
+                for (int i = 0; i < paymentList.size(); i++) {
+                    total += paymentList.get(i).getAmount();
+                }
+            }
+            GetPaymentByCourseResponse response = new GetPaymentByCourseResponse();
+            response.setRevenue(total);
+            return new ResponseCommon<>(ResponseCode.SUCCESS,response);
+        }catch (Exception e) {
             e.printStackTrace();
             return new ResponseCommon<>(ResponseCode.FAIL, null);
         }

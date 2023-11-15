@@ -48,6 +48,7 @@ public class QuizServiceImpl implements IQuizService {
                 quizAdd.setLesson(lessonRespository.findLessonById(addQuizRequest.getLessonID()).orElse(null));
                 quizAdd.setName(addQuizRequest.getQuizName());
                 quizAdd.setUserCreated(user);
+                quizAdd.setFinalQuiz(addQuizRequest.isFinalQuiz());
                 quizRepository.save(quizAdd);
                 AddQuizResponse addQuizResponse = new AddQuizResponse();
                 addQuizResponse.setLessonName(quizAdd.getName());
@@ -73,6 +74,7 @@ public class QuizServiceImpl implements IQuizService {
                 quiz.setLesson(lessonRespository.findLessonById(updateQuizRequest.getLessonID()).orElse(null));
                 quiz.setDeleted(updateQuizRequest.isDeleted());
                 quiz.setUserUpdated(user);
+                quiz.setFinalQuiz(updateQuizRequest.isFinalQuiz());
                 quizRepository.save(quiz);
                 UpdateQuizResponse updateQuizResponse = new UpdateQuizResponse();
                 updateQuizResponse.setUpdateAt(LocalDateTime.now());
@@ -270,9 +272,9 @@ public class QuizServiceImpl implements IQuizService {
                 }
             }
             double mark = (double) totalCorrect / totalQuestion;
-            if (mark >= BASE_MARK) {
+            if (mark >= BASE_MARK && quizRepository.findQuizById(finishQuizRequest.getQuizId()).orElse(null).isFinalQuiz()) {
                 log.info("START... Sending email");
-                emailService.sendEmail(setUpMail(user.getEmail(), user.getFullName(), course.getName(), LocalDateTime.now()));
+                emailService.sendEmail(setUpMail(user.getEmail(), course.getName()));
                 log.info("END... Email sent successfully");
             }
             FinishQuizResponse finishQuizResponse = new FinishQuizResponse();
@@ -287,15 +289,12 @@ public class QuizServiceImpl implements IQuizService {
         }
     }
 
-    private Mail setUpMail(String mailTo, String fullname, String courseName, LocalDateTime createdAt){
+    private Mail setUpMail(String mailTo, String courseName) {
         Mail mail = new Mail();
-        mail.setFrom("elearningapplicationsystem@gmail.com");
         mail.setTo(mailTo);
-        mail.setSubject("This Certificate Is Proudly Presented To");
+        mail.setSubject("Congratulations on earning your " + courseName);
         Map<String, Object> model = new HashMap<>();
-        model.put("fullname",fullname);
-        model.put("course_name",courseName);
-        model.put("complete_time",createdAt);
+        model.put("course_name", courseName);
         mail.setPros(model);
         mail.setTemplate("certificate");
         return mail;

@@ -16,7 +16,7 @@ import team2.elearningapplication.dto.common.ResponseCommon;
 import team2.elearningapplication.dto.request.admin.SetRoleUserRequest;
 import team2.elearningapplication.dto.request.admin.SetRoleUserResponse;
 import team2.elearningapplication.dto.request.user.authen.*;
-import team2.elearningapplication.dto.response.admin.GetUserResponse;
+import team2.elearningapplication.dto.response.admin.payment.GetUserResponse;
 import team2.elearningapplication.dto.response.admin.dashboard.GetTotalUserResponse;
 import team2.elearningapplication.dto.response.user.authen.*;
 import team2.elearningapplication.entity.User;

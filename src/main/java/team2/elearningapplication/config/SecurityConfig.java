@@ -121,7 +121,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/v1/payment/get-payment-user",
                 "/api/v1/payment/get-all-payment",
                 "/api/v1/payment/add-payment",
-                "api/v1/payment/payment-info",
+                "/api/v1/payment/payment-info",
+                "/api/v1/payment/get-payment-by-month-year",
+                "/api/v1/payment/get-payment-by-course",
 
                 "/api/v1/blog/add-blog",
                 "/api/v1/blog/update-blog",

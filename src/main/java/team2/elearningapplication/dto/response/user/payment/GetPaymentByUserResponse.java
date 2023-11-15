@@ -16,4 +16,6 @@ public class GetPaymentByUserResponse {
     private double amount;
     @NotBlank
     private String courseName;
+    @NotNull
+    private String username;
 }
