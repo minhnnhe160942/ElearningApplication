@@ -40,10 +40,14 @@ public class QuizServiceImpl implements IQuizService {
         try {
             Quiz quiz = quizRepository.findQuizByName(addQuizRequest.getQuizName()).orElse(null);
             User user = userRepository.findByUsername(addQuizRequest.getUsername()).orElse(null);
+            Lesson lesson = lessonRespository.findLessonById(addQuizRequest.getLessonID()).orElse(null);
+            Quiz quizCheck = quizRepository.findFinalQuizByLessonId(addQuizRequest.getLessonID()).orElse(null);
 
             // if quiz not null -> tell user
+
             if(!Objects.isNull(quiz)) return new ResponseCommon<>(ResponseCode.QUIZ_EXIST.getCode(),"Quiz already exist",null);
             else {
+
                 Quiz quizAdd = new Quiz();
                 quizAdd.setLesson(lessonRespository.findLessonById(addQuizRequest.getLessonID()).orElse(null));
                 quizAdd.setName(addQuizRequest.getQuizName());
@@ -54,6 +58,11 @@ public class QuizServiceImpl implements IQuizService {
                 addQuizResponse.setLessonName(quizAdd.getName());
                 addQuizResponse.setQuizID(quizAdd.getId());
                 addQuizResponse.setLessonID(quizAdd.getLesson().getId());
+                if(Objects.isNull(quizCheck)){
+                    addQuizResponse.setHasFinalQuiz(false);
+                } else {
+                    addQuizResponse.setHasFinalQuiz(true);
+                }
                 return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"Add Quiz success",addQuizResponse);
             }
         } catch (Exception e){
