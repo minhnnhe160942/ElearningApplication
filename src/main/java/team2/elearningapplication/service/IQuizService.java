@@ -26,4 +26,6 @@ public interface IQuizService {
     ResponseCommon<GetAllSessionQuizByUserResponse> getAllSessionQuiz(GetAllSessionQuizByUserRequest getAllSessionQuizByUserRequest);
 
     ResponseCommon<GetCorrectAnswerBySessionId> getAnswerCorrectBySessionId(GetAnswerCorrectBySessionIdRequest getAnswerCorrectBySessionIdRequest);
+
+    ResponseCommon<CheckFinalQuizResponse> checkFinalQuiz(CheckFinalQuizRequest checkFinalQuizRequest);
 }

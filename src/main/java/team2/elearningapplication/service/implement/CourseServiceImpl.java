@@ -420,7 +420,7 @@ public class CourseServiceImpl implements ICourseService {
                 return new ResponseCommon<>(ResponseCode.CHANGE_PARAM.getCode(), "Param is hacker", null);
             } else if (!vnp_TnxRef.equals(checksum)) {
                 return new ResponseCommon<>(ResponseCode.ORDER_NOT_FOUND.getCode(), "Order not found", null);
-            } else if (amountReturn == amountDB) {
+            } else if (amountReturn != amountDB) {
                 return new ResponseCommon<>(ResponseCode.INVALID_AMOUNT.getCode(), "Invalid Amount", null);
             } else if (!order.getEnumTypeProcessPayment().equals(EnumTypeProcessPayment.INPROCESS)) {
                 return new ResponseCommon<>(ResponseCode.ORDER_ALREADY_CONFIRM.getCode(), "Order already confirm", null);

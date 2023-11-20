@@ -197,4 +197,14 @@ public class QuizController {
             return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Get correct answers by session failed", null));
         }
     }
+
+    @GetMapping("/check-final-quiz")
+    public ResponseEntity<ResponseCommon<CheckFinalQuizResponse>> checkFinalQuiz(@ParameterObject CheckFinalQuizRequest checkFinalQuizRequest) {
+        ResponseCommon<CheckFinalQuizResponse> response = quizService.checkFinalQuiz(checkFinalQuizRequest);
+        if (response.getCode() == ResponseCode.SUCCESS.getCode()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseCommon<>(response.getCode(), "Check is final quiz failed", null));
+        }
+    }
 }

@@ -396,4 +396,27 @@ public class QuizServiceImpl implements IQuizService {
             return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"get correct answer  session quiz  failed",null);
         }
     }
+
+    @Override
+    public ResponseCommon<CheckFinalQuizResponse> checkFinalQuiz(CheckFinalQuizRequest checkFinalQuizRequest) {
+        try {
+            Course course = courseRepository.findCourseById(checkFinalQuizRequest.getCourseId()).orElse(null);
+            List<Lesson> lessonList = lessonRespository.findAllByCourse(course);
+            boolean checkFinalQuiz = false;
+            for (int i = 0; i < lessonList.size(); i++) {
+                Quiz quiz = quizRepository.findFinalQuizByLessonId(lessonList.get(i).getId()).orElse(null);
+                if( !Objects.isNull(quiz) ){
+                    if ( quiz.isFinalQuiz() )
+                        checkFinalQuiz=true;
+                }
+            }
+            CheckFinalQuizResponse response = new CheckFinalQuizResponse();
+            response.setFinalQuiz(checkFinalQuiz);
+            return new ResponseCommon<>(ResponseCode.SUCCESS.getCode(),"check final quiz  success",response);
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("check final quiz  failed");
+            return new ResponseCommon<>(ResponseCode.FAIL.getCode(),"check final quiz  failed",null);
+        }
+    }
 }
